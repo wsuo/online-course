@@ -1,0 +1,17 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: online-course-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848 #配置 Nacos 地址
+    # 路由转发: 意思是只要是以 /system 开头的路径都转发到 9001: 这样就可以做到对外隐藏,表面上访问的是 9000 实际上是 9001
+    gateway:
+      routes:
+        - id: system
+          uri: lb://online-course-system
+          predicates:
+            - Path=/system/**
