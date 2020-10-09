@@ -20,6 +20,7 @@
         <spring-boot.version>2.3.0.RELEASE</spring-boot.version>
         <spring-cloud-alibaba.version>2.2.2.RELEASE</spring-cloud-alibaba.version>
         <druid.version>1.1.16</druid.version>
+        <mysql.version>8.0.18</mysql.version>
     </properties>
 
     <dependencyManagement>
@@ -45,6 +46,7 @@
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql.version}</version>
                 <scope>runtime</scope>
             </dependency>
             <dependency>

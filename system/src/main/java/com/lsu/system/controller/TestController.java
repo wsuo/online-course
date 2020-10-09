@@ -1,7 +1,12 @@
 package com.lsu.system.controller;
 
+import com.lsu.system.domain.Test;
+import com.lsu.system.service.TestService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 测试
@@ -13,8 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TestController {
 
+    @Resource
+    private TestService testService;
+
     @RequestMapping("/test")
-    public String test() {
-        return "success";
+    public List<Test> test() {
+        return testService.getAll();
     }
 }
