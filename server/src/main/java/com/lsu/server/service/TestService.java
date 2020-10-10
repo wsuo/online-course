@@ -1,7 +1,7 @@
-package com.lsu.system.service;
+package com.lsu.server.service;
 
-import com.lsu.system.domain.Test;
-import com.lsu.system.mapper.TestMapper;
+import com.lsu.server.domain.Test;
+import com.lsu.server.mapper.TestMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

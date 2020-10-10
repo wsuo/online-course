@@ -1,2 +1,9 @@
 # Project exclude paths
 /system/target/
+.idea/
+gateway/gateway.iml
+gateway/target/
+online-course.iml
+server/server.iml
+server/target/
+system/system.iml

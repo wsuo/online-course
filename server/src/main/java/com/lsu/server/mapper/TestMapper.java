@@ -1,6 +1,6 @@
-package com.lsu.system.mapper;
+package com.lsu.server.mapper;
 
-import com.lsu.system.domain.Test;
+import com.lsu.server.domain.Test;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -20,5 +20,5 @@ public interface TestMapper {
      *
      * @return 数据
      */
-    public List<Test> getAll();
+    List<Test> getAll();
 }
