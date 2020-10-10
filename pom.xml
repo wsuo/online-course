@@ -10,6 +10,7 @@
         <module>system</module>
         <module>gateway</module>
         <module>server</module>
+        <module>business</module>
     </modules>
     <name>online-course</name>
     <description>在线视频课程系统</description>

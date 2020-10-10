@@ -16,11 +16,11 @@ import org.springframework.core.env.ConfigurableEnvironment;
  */
 @SpringBootApplication
 @EnableDiscoveryClient
-public class GateWayMain {
-    private static final Logger LOG = LoggerFactory.getLogger(GateWayMain.class);
+public class GateWayMainApplication {
+    private static final Logger LOG = LoggerFactory.getLogger(GateWayMainApplication.class);
 
     public static void main(String[] args) {
-        SpringApplication app = new SpringApplication(GateWayMain.class);
+        SpringApplication app = new SpringApplication(GateWayMainApplication.class);
         ConfigurableEnvironment env = app.run(args).getEnvironment();
         LOG.info(env.getProperty("spring.application.name") + "\t启动成功!" + "\t地址:\thttp://localhost:" + env.getProperty("server.port"));
     }

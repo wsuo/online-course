@@ -1,0 +1,12 @@
+server:
+  port: 9002
+  servlet:
+    context-path: /business
+
+spring:
+  application:
+    name: online-course-business
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848 #配置 Nacos 地址
