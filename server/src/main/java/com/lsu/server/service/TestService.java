@@ -1,6 +1,7 @@
 package com.lsu.server.service;
 
 import com.lsu.server.domain.Test;
+import com.lsu.server.domain.TestExample;
 import com.lsu.server.mapper.TestMapper;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,9 @@ public class TestService {
      * @return 数据
      */
     public List<Test> getAll() {
-        return testMapper.getAll();
+        TestExample testExample = new TestExample();
+        testExample.createCriteria().andIdEqualTo("1");
+        testExample.setOrderByClause("id desc");
+        return testMapper.selectByExample(testExample);
     }
 }
