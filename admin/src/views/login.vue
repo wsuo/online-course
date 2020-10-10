@@ -188,9 +188,13 @@
 </template>
 
 <script>
-  $('body').attr('class', 'login-layout light-login');
   export default {
     name: "login",
+    mounted: function() {
+      let body = $('body');
+      body.attr('class', 'login-layout light-login');
+      body.removeClass('no-skin');
+    },
     methods: {
       login() {
         this.$router.push("/admin")
