@@ -1,24 +1,30 @@
 package com.lsu.server.mapper;
 
 import com.lsu.server.domain.Test;
-import org.apache.ibatis.annotations.Mapper;
-
+import com.lsu.server.domain.TestExample;
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
-/**
- * 持久层接口
- *
- * @author wang suo
- * @version 1.0
- * @date 2020/10/9 0009 20:41
- */
-@Mapper
 public interface TestMapper {
+    long countByExample(TestExample example);
 
-    /**
-     * 获取所有数据
-     *
-     * @return 数据
-     */
-    List<Test> getAll();
+    int deleteByExample(TestExample example);
+
+    int deleteByPrimaryKey(String id);
+
+    int insert(Test record);
+
+    int insertSelective(Test record);
+
+    List<Test> selectByExample(TestExample example);
+
+    Test selectByPrimaryKey(String id);
+
+    int updateByExampleSelective(@Param("record") Test record, @Param("example") TestExample example);
+
+    int updateByExample(@Param("record") Test record, @Param("example") TestExample example);
+
+    int updateByPrimaryKeySelective(Test record);
+
+    int updateByPrimaryKey(Test record);
 }
