@@ -15,3 +15,7 @@ spring:
           uri: lb://online-course-system
           predicates:
             - Path=/system/**
+        - id: business
+          uri: lb://online-course-business
+          predicates:
+            - Path=/business/**
