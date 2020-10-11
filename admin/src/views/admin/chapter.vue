@@ -1,9 +1,11 @@
 <template>
   <div>
     <p>
+      <button @click="add" class="btn btn-white btn-default btn-round">
+        <i class="ace-icon fa fa-edit red2"></i>新增
+      </button> &nbsp;
       <button @click="getAll(1)" class="btn btn-white btn-default btn-round">
-        <i class="ace-icon fa fa-refresh red2"></i>
-        刷新
+        <i class="ace-icon fa fa-refresh red2"></i>刷新
       </button>
     </p>
     <table id="simple-table" class="table  table-bordered table-hover">
@@ -78,6 +80,38 @@
       </tr>
       </tbody>
     </table>
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">表单</h4>
+          </div>
+          <div class="modal-body">
+            <form class="form-horizontal">
+              <div class="form-group">
+                <label for="name" class="col-sm-2 control-label">名称</label>
+                <div class="col-sm-10">
+                  <input class="form-control" id="name" placeholder="名称">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="course" class="col-sm-2 control-label">课程ID</label>
+                <div class="col-sm-10">
+                  <input class="form-control" id="course" placeholder="课程ID">
+                </div>
+              </div>
+            </form>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+              <button type="button" class="btn btn-primary">保存</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <!--
         :list="getAll"
 
@@ -119,6 +153,10 @@
           // 渲染子组件
           _this.$refs.pagination.render(page, response.data.total);
         })
+      },
+      add() {
+        let _this = this;
+        $(".modal").modal("show");
       }
     }
   }
