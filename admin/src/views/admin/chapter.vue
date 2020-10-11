@@ -94,19 +94,19 @@
               <div class="form-group">
                 <label for="name" class="col-sm-2 control-label">名称</label>
                 <div class="col-sm-10">
-                  <input class="form-control" id="name" placeholder="名称">
+                  <input v-model="chapter.name" class="form-control" id="name" placeholder="名称">
                 </div>
               </div>
               <div class="form-group">
-                <label for="course" class="col-sm-2 control-label">课程ID</label>
+                <label for="courseId" class="col-sm-2 control-label">课程ID</label>
                 <div class="col-sm-10">
-                  <input class="form-control" id="course" placeholder="课程ID">
+                  <input v-model="chapter.courseId" class="form-control" id="courseId" placeholder="课程ID">
                 </div>
               </div>
             </form>
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-              <button type="button" class="btn btn-primary">保存</button>
+              <button @click="save" type="button" class="btn btn-primary">保存</button>
             </div>
           </div>
         </div>
@@ -133,6 +133,10 @@
     data() {
       return {
         chapters: [],
+        chapter: {
+          name: '',
+          courseId: '',
+        },
       }
     },
     created() {
@@ -155,8 +159,14 @@
         })
       },
       add() {
-        let _this = this;
         $(".modal").modal("show");
+      },
+      save() {
+        let _this = this;
+        _this.$ajax.post('http://127.0.0.1:9000/business/admin/chapter/save',
+          _this.chapter).then(response => {
+          console.log("保存大章列表效果: ", response);
+        })
       }
     }
   }

@@ -6,6 +6,7 @@ import com.lsu.server.domain.Chapter;
 import com.lsu.server.dto.ChapterDto;
 import com.lsu.server.dto.PageDto;
 import com.lsu.server.mapper.ChapterMapper;
+import com.lsu.server.util.UuidUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -48,4 +49,12 @@ public class ChapterService {
         }
         pageDto.setList(chapterDtoList);
     }
+
+    public void save(ChapterDto chapterDto) {
+        chapterDto.setId(UuidUtil.getShortUuid());
+        Chapter chapter = new Chapter();
+        BeanUtils.copyProperties(chapterDto, chapter);
+        chapterMapper.insert(chapter);
+    }
+
 }
