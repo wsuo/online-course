@@ -59,7 +59,7 @@
       return {
         // 总行数, 每页条数, 当前页码, 总页码, 显示的页码数组
         total: 0,
-        size: 10,
+        size: 0,
         page: 0,
         pageTotal: 0,
         pages: []
@@ -86,7 +86,7 @@
         if (page > _this.pageTotal) {
           page = _this.pageTotal;
         }
-        if (this.page !== page) {
+        if (_this.page !== page) {
           _this.page = page;
           if (_this.page) {
             _this.list(page)

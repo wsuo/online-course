@@ -2,13 +2,12 @@ package com.lsu.business.controller.admin;
 
 import com.lsu.server.dto.ChapterDto;
 import com.lsu.server.dto.PageDto;
+import com.lsu.server.dto.ResponseDto;
 import com.lsu.server.service.ChapterService;
+import org.apache.ibatis.annotations.Delete;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -29,15 +28,25 @@ public class ChapterController {
     private ChapterService chapterService;
 
     @PostMapping("/list")
-    public PageDto<ChapterDto> chapter(@RequestBody PageDto<ChapterDto> pageDto) {
+    public ResponseDto<PageDto> getAll(@RequestBody PageDto<ChapterDto> pageDto) {
+        ResponseDto<PageDto> responseDto = new ResponseDto<>();
         chapterService.getAll(pageDto);
-        return pageDto;
+        responseDto.setContent(pageDto);
+        return responseDto;
     }
 
     @PostMapping("/save")
-    public ChapterDto chapter(@RequestBody ChapterDto chapterDto) {
-        LOG.info("chapterDto: {}", chapterDto);
+    public ResponseDto<ChapterDto> save(@RequestBody ChapterDto chapterDto) {
+        ResponseDto<ChapterDto> responseDto = new ResponseDto<>();
         chapterService.save(chapterDto);
-        return chapterDto;
+        responseDto.setContent(chapterDto);
+        return responseDto;
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseDto delete(@PathVariable String id) {
+        ResponseDto responseDto = new ResponseDto();
+        chapterService.delete(id);
+        return responseDto;
     }
 }

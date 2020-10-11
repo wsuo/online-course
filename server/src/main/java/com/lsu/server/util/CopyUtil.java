@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 赋值工具类: 目的简化代码
+ *
  * @author wsuo
  */
 public class CopyUtil {

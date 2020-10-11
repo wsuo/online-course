@@ -25,56 +25,12 @@
         <td>{{chapter.courseId}}</td>
         <td>
           <div class="hidden-sm hidden-xs btn-group">
-            <button class="btn btn-xs btn-success">
-              <i class="ace-icon fa fa-check bigger-120"></i>
-            </button>
-
-            <button class="btn btn-xs btn-info">
+            <button @click="edit(chapter)" class="btn btn-xs btn-info">
               <i class="ace-icon fa fa-pencil bigger-120"></i>
             </button>
-
-            <button class="btn btn-xs btn-danger">
+            <button @click="del(chapter.id)" class="btn btn-xs btn-danger">
               <i class="ace-icon fa fa-trash-o bigger-120"></i>
             </button>
-
-            <button class="btn btn-xs btn-warning">
-              <i class="ace-icon fa fa-flag bigger-120"></i>
-            </button>
-          </div>
-
-          <div class="hidden-md hidden-lg">
-            <div class="inline pos-rel">
-              <button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
-                <i class="ace-icon fa fa-cog icon-only bigger-110"></i>
-              </button>
-
-              <ul
-                class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
-                <li>
-                  <a href="#" class="tooltip-info" data-rel="tooltip" title="View">
-																			<span class="blue">
-																				<i class="ace-icon fa fa-search-plus bigger-120"></i>
-																			</span>
-                  </a>
-                </li>
-
-                <li>
-                  <a href="#" class="tooltip-success" data-rel="tooltip" title="Edit">
-																			<span class="green">
-																				<i class="ace-icon fa fa-pencil-square-o bigger-120"></i>
-																			</span>
-                  </a>
-                </li>
-
-                <li>
-                  <a href="#" class="tooltip-error" data-rel="tooltip" title="Delete">
-																			<span class="red">
-																				<i class="ace-icon fa fa-trash-o bigger-120"></i>
-																			</span>
-                  </a>
-                </li>
-              </ul>
-            </div>
           </div>
         </td>
       </tr>
@@ -143,7 +99,7 @@
     },
     mounted() {
       let _this = this;
-      _this.$refs.pagination.size = 5;
+      _this.$refs.pagination.size = 10;
       _this.getAll(1);
     },
     methods: {
@@ -153,19 +109,41 @@
           page: page,
           size: _this.$refs.pagination.size,
         }).then(response => {
-          _this.chapters = response.data.list;
+          let resp = response.data;
+          _this.chapters = resp.content.list;
           // 渲染子组件
-          _this.$refs.pagination.render(page, response.data.total);
+          _this.$refs.pagination.render(page, resp.content.total);
         })
       },
       add() {
-        $(".modal").modal("show");
+        let _this = this;
+        _this.chapter = {};
+        $("#myModal").modal("show");
       },
       save() {
         let _this = this;
         _this.$ajax.post('http://127.0.0.1:9000/business/admin/chapter/save',
           _this.chapter).then(response => {
-          console.log("保存大章列表效果: ", response);
+          let resp = response.data;
+          if (resp.success) {
+            $("#myModal").modal("hide");
+            _this.getAll(1);
+          }
+        })
+      },
+      edit(chapter) {
+        let _this = this;
+        // 双向绑定问题: 输入的时候表格也会更新数据: 使用 JQuery 的函数解决问题
+        _this.chapter = $.extend({}, chapter);
+        $("#myModal").modal("show");
+      },
+      del(id) {
+        let _this = this;
+        _this.$ajax.delete('http://127.0.0.1:9000/business/admin/chapter/delete/' + id).then(response => {
+          let resp = response.data;
+          if (resp.success) {
+            _this.getAll(1);
+          }
         })
       }
     }
