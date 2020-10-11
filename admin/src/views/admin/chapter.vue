@@ -105,10 +105,12 @@
     methods: {
       getAll(page) {
         let _this = this;
+        Loading.show();
         _this.$ajax.post('http://127.0.0.1:9000/business/admin/chapter/list', {
           page: page,
           size: _this.$refs.pagination.size,
         }).then(response => {
+          Loading.hide();
           let resp = response.data;
           _this.chapters = resp.content.list;
           // 渲染子组件
@@ -122,12 +124,15 @@
       },
       save() {
         let _this = this;
+        Loading.show();
         _this.$ajax.post('http://127.0.0.1:9000/business/admin/chapter/save',
           _this.chapter).then(response => {
+          Loading.hide();
           let resp = response.data;
           if (resp.success) {
             $("#myModal").modal("hide");
             _this.getAll(1);
+            toast.success("保存成功");
           }
         })
       },
@@ -139,12 +144,27 @@
       },
       del(id) {
         let _this = this;
-        _this.$ajax.delete('http://127.0.0.1:9000/business/admin/chapter/delete/' + id).then(response => {
-          let resp = response.data;
-          if (resp.success) {
-            _this.getAll(1);
+        Swal.fire({
+          title: '确认删除',
+          text: "该操作不可逆转!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: '删除'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            Loading.show();
+            _this.$ajax.delete('http://127.0.0.1:9000/business/admin/chapter/delete/' + id).then(response => {
+              Loading.hide();
+              let resp = response.data;
+              if (resp.success) {
+                _this.getAll(1);
+                toast.success("删除成功");
+              }
+            });
           }
-        })
+        });
       }
     }
   }
