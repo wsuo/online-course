@@ -1,7 +1,10 @@
 package com.lsu.server.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.lsu.server.domain.Chapter;
 import com.lsu.server.dto.ChapterDto;
+import com.lsu.server.dto.PageDto;
 import com.lsu.server.mapper.ChapterMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -24,18 +27,25 @@ public class ChapterService {
     private ChapterMapper chapterMapper;
 
     /**
-     * 获取所有数据
+     * 分页查询
      *
      * @return 数据
      */
-    public List<ChapterDto> getAll() {
+    public void getAll(PageDto<ChapterDto> pageDto) {
+        /*
+        * 分页插件的使用:
+        *   规则是调用 startPage 之后遇到的第一个 select 语句会进行分页;
+        * */
+        PageHelper.startPage(pageDto.getPage(), pageDto.getSize());
         List<Chapter> chapterList = chapterMapper.selectByExample(null);
+        PageInfo<Chapter> pageInfo = new PageInfo<>(chapterList);
+        pageDto.setTotal(pageInfo.getTotal());
         ArrayList<ChapterDto> chapterDtoList = new ArrayList<>();
         for (Chapter chapter : chapterList) {
             ChapterDto chapterDto = new ChapterDto();
             BeanUtils.copyProperties(chapter, chapterDto);
             chapterDtoList.add(chapterDto);
         }
-        return chapterDtoList;
+        pageDto.setList(chapterDtoList);
     }
 }

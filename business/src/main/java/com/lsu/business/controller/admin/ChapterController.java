@@ -1,12 +1,16 @@
 package com.lsu.business.controller.admin;
 
 import com.lsu.server.dto.ChapterDto;
+import com.lsu.server.dto.PageDto;
 import com.lsu.server.service.ChapterService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * 测试
@@ -19,11 +23,14 @@ import java.util.List;
 @RequestMapping("/admin/chapter")
 public class ChapterController {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ChapterController.class);
+
     @Resource
     private ChapterService chapterService;
 
-    @RequestMapping("/list")
-    public List<ChapterDto> chapter() {
-        return chapterService.getAll();
+    @PostMapping("/list")
+    public PageDto<ChapterDto> chapter(@RequestBody PageDto<ChapterDto> pageDto) {
+        chapterService.getAll(pageDto);
+        return pageDto;
     }
 }

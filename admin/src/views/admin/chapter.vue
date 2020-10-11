@@ -75,20 +75,26 @@
 <script>
   export default {
     name: "chapter",
-    data: function () {
+    data() {
       return {
         chapters: [],
       }
     },
-    mounted: function () {
+    created() {
       let _this = this;
       _this.getAll();
+    },
+    mounted() {
+      // 操作 DOM 节点
     },
     methods: {
       getAll() {
         let _this = this;
-        _this.$ajax.get('http://127.0.0.1:9000/business/admin/chapter/list').then(response => {
-          _this.chapters = response.data;
+        _this.$ajax.post('http://127.0.0.1:9000/business/admin/chapter/list', {
+          page: 1,
+          size: 1
+        }).then(response => {
+          _this.chapters = response.data.list;
         })
       }
     }
