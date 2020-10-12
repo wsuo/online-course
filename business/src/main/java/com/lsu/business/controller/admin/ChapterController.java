@@ -4,6 +4,7 @@ import com.lsu.server.dto.ChapterDto;
 import com.lsu.server.dto.PageDto;
 import com.lsu.server.dto.ResponseDto;
 import com.lsu.server.service.ChapterService;
+import com.lsu.server.util.ValidatorUtil;
 import org.apache.ibatis.annotations.Delete;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +38,11 @@ public class ChapterController {
 
     @PostMapping("/save")
     public ResponseDto<ChapterDto> save(@RequestBody ChapterDto chapterDto) {
+
+        ValidatorUtil.require(chapterDto.getName(), "名称");
+        ValidatorUtil.require(chapterDto.getCourseId(), "课程ID");
+        ValidatorUtil.length(chapterDto.getCourseId(), "课程ID", 1, 8);
+
         ResponseDto<ChapterDto> responseDto = new ResponseDto<>();
         chapterService.save(chapterDto);
         responseDto.setContent(chapterDto);
