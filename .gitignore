@@ -13,3 +13,7 @@ business/target/
 gateway/src/test/
 server/src/test/
 system/src/test/
+generator/generator.iml
+generator/src/main/resources/
+generator/src/test/
+generator/target/

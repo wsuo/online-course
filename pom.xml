@@ -11,6 +11,7 @@
         <module>gateway</module>
         <module>server</module>
         <module>business</module>
+        <module>generator</module>
     </modules>
     <name>online-course</name>
     <description>在线视频课程系统</description>
