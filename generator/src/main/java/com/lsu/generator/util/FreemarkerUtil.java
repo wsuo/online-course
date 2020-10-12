@@ -9,6 +9,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * 代码生成器工具类
@@ -29,10 +30,10 @@ public class FreemarkerUtil {
         temp = conf.getTemplate(ftlName + ".ftl");
     }
 
-    public static void generator(String fileName) throws IOException, TemplateException {
+    public static void generator(Map<String, Object> map, String fileName) throws IOException, TemplateException {
         FileWriter fw = new FileWriter(fileName);
         BufferedWriter bw = new BufferedWriter(fw);
-        temp.process(null, bw);
+        temp.process(map, bw);
         bw.flush();
         fw.close();
     }

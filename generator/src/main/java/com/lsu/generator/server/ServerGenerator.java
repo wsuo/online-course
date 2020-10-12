@@ -4,6 +4,8 @@ import com.lsu.generator.util.FreemarkerUtil;
 import freemarker.template.TemplateException;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 代码生成
@@ -14,10 +16,15 @@ import java.io.IOException;
  */
 public class ServerGenerator {
 
-    private static String toPath = "generator\\src\\main\\java\\com\\lsu\\generator\\test\\";
+    private static String toServicePath = "server\\src\\main\\java\\com\\lsu\\server\\service\\";
 
     public static void main(String[] args) throws IOException, TemplateException {
-        FreemarkerUtil.initConfig("test");
-        FreemarkerUtil.generator(toPath + "Test.java");
+        String Domain = "Section";
+        String domain = "section";
+        Map<String, Object> map = new HashMap<>(2);
+        map.put("Domain", Domain);
+        map.put("domain", domain);
+        FreemarkerUtil.initConfig("service");
+        FreemarkerUtil.generator(map, toServicePath + Domain + "Service.java");
     }
 }
