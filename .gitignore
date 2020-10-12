@@ -7,3 +7,9 @@ online-course.iml
 server/server.iml
 server/target/
 system/system.iml
+business/business.iml
+business/src/test/
+business/target/
+gateway/src/test/
+server/src/test/
+system/src/test/
