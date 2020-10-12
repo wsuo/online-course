@@ -16,15 +16,20 @@ import java.util.Map;
  */
 public class ServerGenerator {
 
+    private static String MODULE = "business";
     private static String toServicePath = "server\\src\\main\\java\\com\\lsu\\server\\service\\";
-    private static String toControllerPath = "business\\src\\main\\java\\com\\lsu\\business\\controller\\admin\\";
+    private static String toControllerPath = MODULE + "\\src\\main\\java\\com\\lsu\\" + MODULE + "\\controller\\admin\\";
 
     public static void main(String[] args) throws IOException, TemplateException {
         String Domain = "Section";
         String domain = "section";
+        String tableNameCn = "小节";
+        String module = MODULE;
         Map<String, Object> map = new HashMap<>(2);
         map.put("Domain", Domain);
         map.put("domain", domain);
+        map.put("tableNameCn", tableNameCn);
+        map.put("module", module);
 //        FreemarkerUtil.initConfig("service");
 //        FreemarkerUtil.generator(map, toServicePath + Domain + "Service.java");
         FreemarkerUtil.initConfig("controller");

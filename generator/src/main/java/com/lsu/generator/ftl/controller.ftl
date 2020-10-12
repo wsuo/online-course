@@ -1,11 +1,10 @@
-package com.lsu.business.controller.admin;
+package com.lsu.${module}.controller.admin;
 
 import com.lsu.server.dto.${Domain}Dto;
 import com.lsu.server.dto.PageDto;
 import com.lsu.server.dto.ResponseDto;
 import com.lsu.server.service.${Domain}Service;
 import com.lsu.server.util.ValidatorUtil;
-import org.apache.ibatis.annotations.Delete;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +23,7 @@ import javax.annotation.Resource;
 public class ${Domain}Controller {
 
     private static final Logger LOG = LoggerFactory.getLogger(${Domain}Controller.class);
-    public static final String BUSINESS_NAME = "大章";
+    public static final String BUSINESS_NAME = "${tableNameCn}";
 
     @Resource
     private ${Domain}Service ${domain}Service;
