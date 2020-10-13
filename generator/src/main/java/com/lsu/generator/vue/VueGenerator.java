@@ -1,4 +1,4 @@
-package com.lsu.generator.server;
+package com.lsu.generator.vue;
 
 import com.lsu.generator.util.DbUtil;
 import com.lsu.generator.util.Field;
@@ -11,23 +11,19 @@ import java.io.File;
 import java.util.*;
 
 /**
- * 代码生成
+ * Vue 代码生成
  *
  * @Author wang suo
  * @Date 2020/10/12 0012 18:35
  * @Version 1.0
  */
-public class ServerGenerator {
+public class VueGenerator {
 
     private static String MODULE = "business";
-    private static String toServicePath = "server\\src\\main\\java\\com\\lsu\\server\\service\\";
-    private static String toDtoPath = "server\\src\\main\\java\\com\\lsu\\server\\dto\\";
-    private static String toControllerPath = MODULE + "\\src\\main\\java\\com\\lsu\\" + MODULE + "\\controller\\admin\\";
+    private static String toVuePath = "admin\\src\\views\\admin\\";
     private static String generatorPath = "server\\src\\main\\resources\\generator\\generatorConfig.xml";
 
     public static void main(String[] args) throws Exception {
-        String module = MODULE;
-
         /*
             读 generatorConfig.xml
         */
@@ -62,14 +58,13 @@ public class ServerGenerator {
         /*
         将表名打印到控制台
          */
-        System.out.println("表名 = " + tableName);
+        System.out.println("表 = " + tableName);
         System.out.println("Domain = " + bigDoMain);
 
         /*
         获取数据库表的属性列表
          */
         List<Field> fieldList = DbUtil.getColumnByTableName(tableName);
-
         /*
         获取要导入的Java包
          */
@@ -78,25 +73,17 @@ public class ServerGenerator {
         /*
         放到 Map 集合中供 freemarker 使用
          */
-        Map<String, Object> map = new HashMap<>(2);
+        Map<String, Object> map = new HashMap<>(10);
         map.put("Domain", bigDoMain);
         map.put("domain", domain);
         map.put("tableNameCn", tableNameCn);
-        map.put("module", module);
+        map.put("module", MODULE);
         map.put("fieldList", fieldList);
         map.put("typeSet", typeSet);
 
-        // 生成 dto
-        FreemarkerUtil.initConfig("dto");
-        FreemarkerUtil.generator(map, toDtoPath + bigDoMain + "Dto.java");
-
-        // 生成 service
-        FreemarkerUtil.initConfig("service");
-        FreemarkerUtil.generator(map, toServicePath + bigDoMain + "Service.java");
-
-        // 生成 controller
-        FreemarkerUtil.initConfig("controller");
-        FreemarkerUtil.generator(map, toControllerPath + bigDoMain + "Controller.java");
+        // 生成 vue
+        FreemarkerUtil.initConfig("vue");
+        FreemarkerUtil.generator(map, toVuePath + domain + ".vue");
     }
 
     private static Set<String> getJavaTypes(List<Field> fieldList) {

@@ -19,6 +19,9 @@ public class ValidatorUtil {
     }
 
     public static void length(String str, String fieldName, int min, int max) {
+        if (StringUtils.isEmpty(str)) {
+            return;
+        }
         int length = 0;
         if (!StringUtils.isEmpty(str)) {
             length = str.length();

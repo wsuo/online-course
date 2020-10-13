@@ -36,6 +36,20 @@ public class SectionController {
         return responseDto;
     }
 
+    @PostMapping("/save")
+    public ResponseDto<SectionDto> save(@RequestBody SectionDto sectionDto) {
+
+        // 保存校验
+        ValidatorUtil.require(sectionDto.getTitle(), "标题");
+        ValidatorUtil.length(sectionDto.getTitle(), "标题", 1, 50);
+        ValidatorUtil.length(sectionDto.getVideo(), "视频", 1, 200);
+
+        ResponseDto<SectionDto> responseDto = new ResponseDto<>();
+        sectionService.save(sectionDto);
+        responseDto.setContent(sectionDto);
+        return responseDto;
+    }
+
     @DeleteMapping("/delete/{id}")
     public ResponseDto delete(@PathVariable String id) {
         ResponseDto responseDto = new ResponseDto();
