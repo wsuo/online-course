@@ -2,6 +2,10 @@ package com.lsu.server.enums;
 
 public enum YesNoEnum {
 
+    /*
+    1 表示是
+    0 表示否
+     */
     YES("1", "是"),
     NO("0", "否");
 

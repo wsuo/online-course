@@ -1,7 +1,15 @@
 package com.lsu.server.enums;
 
+/**
+ * @author wsuo
+ */
+
 public enum SectionChargeEnum {
 
+    /*
+    C 表示免费
+    F 表示收费
+     */
     CHARGE("C", "收费"),
     FREE("F", "免费");
 

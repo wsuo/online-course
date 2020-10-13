@@ -143,7 +143,7 @@
             createdAt: '',
             updatedAt: '',
         },
-        CHARGE: CHARGE,
+        CHARGE: SECTION_CHARGE,
       }
     },
     created() {
