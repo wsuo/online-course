@@ -1,6 +1,7 @@
 package com.lsu.generator.util;
 
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * 属性
@@ -10,7 +11,8 @@ import lombok.Data;
  * @Version 1.0
  */
 @Data
-class Field {
+@ToString
+public class Field {
     /**
      * 字段名;
      * 字段名小驼峰;

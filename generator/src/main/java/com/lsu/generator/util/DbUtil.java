@@ -42,7 +42,7 @@ public class DbUtil {
     }
 
     /**
-     * 获取表的备注
+     * 获取表的中文名称
      *
      * @param tableName 表名
      * @return 返回表的注释

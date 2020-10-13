@@ -36,19 +36,6 @@ public class ${Domain}Controller {
         return responseDto;
     }
 
-    @PostMapping("/save")
-    public ResponseDto<${Domain}Dto> save(@RequestBody ${Domain}Dto ${domain}Dto) {
-
-        ValidatorUtil.require(${domain}Dto.getName(), "名称");
-        ValidatorUtil.require(${domain}Dto.getCourseId(), "课程ID");
-        ValidatorUtil.length(${domain}Dto.getCourseId(), "课程ID", 1, 8);
-
-        ResponseDto<${Domain}Dto> responseDto = new ResponseDto<>();
-        ${domain}Service.save(${domain}Dto);
-        responseDto.setContent(${domain}Dto);
-        return responseDto;
-    }
-
     @DeleteMapping("/delete/{id}")
     public ResponseDto delete(@PathVariable String id) {
         ResponseDto responseDto = new ResponseDto();

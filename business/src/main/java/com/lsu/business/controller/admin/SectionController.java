@@ -5,7 +5,6 @@ import com.lsu.server.dto.PageDto;
 import com.lsu.server.dto.ResponseDto;
 import com.lsu.server.service.SectionService;
 import com.lsu.server.util.ValidatorUtil;
-import org.apache.ibatis.annotations.Delete;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -34,19 +33,6 @@ public class SectionController {
         ResponseDto<PageDto> responseDto = new ResponseDto<>();
         sectionService.getAll(pageDto);
         responseDto.setContent(pageDto);
-        return responseDto;
-    }
-
-    @PostMapping("/save")
-    public ResponseDto<SectionDto> save(@RequestBody SectionDto sectionDto) {
-
-       /* ValidatorUtil.require(sectionDto.getName(), "名称");
-        ValidatorUtil.require(sectionDto.getCourseId(), "课程ID");
-        ValidatorUtil.length(sectionDto.getCourseId(), "课程ID", 1, 8);*/
-
-        ResponseDto<SectionDto> responseDto = new ResponseDto<>();
-        sectionService.save(sectionDto);
-        responseDto.setContent(sectionDto);
         return responseDto;
     }
 
