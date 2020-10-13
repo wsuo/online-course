@@ -1,7 +1,15 @@
 package com.lsu.server.enums;
 
+/**
+ * @author wsuo
+ */
+
 public enum FileUseEnum {
 
+    /*
+    C 表示 课程
+    T 表示 讲师
+     */
     COURSE("C", "课程"),
     TEACHER("T", "讲师");
 

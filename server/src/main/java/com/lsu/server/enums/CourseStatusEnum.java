@@ -1,7 +1,15 @@
 package com.lsu.server.enums;
 
+/**
+ * @author wsuo
+ */
+
 public enum CourseStatusEnum {
 
+    /*
+    P 表示 发布
+    D 表示 草稿
+     */
     PUBLISH("P", "发布"),
     DRAFT("D", "草稿");
 

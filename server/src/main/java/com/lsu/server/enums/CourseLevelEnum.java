@@ -1,7 +1,16 @@
 package com.lsu.server.enums;
 
+/**
+ * @author wsuo
+ */
+
 public enum CourseLevelEnum {
 
+    /*
+    1 表示 初级
+    2 表示 中级
+    3 表示 高级
+     */
     ONE("1", "初级"),
     TWO("2", "中级"),
     THREE("3", "高级");

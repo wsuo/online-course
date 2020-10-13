@@ -1,7 +1,15 @@
 package com.lsu.server.enums;
 
+/**
+ * @author wsuo
+ */
+
 public enum SmsUseEnum {
 
+    /*
+    R 表示 注册
+    F 表示 忘记密码
+     */
     REGISTER("R", "注册"),
     FORGET("F", "忘记密码");
 

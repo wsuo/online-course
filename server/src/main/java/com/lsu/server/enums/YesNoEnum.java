@@ -1,5 +1,9 @@
 package com.lsu.server.enums;
 
+/**
+ * @author wsuo
+ */
+
 public enum YesNoEnum {
 
     /*
