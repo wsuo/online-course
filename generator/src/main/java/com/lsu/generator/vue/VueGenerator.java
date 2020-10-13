@@ -51,46 +51,22 @@ public class VueGenerator {
         获取表名
          */
         String tableName = tableElement.attributeValue("tableName");
-        /*
-        获取表的中文名: 备注名
-         */
-        String tableNameCn = DbUtil.getTableComment(tableName);
-        /*
-        将表名打印到控制台
-         */
-        System.out.println("表 = " + tableName);
-        System.out.println("Domain = " + bigDoMain);
 
         /*
         获取数据库表的属性列表
          */
         List<Field> fieldList = DbUtil.getColumnByTableName(tableName);
-        /*
-        获取要导入的Java包
-         */
-        Set<String> typeSet = getJavaTypes(fieldList);
 
         /*
         放到 Map 集合中供 freemarker 使用
          */
         Map<String, Object> map = new HashMap<>(10);
-        map.put("Domain", bigDoMain);
         map.put("domain", domain);
-        map.put("tableNameCn", tableNameCn);
         map.put("module", MODULE);
         map.put("fieldList", fieldList);
-        map.put("typeSet", typeSet);
 
         // 生成 vue
         FreemarkerUtil.initConfig("vue");
         FreemarkerUtil.generator(map, toVuePath + domain + ".vue");
-    }
-
-    private static Set<String> getJavaTypes(List<Field> fieldList) {
-        Set<String> set = new HashSet<>();
-        for (Field field : fieldList) {
-            set.add(field.getJavaType());
-        }
-        return set;
     }
 }

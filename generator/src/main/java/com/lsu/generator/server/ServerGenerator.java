@@ -78,7 +78,7 @@ public class ServerGenerator {
         /*
         放到 Map 集合中供 freemarker 使用
          */
-        Map<String, Object> map = new HashMap<>(2);
+        Map<String, Object> map = new HashMap<>(10);
         map.put("Domain", bigDoMain);
         map.put("domain", domain);
         map.put("tableNameCn", tableNameCn);
