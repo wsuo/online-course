@@ -6,7 +6,6 @@ import com.lsu.server.domain.Section;
 import com.lsu.server.domain.SectionExample;
 import com.lsu.server.domain.SectionPageDto;
 import com.lsu.server.dto.SectionDto;
-import com.lsu.server.dto.PageDto;
 import com.lsu.server.enums.SectionChargeEnum;
 import com.lsu.server.mapper.SectionMapper;
 import com.lsu.server.util.CopyUtil;
@@ -15,8 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
-import java.util.List;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 业务层
@@ -30,6 +29,9 @@ public class SectionService {
 
     @Resource
     private SectionMapper sectionMapper;
+
+    @Resource
+    private CourseService courseService;
 
     /**
      * 分页查询
@@ -75,6 +77,7 @@ public class SectionService {
         } else {
             this.update(section);
         }
+        courseService.updateTime(sectionDto.getCourseId());
     }
 
     private void insert(Section section) {

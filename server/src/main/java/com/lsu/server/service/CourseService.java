@@ -7,14 +7,17 @@ import com.lsu.server.domain.CourseExample;
 import com.lsu.server.dto.CourseDto;
 import com.lsu.server.dto.PageDto;
 import com.lsu.server.mapper.CourseMapper;
+import com.lsu.server.mapper.my.MyCourseMapper;
 import com.lsu.server.util.CopyUtil;
 import com.lsu.server.util.UuidUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
-import java.util.List;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 业务层
@@ -26,8 +29,13 @@ import java.util.Date;
 @Service
 public class CourseService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(CourseService.class);
+
     @Resource
     private CourseMapper courseMapper;
+
+    @Resource
+    private MyCourseMapper myCourseMapper;
 
     /**
      * 分页查询
@@ -78,5 +86,15 @@ public class CourseService {
 
     public void delete(String id) {
         courseMapper.deleteByPrimaryKey(id);
+    }
+
+    /**
+     * 更新视频时长
+     *
+     * @param courseId 课程 ID
+     */
+    public void updateTime(String courseId) {
+        LOG.info("更新视频时长: {}", courseId);
+        myCourseMapper.updateTime(courseId);
     }
 }
