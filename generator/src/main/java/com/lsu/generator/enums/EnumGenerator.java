@@ -8,6 +8,9 @@ import java.lang.reflect.Method;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * @author wsuo
+ */
 public class EnumGenerator {
 
     private static Pattern pattern = Pattern.compile("[A-Z]");

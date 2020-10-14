@@ -24,12 +24,11 @@
       <tr v-for="${domain} in ${domain}s">
         <#list fieldList as field>
           <#if field.nameHump!="createdAt" && field.nameHump!="updatedAt">
-<#--            <#if field.enums>-->
-<#--              <td>{{${field.enumsConst} | optionKV(${domain}.${field.nameHump})}}</td>-->
-<#--            <#else>-->
-<#--              <td>{{${domain}.${field.nameHump}}}</td>-->
-<#--            </#if>-->
-            <td>{{${domain}.${field.nameHump}}}</td>
+            <#if field.enums>
+        <td>{{${field.enumsConst} | optionKV(${domain}.${field.nameHump})}}</td>
+            <#else>
+        <td>{{${domain}.${field.nameHump}}}</td>
+            </#if>
           </#if>
         </#list>
         <td>
@@ -61,7 +60,13 @@
                 <div class="form-group">
                   <label for="${field.nameHump}" class="col-sm-2 control-label">${field.nameCn}</label>
                   <div class="col-sm-10">
+                    <#if field.enums>
+                    <select v-model="${domain}.${field.nameHump}" class="form-control" id="${field.nameHump}">
+                      <option v-for="o in ${field.enumsConst}" :value="o.key">{{o.value}}</option>
+                    </select>
+                    <#else>
                     <input v-model="${domain}.${field.nameHump}" id="${field.nameHump}" class="form-control">
+                    </#if>
                   </div>
                 </div>
                 </#if>
@@ -98,10 +103,15 @@
         ${domain}s: [],
         ${domain}: {
           <#list fieldList as field>
-            ${field.nameHump}: '',
+          ${field.nameHump}: '',
           </#list>
         },
-      }
+      <#list fieldList as field>
+      <#if field.enums>
+        ${field.enumsConst}: ${field.enumsConst},
+      </#if>
+      </#list>
+    }
     },
     created() {
     },
