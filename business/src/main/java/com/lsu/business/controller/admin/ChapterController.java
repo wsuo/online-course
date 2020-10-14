@@ -1,5 +1,6 @@
 package com.lsu.business.controller.admin;
 
+import com.lsu.server.domain.ChapterPageDto;
 import com.lsu.server.dto.ChapterDto;
 import com.lsu.server.dto.PageDto;
 import com.lsu.server.dto.ResponseDto;
@@ -29,10 +30,11 @@ public class ChapterController {
     private ChapterService chapterService;
 
     @PostMapping("/list")
-    public ResponseDto<PageDto> getAll(@RequestBody PageDto<ChapterDto> pageDto) {
+    public ResponseDto<PageDto> getAll(@RequestBody ChapterPageDto<ChapterDto> chapterPageDto) {
         ResponseDto<PageDto> responseDto = new ResponseDto<>();
-        chapterService.getAll(pageDto);
-        responseDto.setContent(pageDto);
+        ValidatorUtil.require(chapterPageDto.getCourseId(), "课程ID");
+        chapterService.getAll(chapterPageDto);
+        responseDto.setContent(chapterPageDto);
         return responseDto;
     }
 

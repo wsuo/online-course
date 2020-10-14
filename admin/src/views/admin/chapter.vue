@@ -1,12 +1,16 @@
 <template>
   <div>
+    <h3>{{course.name}}</h3>
     <p>
+      <router-link to="/business/course" class="btn btn-white btn-default btn-round">
+        <i class="ace-icon fa fa-arrow-left"></i>返回课程
+      </router-link> &nbsp;
       <button @click="add" class="btn btn-white btn-default btn-round">
         <i class="ace-icon fa fa-edit red2"></i>新增
       </button> &nbsp;
       <button @click="getAll(1)" class="btn btn-white btn-default btn-round">
         <i class="ace-icon fa fa-refresh red2"></i>刷新
-      </button>
+      </button>&nbsp;
     </p>
     <table id="simple-table" class="table  table-bordered table-hover">
 
@@ -54,9 +58,9 @@
                 </div>
               </div>
               <div class="form-group">
-                <label for="courseId" class="col-sm-2 control-label">课程ID</label>
+                <label class="col-sm-2 control-label">课程</label>
                 <div class="col-sm-10">
-                  <input v-model="chapter.courseId" class="form-control" id="courseId" placeholder="课程ID">
+                  <p class="form-control-static">{{course.name}}</p>
                 </div>
               </div>
             </form>
@@ -93,6 +97,7 @@
           name: '',
           courseId: '',
         },
+        course: {},
       }
     },
     created() {
@@ -100,6 +105,11 @@
     mounted() {
       let _this = this;
       _this.$refs.pagination.size = 10;
+      let course = SessionStorage.get("course") || {};
+      if (Tool.isEmpty(course)) {
+        _this.$router.push("/welcome");
+      }
+      _this.course = course;
       _this.getAll(1);
     },
     methods: {
@@ -109,6 +119,7 @@
         _this.$ajax.post(process.env.VUE_APP_SERVER + '/business/admin/chapter/list', {
           page: page,
           size: _this.$refs.pagination.size,
+          courseId: _this.course.id,
         }).then(response => {
           Loading.hide();
           let resp = response.data;
@@ -127,10 +138,11 @@
 
         // 保存校验
         if (!Validator.require(_this.chapter.name, "名称")
-          || !Validator.require(_this.chapter.courseId, "课程ID")
           || !Validator.length(_this.chapter.courseId, "课程ID", 1, 8)) {
           return;
         }
+        // ID 不允许修改
+        _this.chapter.courseId = _this.course.id;
 
         Loading.show();
         _this.$ajax.post(process.env.VUE_APP_SERVER + '/business/admin/chapter/save',
