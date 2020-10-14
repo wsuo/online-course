@@ -1,5 +1,6 @@
 package com.lsu.business.controller.admin;
 
+import com.lsu.server.domain.SectionPageDto;
 import com.lsu.server.dto.SectionDto;
 import com.lsu.server.dto.PageDto;
 import com.lsu.server.dto.ResponseDto;
@@ -29,10 +30,12 @@ public class SectionController {
     private SectionService sectionService;
 
     @PostMapping("/list")
-    public ResponseDto<PageDto> getAll(@RequestBody PageDto<SectionDto> pageDto) {
-        ResponseDto<PageDto> responseDto = new ResponseDto<>();
-        sectionService.getAll(pageDto);
-        responseDto.setContent(pageDto);
+    public ResponseDto<SectionPageDto> getAll(@RequestBody SectionPageDto<SectionDto> sectionPageDto) {
+        ResponseDto<SectionPageDto> responseDto = new ResponseDto<>();
+        ValidatorUtil.require(sectionPageDto.getCourseId(), "课程ID");
+        ValidatorUtil.require(sectionPageDto.getChapterId(), "大章ID");
+        sectionService.getAll(sectionPageDto);
+        responseDto.setContent(sectionPageDto);
         return responseDto;
     }
 

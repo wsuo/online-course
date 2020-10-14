@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.lsu.server.domain.Section;
 import com.lsu.server.domain.SectionExample;
+import com.lsu.server.domain.SectionPageDto;
 import com.lsu.server.dto.SectionDto;
 import com.lsu.server.dto.PageDto;
 import com.lsu.server.enums.SectionChargeEnum;
@@ -35,19 +36,31 @@ public class SectionService {
      *
      * @return 数据
      */
-    public void getAll(PageDto<SectionDto> pageDto) {
+    public void getAll(SectionPageDto<SectionDto> sectionPageDto) {
         /*
          * 分页插件的使用:
          *   规则是调用 startPage 之后遇到的第一个 select 语句会进行分页;
          * */
-        PageHelper.startPage(pageDto.getPage(), pageDto.getSize());
+        PageHelper.startPage(sectionPageDto.getPage(), sectionPageDto.getSize());
         SectionExample sectionExample = new SectionExample();
+
+        /*
+        增加 where 查询条件
+         */
+        SectionExample.Criteria criteria = sectionExample.createCriteria();
+        if (!StringUtils.isEmpty(sectionPageDto.getCourseId())) {
+            criteria.andCourseIdEqualTo(sectionPageDto.getCourseId());
+        }
+        if (!StringUtils.isEmpty(sectionPageDto.getChapterId())) {
+            criteria.andChapterIdEqualTo(sectionPageDto.getChapterId());
+        }
+
         sectionExample.setOrderByClause("sort asc");
         List<Section> sectionList = sectionMapper.selectByExample(null);
         PageInfo<Section> pageInfo = new PageInfo<>(sectionList);
-        pageDto.setTotal(pageInfo.getTotal());
+        sectionPageDto.setTotal(pageInfo.getTotal());
         List<SectionDto> sectionDtoList = CopyUtil.copyList(sectionList, SectionDto.class);
-        pageDto.setList(sectionDtoList);
+        sectionPageDto.setList(sectionDtoList);
     }
 
     /**

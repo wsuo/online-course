@@ -30,8 +30,8 @@ public class ChapterController {
     private ChapterService chapterService;
 
     @PostMapping("/list")
-    public ResponseDto<PageDto> getAll(@RequestBody ChapterPageDto<ChapterDto> chapterPageDto) {
-        ResponseDto<PageDto> responseDto = new ResponseDto<>();
+    public ResponseDto<ChapterPageDto> getAll(@RequestBody ChapterPageDto<ChapterDto> chapterPageDto) {
+        ResponseDto<ChapterPageDto> responseDto = new ResponseDto<>();
         ValidatorUtil.require(chapterPageDto.getCourseId(), "课程ID");
         chapterService.getAll(chapterPageDto);
         responseDto.setContent(chapterPageDto);
