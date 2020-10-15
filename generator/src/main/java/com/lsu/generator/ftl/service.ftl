@@ -50,7 +50,7 @@ public class ${Domain}Service {
         ${domain}Example.setOrderByClause("sort asc");
             </#if>
         </#list>
-        List<${Domain}> ${domain}List = ${domain}Mapper.selectByExample(null);
+        List<${Domain}> ${domain}List = ${domain}Mapper.selectByExample(${domain}Example);
         PageInfo<${Domain}> pageInfo = new PageInfo<>(${domain}List);
         pageDto.setTotal(pageInfo.getTotal());
         List<${Domain}Dto> ${domain}DtoList = CopyUtil.copyList(${domain}List, ${Domain}Dto.class);

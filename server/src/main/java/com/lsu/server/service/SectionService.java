@@ -11,6 +11,7 @@ import com.lsu.server.mapper.SectionMapper;
 import com.lsu.server.util.CopyUtil;
 import com.lsu.server.util.UuidUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
@@ -67,9 +68,10 @@ public class SectionService {
 
     /**
      * 根据 ID 是否为空判断是删除还是新增
-     *
+     *  如果抛出的异常是 Exception 就会回滚
      * @param sectionDto 数据传输对象
      */
+    @Transactional(rollbackFor = Exception.class)
     public void save(SectionDto sectionDto) {
         Section section = CopyUtil.copy(sectionDto, Section.class);
         if (StringUtils.isEmpty(section.getId())) {

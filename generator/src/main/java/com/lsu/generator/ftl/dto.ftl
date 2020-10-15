@@ -4,9 +4,9 @@ package com.lsu.server.dto;
 <#if type=='Date'>
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
+</#if>
 import lombok.Data;
 import lombok.ToString;
-</#if>
 <#if type=='BigDecimal'>
 import java.math.BigDecimal;
 </#if>
