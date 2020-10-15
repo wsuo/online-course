@@ -19,3 +19,4 @@ generator/src/test/
 generator/target/
 /admin/public/ace/
 /admin/node_modules/
+/admin/public/zTree_v3/
