@@ -209,6 +209,7 @@
       add() {
         let _this = this;
         _this.course = {};
+        _this.tree.checkAllNodes(false);
         $("#myModal").modal("show");
       },
       save() {
@@ -245,6 +246,7 @@
         let _this = this;
         // 双向绑定问题: 输入的时候表格也会更新数据: 使用 JQuery 的函数解决问题
         _this.course = $.extend({}, course);
+        _this.listCategory(course.id);
         $("#myModal").modal("show");
       },
       del(id) {
@@ -303,6 +305,22 @@
           _this.initTree();
         });
       },
+      listCategory(courseId) {
+        let _this = this;
+        Loading.show();
+        _this.$ajax.post(process.env.VUE_APP_SERVER + '/business/admin/course/list-category/' + courseId).then((res)=>{
+          Loading.hide();
+          let response = res.data;
+          let categories = response.content;
+
+          // 勾选查询到的分类
+          _this.tree.checkAllNodes(false);
+          for (let i = 0; i < categories.length; i++) {
+            let node = _this.tree.getNodeByParam("id", categories[i].categoryId);
+            _this.tree.checkNode(node, true);
+          }
+        })
+      }
     }
   }
 </script>

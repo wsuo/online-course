@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.lsu.server.domain.Course;
 import com.lsu.server.domain.CourseExample;
+import com.lsu.server.dto.CourseCategoryDto;
 import com.lsu.server.dto.CourseDto;
 import com.lsu.server.dto.PageDto;
 import com.lsu.server.mapper.CourseMapper;
@@ -13,6 +14,7 @@ import com.lsu.server.util.UuidUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
@@ -65,6 +67,7 @@ public class CourseService {
      *
      * @param courseDto 数据传输对象
      */
+    @Transactional(rollbackFor = Exception.class)
     public void save(CourseDto courseDto) {
         Course course = CopyUtil.copy(courseDto, Course.class);
         if (StringUtils.isEmpty(course.getId())) {
@@ -102,5 +105,9 @@ public class CourseService {
     void updateTime(String courseId) {
         LOG.info("更新视频时长: {}", courseId);
         myCourseMapper.updateTime(courseId);
+    }
+
+    public List<CourseCategoryDto> listCategory(String courseId) {
+        return courseCategoryService.listByCourse(courseId);
     }
 }
