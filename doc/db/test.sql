@@ -2,7 +2,7 @@
     测试 SQL
 */
 select *
-from course;
+from course_category;
 
 # 根据表名获取表的注释信息
 select table_comment

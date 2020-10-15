@@ -1,11 +1,16 @@
 package com.lsu.server.dto;
 
-import java.math.BigDecimal;
-import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.ToString;
 
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * @author wsuo
+ */
 @Data
 @ToString
 public class CourseDto {
@@ -76,5 +81,7 @@ public class CourseDto {
      */
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date updatedAt;
+
+    private List<CategoryDto> categories;
 
 }
