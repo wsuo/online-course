@@ -7,6 +7,7 @@ import com.lsu.server.mapper.CategoryMapper;
 import com.lsu.server.util.CopyUtil;
 import com.lsu.server.util.UuidUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
@@ -24,6 +25,8 @@ public class CategoryService {
 
     @Resource
     private CategoryMapper categoryMapper;
+
+    private static final String META = "00000000";
 
     /**
      * 查询所有
@@ -60,7 +63,29 @@ public class CategoryService {
         categoryMapper.updateByPrimaryKey(category);
     }
 
+    /**
+     * 删除分类数据
+     *  添加事务
+     * @param id ID
+     */
+    @Transactional(rollbackFor = Exception.class)
     public void delete(String id) {
+        deleteChildren(id);
         categoryMapper.deleteByPrimaryKey(id);
+    }
+
+    /**
+     * 删除所有的子 ID
+     *
+     * @param id ID 值
+     */
+    private void deleteChildren(String id) {
+        Category category = categoryMapper.selectByPrimaryKey(id);
+        if (META.equals(category.getParent())) {
+            // 如果是一级分类,需要删除旗下的二级分类
+            CategoryExample example = new CategoryExample();
+            example.createCriteria().andParentEqualTo(category.getId());
+            categoryMapper.deleteByExample(example);
+        }
     }
 }
