@@ -11,8 +11,8 @@
     <div class="row">
       <div v-for="course in courses" class="col-md-4">
         <div class="thumbnail search-thumbnail">
-          <img v-show="!course.image" class="media-object" src="/static/image/demo-course.jpg" />
-          <img v-show="course.image" class="media-object" :src="course.image" />
+          <img v-show="!course.image" class="media-object" src="/static/image/demo-course.jpg"/>
+          <img v-show="course.image" class="media-object" :src="course.image"/>
           <div class="caption">
             <div class="clearfix">
               <span class="pull-right label label-primary info-label">{{COURSE_LEVEL | optionKV(course.level)}}</span>
@@ -35,11 +35,17 @@
               <button @click="toChapter(course)" class="btn btn-white btn-xs btn-info btn-round">
                 大章
               </button>&nbsp;
+              <button @click="editContent(course)" class="btn btn-white btn-xs btn-info btn-round">
+                内容
+              </button>&nbsp;
+              <button @click="openSortModal(course)" class="btn btn-white btn-xs btn-info btn-round">
+                排序
+              </button>&nbsp;
               <button @click="edit(course)" class="btn btn-white btn-xs btn-info btn-round">
-              编辑
+                编辑
               </button>&nbsp;
               <button @click="del(course.id)" class="btn btn-white btn-xs btn-info btn-round">
-              删除
+                删除
               </button>
             </p>
           </div>
@@ -64,76 +70,109 @@
                   <ul id="tree" class="ztree"></ul>
                 </div>
               </div>
-                <div class="form-group">
-                  <label for="name" class="col-sm-2 control-label">名称</label>
-                  <div class="col-sm-10">
-                    <input v-model="course.name" id="name" class="form-control">
-                  </div>
+              <div class="form-group">
+                <label for="name" class="col-sm-2 control-label">名称</label>
+                <div class="col-sm-10">
+                  <input v-model="course.name" id="name" class="form-control">
                 </div>
-                <div class="form-group">
-                  <label for="summary" class="col-sm-2 control-label">概述</label>
-                  <div class="col-sm-10">
-                    <input v-model="course.summary" id="summary" class="form-control">
-                  </div>
+              </div>
+              <div class="form-group">
+                <label for="summary" class="col-sm-2 control-label">概述</label>
+                <div class="col-sm-10">
+                  <input v-model="course.summary" id="summary" class="form-control">
                 </div>
-                <div class="form-group">
-                  <label for="time" class="col-sm-2 control-label">时长</label>
-                  <div class="col-sm-10">
-                    <input v-model="course.time" id="time" class="form-control">
-                  </div>
+              </div>
+              <div class="form-group">
+                <label for="time" class="col-sm-2 control-label">时长</label>
+                <div class="col-sm-10">
+                  <input v-model="course.time" id="time" class="form-control">
                 </div>
-                <div class="form-group">
-                  <label for="price" class="col-sm-2 control-label">价格（元）</label>
-                  <div class="col-sm-10">
-                    <input v-model="course.price" id="price" class="form-control">
-                  </div>
+              </div>
+              <div class="form-group">
+                <label for="price" class="col-sm-2 control-label">价格（元）</label>
+                <div class="col-sm-10">
+                  <input v-model="course.price" id="price" class="form-control">
                 </div>
-                <div class="form-group">
-                  <label for="image" class="col-sm-2 control-label">封面</label>
-                  <div class="col-sm-10">
-                    <input v-model="course.image" id="image" class="form-control">
-                  </div>
+              </div>
+              <div class="form-group">
+                <label for="image" class="col-sm-2 control-label">封面</label>
+                <div class="col-sm-10">
+                  <input v-model="course.image" id="image" class="form-control">
                 </div>
-                <div class="form-group">
-                  <label for="level" class="col-sm-2 control-label">级别</label>
-                  <div class="col-sm-10">
-                    <select v-model="course.level" class="form-control" id="level">
-                      <option v-for="o in COURSE_LEVEL" :value="o.key">{{o.value}}</option>
-                    </select>
-                  </div>
+              </div>
+              <div class="form-group">
+                <label for="level" class="col-sm-2 control-label">级别</label>
+                <div class="col-sm-10">
+                  <select v-model="course.level" class="form-control" id="level">
+                    <option v-for="o in COURSE_LEVEL" :value="o.key">{{o.value}}</option>
+                  </select>
                 </div>
-                <div class="form-group">
-                  <label for="charge" class="col-sm-2 control-label">收费</label>
-                  <div class="col-sm-10">
-                    <select v-model="course.charge" class="form-control" id="charge">
-                      <option v-for="o in COURSE_CHARGE" :value="o.key">{{o.value}}</option>
-                    </select>
-                  </div>
+              </div>
+              <div class="form-group">
+                <label for="charge" class="col-sm-2 control-label">收费</label>
+                <div class="col-sm-10">
+                  <select v-model="course.charge" class="form-control" id="charge">
+                    <option v-for="o in COURSE_CHARGE" :value="o.key">{{o.value}}</option>
+                  </select>
                 </div>
-                <div class="form-group">
-                  <label for="status" class="col-sm-2 control-label">状态</label>
-                  <div class="col-sm-10">
-                    <select v-model="course.status" class="form-control" id="status">
-                      <option v-for="o in COURSE_STATUS" :value="o.key">{{o.value}}</option>
-                    </select>
-                  </div>
+              </div>
+              <div class="form-group">
+                <label for="status" class="col-sm-2 control-label">状态</label>
+                <div class="col-sm-10">
+                  <select v-model="course.status" class="form-control" id="status">
+                    <option v-for="o in COURSE_STATUS" :value="o.key">{{o.value}}</option>
+                  </select>
                 </div>
-                <div class="form-group">
-                  <label for="enroll" class="col-sm-2 control-label">报名数</label>
-                  <div class="col-sm-10">
-                    <input v-model="course.enroll" id="enroll" class="form-control">
-                  </div>
+              </div>
+              <div class="form-group">
+                <label for="enroll" class="col-sm-2 control-label">报名数</label>
+                <div class="col-sm-10">
+                  <input v-model="course.enroll" id="enroll" class="form-control">
                 </div>
-                <div class="form-group">
-                  <label for="sort" class="col-sm-2 control-label">顺序</label>
-                  <div class="col-sm-10">
-                    <input v-model="course.sort" id="sort" class="form-control">
-                  </div>
+              </div>
+              <div class="form-group">
+                <label for="sort" class="col-sm-2 control-label">顺序</label>
+                <div class="col-sm-10">
+                  <input v-model="course.sort" id="sort" class="form-control">
                 </div>
+              </div>
             </form>
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
               <button @click="save" type="button" class="btn btn-primary">保存</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="course-content-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">内容编辑</h4>
+          </div>
+          <div class="modal-body">
+            <form class="form-horizontal">
+              <div class="form-group">
+                <div class="col-lg-12">
+                  {{saveContentLabel}}
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-12">
+                  <div id="content"></div>
+                </div>
+              </div>
+            </form>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default btn-white btn-round" data-dismiss="modal">
+                <i class="ace-icon fa fa-times">取消</i>
+              </button>
+              <button @click="saveContent" type="button" class="btn btn-info btn-white btn-round">
+                <i class="ace-icon fa fa-plus blue">保存</i>
+              </button>
             </div>
           </div>
         </div>
@@ -181,7 +220,8 @@
         COURSE_STATUS: COURSE_STATUS,
         categories: [],
         tree: {},
-    }
+        saveContentLabel: {},
+      }
     },
     created() {
     },
@@ -222,7 +262,9 @@
           || !Validator.length(_this.course.name, "名称", 1, 50)
           || !Validator.length(_this.course.summary, "概述", 1, 2000)
           || !Validator.length(_this.course.image, "封面", 1, 100)
-        ) {return;}
+        ) {
+          return;
+        }
 
         // 得到选中的节点
         let categories = _this.tree.getCheckedNodes();
@@ -309,7 +351,7 @@
       listCategory(courseId) {
         let _this = this;
         Loading.show();
-        _this.$ajax.post(process.env.VUE_APP_SERVER + '/business/admin/course/list-category/' + courseId).then((res)=>{
+        _this.$ajax.post(process.env.VUE_APP_SERVER + '/business/admin/course/list-category/' + courseId).then((res) => {
           Loading.hide();
           let response = res.data;
           let categories = response.content;
@@ -320,7 +362,77 @@
             let node = _this.tree.getNodeByParam("id", categories[i].categoryId);
             _this.tree.checkNode(node, true);
           }
-        })
+        });
+      },
+      /**
+       * 打开内容编辑框
+       * @param course 课程对象
+       */
+      editContent(course) {
+        let _this = this;
+        let id = course.id;
+        let cont = $("#content");
+        let course_cont = $("#course-content-modal");
+        _this.course = course;
+        cont.summernote({
+          focus: true,
+          height: 300
+        });
+
+        // 先清空历史版本
+        cont.summernote('code', '');
+        _this.saveContentLabel = "";
+
+        Loading.show();
+        _this.$ajax.get(process.env.VUE_APP_SERVER + '/business/admin/course/find-content/' + id).then(response => {
+          Loading.hide();
+          let resp = response.data;
+          if (resp.success) {
+            /*
+            调用 modal 方法时: 增加 backdrop static 则点击空白位置 模态框不会自动关闭;
+             */
+            course_cont.modal({backdrop: 'static', keyboard: false});
+            if (resp.content) {
+              cont.summernote('code', resp.content.content);
+            }
+
+            // 定时自动保存
+            let saveContentInterval = setInterval(function () {
+              _this.saveContent();
+            }, 5000);
+
+            // 关闭内容框时 清空自动保存任务
+            course_cont.on('hidden.bs.modal', function () {
+              clearInterval(saveContentInterval);
+            })
+          } else {
+            Toast.warning(resp.message);
+          }
+        });
+      },
+
+      /*
+      保存内容
+       */
+      saveContent() {
+        let _this = this;
+        let content = $("#content").summernote("code");
+        _this.$ajax.post(process.env.VUE_APP_SERVER + '/business/admin/course/save-content', {
+          id: _this.course.id,
+          content: content
+        }).then(response => {
+          Loading.hide();
+          let resp = response.data;
+          if (resp.success) {
+            let now = Tool.dateFormat("hh:mm:ss");
+            _this.saveContentLabel = "最后保存时间：" + now;
+          } else {
+            Toast.warning(resp.message);
+          }
+        });
+      },
+      openSortModal(course) {
+
       }
     }
   }

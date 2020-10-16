@@ -1,9 +1,6 @@
 package com.lsu.business.controller.admin;
 
-import com.lsu.server.dto.CourseCategoryDto;
-import com.lsu.server.dto.CourseDto;
-import com.lsu.server.dto.PageDto;
-import com.lsu.server.dto.ResponseDto;
+import com.lsu.server.dto.*;
 import com.lsu.server.service.CourseService;
 import com.lsu.server.util.ValidatorUtil;
 import org.slf4j.Logger;
@@ -71,6 +68,21 @@ public class CourseController {
         ResponseDto<List> responseDto = new ResponseDto<>();
         List<CourseCategoryDto> courseCategoryDto = courseService.listCategory(courseId);
         responseDto.setContent(courseCategoryDto);
+        return responseDto;
+    }
+
+    @GetMapping("/find-content/{id}")
+    public ResponseDto<CourseContentDto> findContent(@PathVariable String id) {
+        ResponseDto<CourseContentDto> responseDto = new ResponseDto<>();
+        CourseContentDto contentDto = courseService.findContent(id);
+        responseDto.setContent(contentDto);
+        return responseDto;
+    }
+
+    @PostMapping("/save-content")
+    public ResponseDto<CourseContentDto> saveContent(@RequestBody CourseContentDto contentDto) {
+        ResponseDto<CourseContentDto> responseDto = new ResponseDto<>();
+        courseService.saveContent(contentDto);
         return responseDto;
     }
 }

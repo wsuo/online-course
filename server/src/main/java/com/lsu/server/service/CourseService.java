@@ -3,10 +3,13 @@ package com.lsu.server.service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.lsu.server.domain.Course;
+import com.lsu.server.domain.CourseContent;
 import com.lsu.server.domain.CourseExample;
 import com.lsu.server.dto.CourseCategoryDto;
+import com.lsu.server.dto.CourseContentDto;
 import com.lsu.server.dto.CourseDto;
 import com.lsu.server.dto.PageDto;
+import com.lsu.server.mapper.CourseContentMapper;
 import com.lsu.server.mapper.CourseMapper;
 import com.lsu.server.mapper.my.MyCourseMapper;
 import com.lsu.server.util.CopyUtil;
@@ -41,6 +44,9 @@ public class CourseService {
 
     @Resource
     private CourseCategoryService courseCategoryService;
+
+    @Resource
+    private CourseContentMapper courseContentMapper;
 
     /**
      * 分页查询
@@ -107,7 +113,46 @@ public class CourseService {
         myCourseMapper.updateTime(courseId);
     }
 
+    /**
+     * 列出分类
+     *
+     * @param courseId 课程 ID
+     * @return 返回课程分类列表
+     */
     public List<CourseCategoryDto> listCategory(String courseId) {
         return courseCategoryService.listByCourse(courseId);
+    }
+
+    /**
+     * 查找课程内容
+     *
+     * @param id 课程 ID
+     * @return 返回课程内容
+     */
+    public CourseContentDto findContent(String id) {
+        CourseContent content = courseContentMapper.selectByPrimaryKey(id);
+        if (content == null) {
+            return null;
+        }
+        return CopyUtil.copy(content, CourseContentDto.class);
+    }
+
+    /**
+     * 保存课程内容
+     *
+     * @param contentDto 课程内容
+     * @return 返回保存的条数
+     */
+    public int saveContent(CourseContentDto contentDto) {
+        CourseContent content = CopyUtil.copy(contentDto, CourseContent.class);
+        /*
+        如果更新不到: 说明表中没有,直接更新即可;
+        如果更新到了: 则直接返回结果.
+         */
+        int i = courseContentMapper.updateByPrimaryKeyWithBLOBs(content);
+        if (i == 0) {
+            i = courseContentMapper.insert(content);
+        }
+        return i;
     }
 }
