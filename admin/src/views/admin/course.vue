@@ -174,6 +174,7 @@
           sort: '',
           createdAt: '',
           updatedAt: '',
+          categories: []
         },
         COURSE_LEVEL: COURSE_LEVEL,
         COURSE_CHARGE: COURSE_CHARGE,

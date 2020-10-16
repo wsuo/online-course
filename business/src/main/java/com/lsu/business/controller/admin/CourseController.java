@@ -71,11 +71,6 @@ public class CourseController {
         ResponseDto<List> responseDto = new ResponseDto<>();
         List<CourseCategoryDto> courseCategoryDto = courseService.listCategory(courseId);
         responseDto.setContent(courseCategoryDto);
-        /*
-        时间 2020年10月15日22:39:47
-        responseDto 为空
-         */
-        LOG.info("responseDto = {}", responseDto);
         return responseDto;
     }
 }

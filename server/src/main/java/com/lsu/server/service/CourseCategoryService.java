@@ -85,7 +85,8 @@ public class CourseCategoryService {
     @Transactional(rollbackFor = Exception.class)
     public void saveBatch(String courseId, List<CategoryDto> dtoList) {
         CourseCategoryExample example = new CourseCategoryExample();
-        example.createCriteria().andCategoryIdEqualTo(courseId);
+        // 保存之前先清空原有的课程记录
+        example.createCriteria().andCourseIdEqualTo(courseId);
         courseCategoryMapper.deleteByExample(example);
         for (CategoryDto categoryDto : dtoList) {
             CourseCategory courseCategory = new CourseCategory();
@@ -104,7 +105,7 @@ public class CourseCategoryService {
      */
     public List<CourseCategoryDto> listByCourse(String courseId) {
         CourseCategoryExample example = new CourseCategoryExample();
-        example.createCriteria().andCategoryIdEqualTo(courseId);
+        example.createCriteria().andCourseIdEqualTo(courseId);
         List<CourseCategory> courseCategoryList = courseCategoryMapper.selectByExample(example);
         return CopyUtil.copyList(courseCategoryList, CourseCategoryDto.class);
     }

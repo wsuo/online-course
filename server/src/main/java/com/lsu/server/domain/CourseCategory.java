@@ -1,5 +1,8 @@
 package com.lsu.server.domain;
 
+/**
+ * @author wsuo
+ */
 public class CourseCategory {
     private String id;
 
