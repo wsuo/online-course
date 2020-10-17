@@ -188,6 +188,35 @@
             <h4 class="modal-title">内容编辑</h4>
           </div>
           <div class="modal-body">
+            <file :text="'上传图片'"
+                  :inputId="'content-file-upload'"
+                  :suffixs='["jpg", "jpeg", "png", "mp4"]'
+                  :use="FILE_USE.COURSE.key"
+                  :after-upload="afterUploadContentFile"></file>
+            <br>
+            <table id="file-table" class="table table-bordered table-hover">
+              <thead>
+              <tr>
+                <th>名称</th>
+                <th>地址</th>
+                <th>大小</th>
+                <th>操作</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr v-for="(f, i) in files" :key="f.id">
+                <td>{{f.name}}</td>
+                <td>{{f.url}}</td>
+                <td>{{f.size | formatFileSize}}</td>
+                <td>
+                  <button v-on:click="delFile(f)" class="btn btn-white btn-xs btn-warning btn-round">
+                    <i class="ace-icon fa fa-times red2"></i>
+                    删除
+                  </button>
+                </td>
+              </tr>
+              </tbody>
+            </table>
             <form class="form-horizontal">
               <div class="form-group">
                 <div class="col-lg-12">
@@ -305,6 +334,13 @@
           newSort: 0,
         },
         teachers: [],
+        files: [{
+          id: '',
+          courseId: '',
+          url: '',
+          name: '',
+          size: Number
+        }],
       }
     },
     created() {
@@ -472,6 +508,8 @@
         cont.summernote('code', '');
         _this.saveContentLabel = "";
 
+        // 加载文件内容列表
+        _this.listContentFiles();
         Loading.show();
         _this.$ajax.get(process.env.VUE_APP_SERVER + '/business/admin/course/find-content/' + id).then(response => {
           Loading.hide();
@@ -567,7 +605,48 @@
       afterUpload(resp) {
         let _this = this;
         _this.course.image = resp.content.path;
-      }
+      },
+
+      /**
+       * 保存文件内容
+       */
+      afterUploadContentFile(response) {
+        let _this = this;
+        let file = response.content;
+        file.courseId = _this.course.id;
+        file.url = file.path;
+        _this.$ajax.post(process.env.VUE_APP_SERVER + '/business/admin/course-content-file/save', file).then(response => {
+          let resp = response.data;
+          if (resp.success) {
+            Toast.success("上传文件成功");
+            _this.files.push(resp.content);
+          }
+        });
+      },
+      delFile(file) {
+        let _this = this;
+        Confirm.show("删除文件后不可恢复,确认删除?", function () {
+          _this.$ajax.delete(process.env.VUE_APP_SERVER + '/business/admin/course-content-file/delete/' + file.id).then(response => {
+            let resp = response.data;
+            if (resp.success) {
+              Toast.success("删除文件成功");
+              Tool.removeObj(_this.files, file);
+            }
+          });
+        })
+      },
+      /**
+       * 加载文件内容列表
+       */
+      listContentFiles() {
+        let _this = this;
+        _this.$ajax.get(process.env.VUE_APP_SERVER + '/business/admin/course-content-file/list/' + _this.course.id).then(response => {
+          let resp = response.data;
+          if (resp.success) {
+            _this.files = resp.content;
+          }
+        });
+      },
     }
   }
 </script>

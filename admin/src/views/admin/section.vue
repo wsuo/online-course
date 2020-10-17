@@ -253,6 +253,7 @@
       },
       /**
        * 获取时长
+       *
        */
       getTime() {
         let _this = this;
