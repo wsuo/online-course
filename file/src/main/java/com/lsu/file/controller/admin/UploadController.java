@@ -1,6 +1,8 @@
 package com.lsu.file.controller.admin;
 
+import com.lsu.server.dto.FileDto;
 import com.lsu.server.dto.ResponseDto;
+import com.lsu.server.service.FileService;
 import com.lsu.server.util.UuidUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
 
@@ -33,6 +36,9 @@ public class UploadController {
     @Value("${file.path}")
     private String path;
 
+    @Resource
+    private FileService fileService;
+
     @RequestMapping("/upload")
     public ResponseDto<String> upload(@RequestParam MultipartFile file) {
         LOG.info("文件上传开始: {}", file);
@@ -41,8 +47,10 @@ public class UploadController {
 
         // 保存文件到本地
         String filename = file.getOriginalFilename();
+        String suffix = filename != null ? filename.substring(filename.lastIndexOf(".") + 1).toLowerCase() : null;
         String key = UuidUtil.getShortUuid();
-        String fullPath = path + "teacher/" + key + "-" + filename;
+        String newPath = "teacher/" + key + "." + suffix;
+        String fullPath = path + newPath;
         File dest = new File(fullPath);
         try {
             file.transferTo(dest);
@@ -50,8 +58,18 @@ public class UploadController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        LOG.info("保存文件记录开始");
+        FileDto fileDto = new FileDto();
+        fileDto.setPath(newPath);
+        fileDto.setName(filename);
+        fileDto.setSize(Math.toIntExact(file.getSize()));
+        fileDto.setSuffix(suffix);
+        fileDto.setUse("");
+        fileService.save(fileDto);
+
         ResponseDto<String> responseDto = new ResponseDto<>();
-        responseDto.setContent(domain + "f/teacher/" + key + "-" + filename);
+        responseDto.setContent(domain + newPath);
         return responseDto;
     }
 }
