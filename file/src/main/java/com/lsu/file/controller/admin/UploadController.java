@@ -2,6 +2,7 @@ package com.lsu.file.controller.admin;
 
 import com.lsu.server.dto.FileDto;
 import com.lsu.server.dto.ResponseDto;
+import com.lsu.server.enums.FileUseEnum;
 import com.lsu.server.service.FileService;
 import com.lsu.server.util.UuidUtil;
 import org.slf4j.Logger;
@@ -40,16 +41,24 @@ public class UploadController {
     private FileService fileService;
 
     @RequestMapping("/upload")
-    public ResponseDto<String> upload(@RequestParam MultipartFile file) {
-        LOG.info("文件上传开始: {}", file);
+    public ResponseDto<FileDto> upload(@RequestParam MultipartFile file, String use) {
+        LOG.info("文件上传开始");
         LOG.info("文件名称: {}", file.getOriginalFilename());
         LOG.info("文件大小: {}", file.getSize());
 
         // 保存文件到本地
+        FileUseEnum useEnum = FileUseEnum.getByCode(use);
+        String key = UuidUtil.getShortUuid();
         String filename = file.getOriginalFilename();
         String suffix = filename != null ? filename.substring(filename.lastIndexOf(".") + 1).toLowerCase() : null;
-        String key = UuidUtil.getShortUuid();
-        String newPath = "teacher/" + key + "." + suffix;
+
+        // 如果文件夹不存在就创建
+        String dir = useEnum != null ? useEnum.name().toLowerCase() : null;
+        File fullDir = new File(path + dir);
+        if (!fullDir.exists()) {
+            boolean b = fullDir.mkdir();
+        }
+        String newPath = dir + File.separator + key + "." + suffix;
         String fullPath = path + newPath;
         File dest = new File(fullPath);
         try {
@@ -65,11 +74,12 @@ public class UploadController {
         fileDto.setName(filename);
         fileDto.setSize(Math.toIntExact(file.getSize()));
         fileDto.setSuffix(suffix);
-        fileDto.setUse("");
+        fileDto.setUse(use);
         fileService.save(fileDto);
 
-        ResponseDto<String> responseDto = new ResponseDto<>();
-        responseDto.setContent(domain + newPath);
+        ResponseDto<FileDto> responseDto = new ResponseDto<>();
+        fileDto.setPath(domain + newPath);
+        responseDto.setContent(fileDto);
         return responseDto;
     }
 }

@@ -76,6 +76,7 @@
                   <file :text="'上传头像'"
                         :inputId="'image-upload'"
                         :suffixs='["jpg", "jpeg", "png"]'
+                        :use="FILE_USE.TEACHER.key"
                         :after-upload="afterUpload"></file>
                   <!--想把那一行变成 12 格就在哪里增加一个 row -->
                   <div v-show="teacher.image" class="row">
@@ -146,6 +147,7 @@
           motto: '',
           intro: '',
         },
+        FILE_USE: FILE_USE,
       }
     },
     created() {
@@ -225,7 +227,7 @@
       },
       afterUpload(resp) {
         let _this = this;
-        _this.teacher.image = resp.content;
+        _this.teacher.image = resp.content.path;
       }
     }
   }

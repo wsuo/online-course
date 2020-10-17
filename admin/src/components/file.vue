@@ -27,6 +27,9 @@
         default: function () {
           return [];
         }
+      },
+      use: {
+        default: ""
       }
     },
     data() {
@@ -57,6 +60,7 @@
         }
         // key: "file" 必须和后端 controller 参数名一致
         formData.append('file', file);
+        formData.append('use', _this.use);
         Loading.show();
         _this.$ajax.post(process.env.VUE_APP_SERVER + '/file/admin/upload', formData).then(response => {
           Loading.hide();
