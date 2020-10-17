@@ -29,7 +29,7 @@
         </div>
         <div class="space-6"></div>
         <div class="text-center">
-          <a href="javascript:;" class="text-info bigger-110" v-bind:title="teacher.motto">
+          <a href="#" class="text-info bigger-110" v-bind:title="teacher.motto">
             <i class="ace-icon fa fa-user"></i>
             {{teacher.name}}【{{teacher.nickname}}】
           </a>
@@ -74,6 +74,8 @@
                 <label for="file-upload-input" class="col-sm-2 control-label">头像</label>
                 <div class="col-sm-10">
                   <input type="file" id="file-upload-input" v-on:change="uploadImage">
+                  <!--img-responsive 是 bootstrap 内置的属性: 图片自适应-->
+                  <img :src="teacher.image" alt="" class="img-responsive">
                 </div>
               </div>
               <div class="form-group">
@@ -219,6 +221,7 @@
         _this.$ajax.post(process.env.VUE_APP_SERVER + '/file/admin/upload', formData).then(response => {
           Loading.hide();
           let resp = response.data;
+          _this.teacher.image = resp.content;
         })
       }
     }

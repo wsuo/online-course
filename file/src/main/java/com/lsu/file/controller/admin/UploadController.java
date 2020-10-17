@@ -27,7 +27,7 @@ public class UploadController {
     public static final String BUSINESS_NAME = "文件上传";
 
     @RequestMapping("/upload")
-    public ResponseDto upload(@RequestParam MultipartFile file) {
+    public ResponseDto<String> upload(@RequestParam MultipartFile file) {
         LOG.info("文件上传开始: {}", file);
         LOG.info("文件名称: {}", file.getOriginalFilename());
         LOG.info("文件大小: {}", file.getSize());
@@ -43,7 +43,8 @@ public class UploadController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        ResponseDto responseDto = new ResponseDto();
+        ResponseDto<String> responseDto = new ResponseDto<>();
+        responseDto.setContent("http://127.0.0.1:9000/file/f/teacher/" + key + "-" + filename);
         return responseDto;
     }
 }

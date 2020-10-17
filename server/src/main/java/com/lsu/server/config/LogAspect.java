@@ -119,7 +119,7 @@ public class LogAspect {
         PropertyPreFilters.MySimplePropertyPreFilter excludeFilter = filters.addFilter();
         excludeFilter.addExcludes(excludeProperties);
         LOG.info("返回结果: {}", JSONObject.toJSONString(result, excludeFilter));
-        LOG.info("------------------ 结束 耗时 : {} ms --------------------", System.currentTimeMillis() - startTime);
+        LOG.info("---------------- 结束 耗时 : {} ms -----------------", System.currentTimeMillis() - startTime);
         return result;
     }
 }
