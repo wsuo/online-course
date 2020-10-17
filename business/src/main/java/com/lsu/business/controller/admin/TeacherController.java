@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 测试
@@ -33,6 +34,14 @@ public class TeacherController {
         ResponseDto<PageDto> responseDto = new ResponseDto<>();
         teacherService.getAll(pageDto);
         responseDto.setContent(pageDto);
+        return responseDto;
+    }
+
+    @GetMapping("/all")
+    public ResponseDto<List> all() {
+        ResponseDto<List> responseDto = new ResponseDto<>();
+        List<TeacherDto> teacherDtoList = teacherService.all();
+        responseDto.setContent(teacherDtoList);
         return responseDto;
     }
 

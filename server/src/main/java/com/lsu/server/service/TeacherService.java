@@ -73,4 +73,14 @@ public class TeacherService {
     public void delete(String id) {
         teacherMapper.deleteByPrimaryKey(id);
     }
+
+    /**
+     * 获取所有讲师的信息
+     *
+     * @return 返回讲师集合
+     */
+    public List<TeacherDto> all() {
+        List<Teacher> teacherList = teacherMapper.selectByExample(null);
+        return CopyUtil.copyList(teacherList, TeacherDto.class);
+    }
 }

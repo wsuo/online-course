@@ -22,6 +22,17 @@
             <h3 class="search-title">
               <a href="#" class="blue">{{course.name}}</a>
             </h3>
+            <!--讲师信息展示: 使用过滤器: 条件是老师的ID等于课程的ID-->
+            <div v-for="teacher in teachers.filter(t => { return t.id === course.teacherId })"
+                 class="profile-activity clearfix">
+              <div>
+                <img v-show="!teacher.image" class="pull-left" src="/ace/assets/images/avatars/avatar5.png">
+                <img v-show="teacher.image" class="pull-left" v-bind:src="teacher.image">
+                <a class="user" href="#"> {{teacher.name}} </a>
+                <br>
+                {{teacher.position}}
+              </div>
+            </div>
             <p>
               <span class="blue bolder bigger-150">{{course.price}}&nbsp;<i class="fa fa-rmb"></i></span>
             </p>
@@ -52,6 +63,7 @@
         </div>
       </div>
     </div>
+    <!--表单-->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -74,6 +86,14 @@
                 <label for="name" class="col-sm-2 control-label">名称</label>
                 <div class="col-sm-10">
                   <input v-model="course.name" id="name" class="form-control">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="teacher" class="col-sm-2 control-label">讲师</label>
+                <div class="col-sm-10">
+                  <select v-model="course.teacherId" class="form-control" id="teacher">
+                    <option v-for="t in teachers" :value="t.id">{{t.name}}</option>
+                  </select>
                 </div>
               </div>
               <div class="form-group">
@@ -145,6 +165,7 @@
         </div>
       </div>
     </div>
+    <!--内容编辑-->
     <div class="modal fade" id="course-content-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -178,6 +199,7 @@
         </div>
       </div>
     </div>
+    <!--排序-->
     <div class="modal fade" id="course-sort-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -253,6 +275,7 @@
           createdAt: '',
           updatedAt: '',
           categories: [],
+          teacherId: '',
         },
         COURSE_LEVEL: COURSE_LEVEL,
         COURSE_CHARGE: COURSE_CHARGE,
@@ -265,6 +288,7 @@
           oldSort: 0,
           newSort: 0,
         },
+        teachers: [],
       }
     },
     created() {
@@ -274,6 +298,8 @@
       _this.$refs.pagination.size = 10;
       // 初始化树
       _this.allCategory();
+      // 所有的老师
+      _this.allTeacher();
       _this.getAll(1);
     },
     methods: {
@@ -512,7 +538,16 @@
             Toast.error("更新排序失败!");
           }
         });
-      }
+      },
+      allTeacher() {
+        let _this = this;
+        Loading.show();
+        _this.$ajax.get(process.env.VUE_APP_SERVER + '/business/admin/teacher/all').then(response => {
+          Loading.hide();
+          let resp = response.data;
+          _this.teachers = resp.content;
+        });
+      },
     }
   }
 </script>
@@ -520,5 +555,14 @@
 <style scoped>
   .caption h3 {
     font-size: 20px;
+  }
+
+  /*
+  小于等于 1199px 的时候就会执行字体的变化
+   */
+  @media (max-width: 1199px) {
+    .caption h3 {
+      font-size: 16px;
+    }
   }
 </style>
