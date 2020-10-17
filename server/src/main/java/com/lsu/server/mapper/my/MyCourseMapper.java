@@ -28,8 +28,7 @@ public interface MyCourseMapper {
     void updateSort(SortDto sortDto);
 
     /**
-     * 排序值变大:
-     * 要将区间内的排序值-1
+a
      *
      * @param sortDto 排序对象
      */

@@ -115,6 +115,8 @@
       }
       _this.course = course;
       _this.getAll(1);
+      // sidebar 激活
+      this.$parent.activeSidebar("business-course-sidebar")
     },
     methods: {
       getAll(page) {
