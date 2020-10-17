@@ -507,7 +507,7 @@
           if (resp.success) {
             Toast.success("更新排序成功!");
             $("#course-sort-modal").modal("hide");
-            _this.list(1);
+            _this.getAll(1);
           } else {
             Toast.error("更新排序失败!");
           }

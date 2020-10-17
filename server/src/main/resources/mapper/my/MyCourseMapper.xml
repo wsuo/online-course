@@ -11,25 +11,25 @@
         <![CDATA[
         update course
         set sort = sort + 1
-        where sort >= #{sortDto.newSort}
-          and sort <= #{sortDto.oldSort}
-          and id != #{sortDto.id};
+        where sort >= #{newSort}
+          and sort <= #{oldSort}
+          and id != #{id};
         ]]>
     </update>
 
-    <update id="moveSortsForward">
+    <update id="moveSortsForward" parameterType="com.lsu.server.dto.SortDto">
         <![CDATA[
         update course
         set sort = sort - 1
-        where sort >= #{sortDto.oldSort}
-          and sort <= #{sortDto.newSort}
-          and id != #{sortDto.id};
+        where sort >= #{oldSort}
+          and sort <= #{newSort}
+          and id != #{id};
         ]]>
     </update>
 
-    <update id="updateSort">
+    <update id="updateSort" parameterType="com.lsu.server.dto.SortDto">
         update course
-        set sort = #{sortDto.newSort}
-        where id = #{sortDto.id};
+        set sort = #{newSort}
+        where id = #{id};
     </update>
 </mapper>
