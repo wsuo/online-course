@@ -4,6 +4,7 @@ import com.lsu.server.dto.ResponseDto;
 import com.lsu.server.util.UuidUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +27,12 @@ public class UploadController {
     private static final Logger LOG = LoggerFactory.getLogger(UploadController.class);
     public static final String BUSINESS_NAME = "文件上传";
 
+    @Value("${file.domain}")
+    private static String FILE_DOMAIN;
+
+    @Value("${file.path}")
+    private static String FILE_PATH;
+
     @RequestMapping("/upload")
     public ResponseDto<String> upload(@RequestParam MultipartFile file) {
         LOG.info("文件上传开始: {}", file);
@@ -35,7 +42,7 @@ public class UploadController {
         // 保存文件到本地
         String filename = file.getOriginalFilename();
         String key = UuidUtil.getShortUuid();
-        String fullPath = "D:/fileUpload/imooc/teacher/" + key + "-" + filename;
+        String fullPath = FILE_PATH + "teacher/" + key + "-" + filename;
         File dest = new File(fullPath);
         try {
             file.transferTo(dest);
@@ -44,7 +51,7 @@ public class UploadController {
             e.printStackTrace();
         }
         ResponseDto<String> responseDto = new ResponseDto<>();
-        responseDto.setContent("http://127.0.0.1:9000/file/f/teacher/" + key + "-" + filename);
+        responseDto.setContent(FILE_DOMAIN + "f/teacher/" + key + "-" + filename);
         return responseDto;
     }
 }

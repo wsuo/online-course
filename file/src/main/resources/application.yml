@@ -10,3 +10,7 @@ spring:
     nacos:
       discovery:
         server-addr: localhost:8848 #配置 Nacos 地址
+
+file:
+  domain: http://127.0.0.1:9000/file/
+  path: D:/fileUpload/imooc/

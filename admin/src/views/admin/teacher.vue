@@ -14,7 +14,7 @@
           <span class="profile-picture">
 					  <img v-show="!teacher.image" id="avatar" class="editable img-responsive editable-click"
                  v-bind:title="teacher.intro" src="/static/image/讲师头像/头像1.jpg" alt=""/>
-            <img v-show="teacher.image" class="editable img-responsive editable-click editable-empty"
+            <img v-show="teacher.image" class="editable img-responsive editable-click"
                  v-bind:src="teacher.image" v-bind:title="teacher.intro" alt=""/>
           </span>
           <div class="space-4"></div>
@@ -74,8 +74,14 @@
                 <label for="file-upload-input" class="col-sm-2 control-label">头像</label>
                 <div class="col-sm-10">
                   <input type="file" id="file-upload-input" v-on:change="uploadImage">
-                  <!--img-responsive 是 bootstrap 内置的属性: 图片自适应-->
-                  <img :src="teacher.image" alt="" class="img-responsive">
+                  <!--想把那一行变成 12 格就在哪里增加一个 row -->
+                  <div v-show="teacher.image" class="row">
+                    <!--占这 12 格中的 4 格-->
+                    <div class="col-md-4">
+                      <!--img-responsive 是 bootstrap 内置的属性: 图片自适应-->
+                      <img :src="teacher.image" alt="" class="img-responsive">
+                    </div>
+                  </div>
                 </div>
               </div>
               <div class="form-group">
