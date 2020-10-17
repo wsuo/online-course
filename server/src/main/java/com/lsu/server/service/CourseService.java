@@ -5,10 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.lsu.server.domain.Course;
 import com.lsu.server.domain.CourseContent;
 import com.lsu.server.domain.CourseExample;
-import com.lsu.server.dto.CourseCategoryDto;
-import com.lsu.server.dto.CourseContentDto;
-import com.lsu.server.dto.CourseDto;
-import com.lsu.server.dto.PageDto;
+import com.lsu.server.dto.*;
 import com.lsu.server.mapper.CourseContentMapper;
 import com.lsu.server.mapper.CourseMapper;
 import com.lsu.server.mapper.my.MyCourseMapper;
@@ -83,7 +80,7 @@ public class CourseService {
         }
 
         // 批量保存分类
-        courseCategoryService.saveBatch(courseDto.getId(), courseDto.getCategories());
+        courseCategoryService.saveBatch(course.getId(), courseDto.getCategories());
     }
 
     private void insert(Course course) {
@@ -154,5 +151,27 @@ public class CourseService {
             i = courseContentMapper.insert(content);
         }
         return i;
+    }
+
+    /**
+     * 排序
+     *
+     * @param sortDto 排序类
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void sort(SortDto sortDto) {
+
+        // 修改当前记录的排序值
+        myCourseMapper.updateSort(sortDto);
+
+        // 如果排序值变大
+        if (sortDto.getNewSort() > sortDto.getOldSort()) {
+            myCourseMapper.moveSortsForward(sortDto);
+        }
+
+        // 如果排序值变小
+        if (sortDto.getNewSort() < sortDto.getOldSort()) {
+            myCourseMapper.moveSortsBackward(sortDto);
+        }
     }
 }
