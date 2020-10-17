@@ -71,12 +71,12 @@
                 </div>
               </div>
               <div class="form-group">
-                <label for="file-upload-input" class="col-sm-2 control-label">头像</label>
+                <label class="col-sm-2 control-label">头像</label>
                 <div class="col-sm-10">
-                  <button type="button" @click="selectImage" class="btn btn-white btn-default btn-round">
-                    <i class="ace-icon fa fa-edit red2"></i>上传头像
-                  </button>
-                  <input class="hidden" type="file" id="file-upload-input" v-on:change="uploadImage">
+                  <file :text="'上传头像'"
+                        :inputId="'image-upload'"
+                        :suffixs='["jpg", "jpeg", "png"]'
+                        :after-upload="afterUpload"></file>
                   <!--想把那一行变成 12 格就在哪里增加一个 row -->
                   <div v-show="teacher.image" class="row">
                     <!--占这 12 格中的 4 格-->
@@ -126,11 +126,13 @@
 
 <script>
   import Pagination from '../../components/pagination'
+  import File from '../../components/file'
 
   export default {
     name: "business-teacher",
     components: {
       Pagination,
+      File,
     },
     data() {
       return {
@@ -221,20 +223,9 @@
           });
         });
       },
-      uploadImage() {
+      afterUpload(resp) {
         let _this = this;
-        let formData = new window.FormData();
-        // key: "file" 必须和后端 controller 参数名一致
-        formData.append('file', document.querySelector('#file-upload-input').files[0]);
-        Loading.show();
-        _this.$ajax.post(process.env.VUE_APP_SERVER + '/file/admin/upload', formData).then(response => {
-          Loading.hide();
-          let resp = response.data;
-          _this.teacher.image = resp.content;
-        })
-      },
-      selectImage() {
-        $("#file-upload-input").trigger("click");
+        _this.teacher.image = resp.content;
       }
     }
   }
