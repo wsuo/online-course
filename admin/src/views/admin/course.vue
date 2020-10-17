@@ -83,6 +83,25 @@
                 </div>
               </div>
               <div class="form-group">
+                <label for="image" class="col-sm-2 control-label">封面</label>
+                <div class="col-sm-10">
+                  <file :text="'上传封面'"
+                        :inputId="'image-upload'"
+                        :suffixs='["jpg", "jpeg", "png"]'
+                        :use="FILE_USE.COURSE.key"
+                        :after-upload="afterUpload"></file>
+                  <!--想把那一行变成 12 格就在哪里增加一个 row -->
+                  <div v-show="course.image" class="row">
+                    <!--占这 12 格中的 4 格-->
+                    <div class="col-md-4">
+                      <!--img-responsive 是 bootstrap 内置的属性: 图片自适应-->
+                      <img :src="course.image" alt="" class="img-responsive">
+                    </div>
+                  </div>
+                  <input v-model="course.image" id="image" class="hidden">
+                </div>
+              </div>
+              <div class="form-group">
                 <label for="name" class="col-sm-2 control-label">名称</label>
                 <div class="col-sm-10">
                   <input v-model="course.name" id="name" class="form-control">
@@ -112,12 +131,6 @@
                 <label for="price" class="col-sm-2 control-label">价格（元）</label>
                 <div class="col-sm-10">
                   <input v-model="course.price" id="price" class="form-control">
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="image" class="col-sm-2 control-label">封面</label>
-                <div class="col-sm-10">
-                  <input v-model="course.image" id="image" class="form-control">
                 </div>
               </div>
               <div class="form-group">
@@ -251,11 +264,13 @@
 
 <script>
   import Pagination from '../../components/pagination'
+  import File from '../../components/file'
 
   export default {
     name: "business-course",
     components: {
       Pagination,
+      File,
     },
     data() {
       return {
@@ -280,6 +295,7 @@
         COURSE_LEVEL: COURSE_LEVEL,
         COURSE_CHARGE: COURSE_CHARGE,
         COURSE_STATUS: COURSE_STATUS,
+        FILE_USE: FILE_USE,
         categories: [],
         tree: {},
         saveContentLabel: {},
@@ -548,6 +564,10 @@
           _this.teachers = resp.content;
         });
       },
+      afterUpload(resp) {
+        let _this = this;
+        _this.course.image = resp.content.path;
+      }
     }
   }
 </script>
