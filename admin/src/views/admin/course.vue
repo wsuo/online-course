@@ -361,7 +361,7 @@
         /*
         * 组件之间传值可以使用 localStorage 和 sessionStorage;也可以用 vuex store,但是后者在页面刷新的时候会丢失数据
         * */
-        SessionStorage.set("course", course);
+        SessionStorage.set(SESSION_KEY_COURSE, course);
         _this.$router.push("/business/chapter");
       },
       initTree() {
