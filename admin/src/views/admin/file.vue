@@ -1,9 +1,6 @@
 <template>
   <div>
     <p>
-      <button @click="add" class="btn btn-white btn-default btn-round">
-        <i class="ace-icon fa fa-edit red2"></i>新增
-      </button> &nbsp;
       <button @click="getAll(1)" class="btn btn-white btn-default btn-round">
         <i class="ace-icon fa fa-refresh red2"></i>刷新
       </button>
@@ -18,7 +15,6 @@
             <th>后缀</th>
             <th>大小</th>
             <th>用途</th>
-        <th>操作</th>
       </tr>
       </thead>
       <tbody>
@@ -29,71 +25,9 @@
         <td>{{file.suffix}}</td>
         <td>{{file.size}}</td>
         <td>{{FILE_USE | optionKV(file.use)}}</td>
-        <td>
-          <div class="hidden-sm hidden-xs btn-group">
-            <button @click="edit(file)" class="btn btn-xs btn-info">
-              <i class="ace-icon fa fa-pencil bigger-120"></i>
-            </button>
-            <button @click="del(file.id)" class="btn btn-xs btn-danger">
-              <i class="ace-icon fa fa-trash-o bigger-120"></i>
-            </button>
-          </div>
-        </td>
       </tr>
       </tbody>
     </table>
-    <!-- Modal -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-              aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="myModalLabel">表单</h4>
-          </div>
-          <div class="modal-body">
-            <form class="form-horizontal">
-                <div class="form-group">
-                  <label for="path" class="col-sm-2 control-label">相对路径</label>
-                  <div class="col-sm-10">
-                    <input v-model="file.path" id="path" class="form-control">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="name" class="col-sm-2 control-label">文件名</label>
-                  <div class="col-sm-10">
-                    <input v-model="file.name" id="name" class="form-control">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="suffix" class="col-sm-2 control-label">后缀</label>
-                  <div class="col-sm-10">
-                    <input v-model="file.suffix" id="suffix" class="form-control">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="size" class="col-sm-2 control-label">大小</label>
-                  <div class="col-sm-10">
-                    <input v-model="file.size" id="size" class="form-control">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="use" class="col-sm-2 control-label">用途</label>
-                  <div class="col-sm-10">
-                    <select v-model="file.use" class="form-control" id="use">
-                      <option v-for="o in FILE_USE" :value="o.key">{{o.value}}</option>
-                    </select>
-                  </div>
-                </div>
-            </form>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-              <button @click="save" type="button" class="btn btn-primary">保存</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
     <!--
         :list="getAll"
 
@@ -150,54 +84,6 @@
           _this.$refs.pagination.render(page, resp.content.total);
         })
       },
-      add() {
-        let _this = this;
-        _this.file = {};
-        $("#myModal").modal("show");
-      },
-      save() {
-        let _this = this;
-
-        // 保存校验
-        if (1 !== 1
-          || !Validator.require(_this.file.path, "相对路径")
-          || !Validator.length(_this.file.path, "相对路径", 1, 100)
-          || !Validator.length(_this.file.name, "文件名", 1, 100)
-          || !Validator.length(_this.file.suffix, "后缀", 1, 10)
-        ) {return;}
-
-        Loading.show();
-        _this.$ajax.post(process.env.VUE_APP_SERVER + '/file/admin/file/save',
-          _this.file).then(response => {
-          Loading.hide();
-          let resp = response.data;
-          if (resp.success) {
-            $("#myModal").modal("hide");
-            _this.getAll(1);
-            Toast.success("保存成功");
-          }
-        })
-      },
-      edit(file) {
-        let _this = this;
-        // 双向绑定问题: 输入的时候表格也会更新数据: 使用 JQuery 的函数解决问题
-        _this.file = $.extend({}, file);
-        $("#myModal").modal("show");
-      },
-      del(id) {
-        let _this = this;
-        Confirm.show("该操作不可逆转", function () {
-          Loading.show();
-          _this.$ajax.delete(process.env.VUE_APP_SERVER + '/file/admin/file/delete/' + id).then(response => {
-            Loading.hide();
-            let resp = response.data;
-            if (resp.success) {
-              _this.getAll(1);
-              Toast.success("删除成功");
-            }
-          });
-        });
-      }
     }
   }
 </script>
