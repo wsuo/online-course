@@ -79,9 +79,21 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="video" class="col-sm-2 control-label">视频</label>
+                  <label class="col-sm-2 control-label">视频</label>
                   <div class="col-sm-10">
-                    <input v-model="section.video" id="video" class="form-control">
+                    <file :text="'上传视频'"
+                          :inputId="'video-upload'"
+                          :suffixs='["mp4"]'
+                          :use="FILE_USE.COURSE.key"
+                          :after-upload="afterUpload"></file>
+                    <!--想把那一行变成 12 格就在哪里增加一个 row -->
+                    <div v-show="section.video" class="row">
+                      <!--占这 12 格中的 4 格-->
+                      <div class="col-md-9">
+                        <!--img-responsive 是 bootstrap 内置的属性: 图片自适应-->
+                        <video :src="section.video" controls="controls"></video>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div class="form-group">
@@ -125,11 +137,13 @@
 
 <script>
   import Pagination from '../../components/pagination'
+  import File from '../../components/file'
 
   export default {
     name: "business-section",
     components: {
       Pagination,
+      File,
     },
     data() {
       return {
@@ -147,6 +161,7 @@
             updatedAt: '',
         },
         CHARGE: SECTION_CHARGE,
+        FILE_USE: FILE_USE,
         course: {},
         chapter: {},
       }
@@ -230,11 +245,29 @@
             }
           });
         });
+      },
+      afterUpload(resp) {
+        let _this = this;
+        _this.section.video = resp.content.path;
+        _this.getTime();
+      },
+      /**
+       * 获取时长
+       */
+      getTime() {
+        let _this = this;
+        let ele = document.getElementById("video");
+        // duration 是自带的属性: 换成10进制的整数: 放到 time 中去
+        _this.section.time = parseInt(ele.duration, 10);
       }
     }
   }
 </script>
 
 <style scoped>
-
+  video {
+    width: 100%;
+    height: auto;
+    margin-top: 10px;
+  }
 </style>
