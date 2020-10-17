@@ -73,7 +73,10 @@
               <div class="form-group">
                 <label for="file-upload-input" class="col-sm-2 control-label">头像</label>
                 <div class="col-sm-10">
-                  <input type="file" id="file-upload-input" v-on:change="uploadImage">
+                  <button type="button" @click="selectImage" class="btn btn-white btn-default btn-round">
+                    <i class="ace-icon fa fa-edit red2"></i>上传头像
+                  </button>
+                  <input class="hidden" type="file" id="file-upload-input" v-on:change="uploadImage">
                   <!--想把那一行变成 12 格就在哪里增加一个 row -->
                   <div v-show="teacher.image" class="row">
                     <!--占这 12 格中的 4 格-->
@@ -229,6 +232,9 @@
           let resp = response.data;
           _this.teacher.image = resp.content;
         })
+      },
+      selectImage() {
+        $("#file-upload-input").trigger("click");
       }
     }
   }

@@ -28,10 +28,10 @@ public class UploadController {
     public static final String BUSINESS_NAME = "文件上传";
 
     @Value("${file.domain}")
-    private static String FILE_DOMAIN;
+    private String domain;
 
     @Value("${file.path}")
-    private static String FILE_PATH;
+    private String path;
 
     @RequestMapping("/upload")
     public ResponseDto<String> upload(@RequestParam MultipartFile file) {
@@ -42,7 +42,7 @@ public class UploadController {
         // 保存文件到本地
         String filename = file.getOriginalFilename();
         String key = UuidUtil.getShortUuid();
-        String fullPath = FILE_PATH + "teacher/" + key + "-" + filename;
+        String fullPath = path + "teacher/" + key + "-" + filename;
         File dest = new File(fullPath);
         try {
             file.transferTo(dest);
@@ -51,7 +51,7 @@ public class UploadController {
             e.printStackTrace();
         }
         ResponseDto<String> responseDto = new ResponseDto<>();
-        responseDto.setContent(FILE_DOMAIN + "f/teacher/" + key + "-" + filename);
+        responseDto.setContent(domain + "f/teacher/" + key + "-" + filename);
         return responseDto;
     }
 }

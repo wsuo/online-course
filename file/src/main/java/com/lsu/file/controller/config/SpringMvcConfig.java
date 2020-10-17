@@ -16,7 +16,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class SpringMvcConfig implements WebMvcConfigurer {
 
     @Value("${file.path}")
-    private static String FILE_PATH;
+    private String path;
 
     /**
      * SpringBoot 静态资源配置
@@ -25,7 +25,7 @@ public class SpringMvcConfig implements WebMvcConfigurer {
      */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/f/**").addResourceLocations("file:" + FILE_PATH);
+        registry.addResourceHandler("/f/**").addResourceLocations("file:" + path);
     }
 
     //http://127.0.0.1:9000/file/f/teacher/Nz1H76bO-头像2.jpg
