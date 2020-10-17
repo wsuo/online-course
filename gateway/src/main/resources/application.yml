@@ -19,6 +19,10 @@ spring:
           uri: lb://online-course-business
           predicates:
             - Path=/business/**
+        - id: file
+          uri: lb://online-course-file
+          predicates:
+            - Path=/file/**
       # 全局跨域
       globalcors:
         # 跨域配置(可以在代码里面处理允许跨域，也可在这里全局处理)

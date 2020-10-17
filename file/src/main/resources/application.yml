@@ -1,0 +1,12 @@
+server:
+  port: 9003
+  servlet:
+    context-path: /file
+
+spring:
+  application:
+    name: online-course-file
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848 #配置 Nacos 地址
