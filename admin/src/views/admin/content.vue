@@ -6,11 +6,11 @@
     </h4>
     <hr>
 
-    <file v-bind:input-id="'content-file-upload'"
-          v-bind:text="'上传文件'"
-          v-bind:suffixs="['jpg', 'jpeg', 'png', 'mp4']"
-          v-bind:use="FILE_USE.COURSE.key"
-          v-bind:after-upload="afterUploadContentFile"></file>
+    <file :inputId="'content-file-upload'"
+          :text="'上传文件'"
+          :suffixs="['jpg', 'jpeg', 'png', 'mp4']"
+          :use="FILE_USE.COURSE.key"
+          :afterUpload="afterUploadContentFile"></file>
     <br>
     <table id="file-table" class="table  table-bordered table-hover">
       <thead>
@@ -72,7 +72,13 @@
         course: {},
         FILE_USE: FILE_USE,
         saveContentLabel: "",
-        files: [],
+        files: [{
+          id: '',
+          courseId: '',
+          url: '',
+          name: '',
+          size: Number
+        }],
         saveContentInterval: {},
       }
     },
@@ -170,7 +176,7 @@
             }
 
             // 定时自动保存
-            let saveContentInterval = setInterval(function () {
+            _this.saveContentInterval = setInterval(function() {
               _this.saveContent();
             }, 5000);
 

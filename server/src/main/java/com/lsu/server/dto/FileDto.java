@@ -1,13 +1,10 @@
 package com.lsu.server.dto;
 
-import lombok.Data;
-import lombok.ToString;
-import lombok.Data;
-import lombok.ToString;
-import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.ToString;
+
+import java.util.Date;
 
 @Data
 @ToString
@@ -55,4 +52,23 @@ public class FileDto {
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date updatedAt;
 
+    /**
+     * 分片索引
+     */
+    private Integer shardIndex;
+
+    /**
+     * 分片大小
+     */
+    private Integer shardSize;
+
+    /**
+     * 总分片数
+     */
+    private Integer shardTotal;
+
+    /**
+     * 唯一标识: 组合分片用
+     */
+    private String key;
 }

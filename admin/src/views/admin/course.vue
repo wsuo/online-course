@@ -272,13 +272,6 @@
           newSort: 0,
         },
         teachers: [],
-        files: [{
-          id: '',
-          courseId: '',
-          url: '',
-          name: '',
-          size: Number
-        }],
       }
     },
     created() {
