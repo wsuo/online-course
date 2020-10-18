@@ -91,7 +91,7 @@
                       <!--占这 12 格中的 4 格-->
                       <div class="col-md-9">
                         <!--img-responsive 是 bootstrap 内置的属性: 图片自适应-->
-                        <video :src="section.video" controls="controls"></video>
+                        <video :src="section.video" id="video" class="hidden" controls="controls"></video>
                       </div>
                     </div>
                   </div>
@@ -257,9 +257,11 @@
        */
       getTime() {
         let _this = this;
-        let ele = document.getElementById("video");
-        // duration 是自带的属性: 换成10进制的整数: 放到 time 中去
-        _this.section.time = parseInt(ele.duration, 10);
+        setTimeout(function () {
+          let ele = document.getElementById("video");
+          // duration 是自带的属性: 换成10进制的整数: 放到 time 中去
+          _this.section.time = parseInt(ele.duration, 10);
+        }, 1000);
       }
     }
   }

@@ -6,6 +6,9 @@ import lombok.ToString;
 
 import java.util.Date;
 
+/**
+ * @author wsuo
+ */
 @Data
 @ToString
 public class FileDto {
@@ -51,6 +54,11 @@ public class FileDto {
      */
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date updatedAt;
+
+    /**
+     * base64
+     */
+    private String shard;
 
     /**
      * 分片索引

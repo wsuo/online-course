@@ -47,6 +47,11 @@ public class LogAspect {
     public void pointcut() {
     }
 
+    /**
+     * 前置通知
+     *
+     * @param joinPoint 连接点
+     */
     @Before("pointcut()")
     public void doBefore(JoinPoint joinPoint) {
         // 日志编号: 用来标识同一请求的日志
@@ -102,19 +107,26 @@ public class LogAspect {
             arguments[i] = args[i];
         }
         // 排除字段: 敏感字段或者太长的字段不显示
-        String[] excludeProperties = {};
+        String[] excludeProperties = {"shard"};
         PropertyPreFilters filters = new PropertyPreFilters();
         PropertyPreFilters.MySimplePropertyPreFilter excludeFilter = filters.addFilter();
         excludeFilter.addExcludes(excludeProperties);
         LOG.info("请求参数: {}", JSONObject.toJSONString(arguments, excludeFilter));
     }
 
+    /**
+     * 环绕通知: 打印请求结果
+     *
+     * @param proceedingJoinPoint 节点
+     * @return 返回 Obj
+     * @throws Throwable 异常
+     */
     @Around("pointcut()")
     public Object doAround(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         long startTime = System.currentTimeMillis();
         Object result = proceedingJoinPoint.proceed();
         // 排除字段
-        String[] excludeProperties = {"password"};
+        String[] excludeProperties = {"password", "shard"};
         PropertyPreFilters filters = new PropertyPreFilters();
         PropertyPreFilters.MySimplePropertyPreFilter excludeFilter = filters.addFilter();
         excludeFilter.addExcludes(excludeProperties);
