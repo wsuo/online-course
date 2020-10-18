@@ -117,5 +117,18 @@ public class UploadController {
             e.printStackTrace();
         }
         LOG.info("合并分片结束");
+
+        // 文件被程序占用: 删除失败: 现在通知虚拟机回收垃圾即可
+        System.gc();
+
+        // 删除残留的分片
+        LOG.info("删除分片开始");
+        for (int i = 0; i < shardTotal; i++) {
+            String filePath = path + relativePath + "." + (i + 1);
+            File file = new File(filePath);
+            boolean res = file.delete();
+            LOG.info("删除{}，{}", filePath, res ? "成功" : "失败");
+        }
+        LOG.info("删除分片结束");
     }
 }

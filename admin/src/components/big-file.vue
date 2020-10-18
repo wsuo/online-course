@@ -110,10 +110,11 @@
               param.shardIndex += 1;
               // 递归调用
               _this.upload(param);
+            } else {
+              _this.afterUpload(resp);
+              // 清空原来控件中的值
+              $("#" + _this.inputId + "-input").val("");
             }
-            _this.afterUpload(resp);
-            // 清空原来控件中的值
-            $("#" + _this.inputId + "-input").val("");
           });
         };
         fileReader.readAsDataURL(fileShard);
