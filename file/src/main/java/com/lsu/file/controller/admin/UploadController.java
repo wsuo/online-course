@@ -14,8 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * 上传文件控制器
@@ -62,8 +61,9 @@ public class UploadController {
         if (!fullDir.exists()) {
             boolean b = fullDir.mkdir();
         }
-        String newPath = dir + File.separator + key + "." + suffix + "." + fileDto.getShardIndex();
-        String fullPath = path + newPath;
+        String newPath = dir + File.separator + key + "." + suffix;
+        String localPath = newPath + "." + fileDto.getShardIndex();
+        String fullPath = path + localPath;
         File dest = new File(fullPath);
         try {
             if (shard != null) {
@@ -81,6 +81,41 @@ public class UploadController {
         ResponseDto<FileDto> responseDto = new ResponseDto<>();
         fileDto.setPath(domain + newPath);
         responseDto.setContent(fileDto);
+
+        if (fileDto.getShardIndex().equals(fileDto.getShardTotal())) {
+            this.merge(fileDto);
+        }
         return responseDto;
+    }
+
+    /**
+     * 合并上传的文件分片
+     */
+    private void merge(FileDto fileDto) {
+        LOG.info("合并分片开始");
+        String relativePath = fileDto.getPath().replace(domain, "");
+        // 总分片数: 即循环的次数
+        Integer shardTotal = fileDto.getShardTotal();
+        File newFile = new File(path + relativePath);
+        byte[] byt = new byte[10 * 1024 * 1024];
+        int len;
+        try {
+            // 以追加的方式写入
+            FileOutputStream outputStream = new FileOutputStream(newFile, true);
+            FileInputStream inputStream = null;
+            for (int i = 0; i < shardTotal; i++) {
+                inputStream = new FileInputStream(new File(path + relativePath + "." + (i + 1)));
+                while ((len = inputStream.read(byt)) != -1) {
+                    outputStream.write(byt, 0, len);
+                }
+            }
+            if (inputStream != null) {
+                inputStream.close();
+            }
+            outputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        LOG.info("合并分片结束");
     }
 }

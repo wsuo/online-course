@@ -91,7 +91,7 @@
                       <!--占这 12 格中的 4 格-->
                       <div class="col-md-9">
                         <!--img-responsive 是 bootstrap 内置的属性: 图片自适应-->
-                        <video :src="section.video" id="video" class="hidden" controls="controls"></video>
+                        <video :src="section.video" id="video" controls="controls"></video>
                       </div>
                     </div>
                   </div>
