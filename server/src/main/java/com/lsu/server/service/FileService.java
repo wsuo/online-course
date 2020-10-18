@@ -10,11 +10,11 @@ import com.lsu.server.mapper.FileMapper;
 import com.lsu.server.util.CopyUtil;
 import com.lsu.server.util.UuidUtil;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.List;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 业务层
@@ -50,15 +50,18 @@ public class FileService {
 
     /**
      * 根据 ID 是否为空判断是删除还是新增
+     *  在查询的时候先去看数据库有没有这个 key ,如果有说明之前传过
      *
      * @param fileDto 数据传输对象
      */
     public void save(FileDto fileDto) {
         File file = CopyUtil.copy(fileDto, File.class);
-        if (StringUtils.isEmpty(file.getId())) {
+        File fileDb = selectByKey(fileDto.getKey());
+        if (fileDb == null) {
             this.insert(file);
         } else {
-            this.update(file);
+            fileDb.setShardIndex(fileDto.getShardIndex());
+            this.update(fileDb);
         }
     }
 
@@ -77,5 +80,23 @@ public class FileService {
 
     public void delete(String id) {
         fileMapper.deleteByPrimaryKey(id);
+    }
+
+    /**
+     * 根据 key 查询记录
+     *
+     * @param key  KEY值
+     * @return 返回文件对象
+     */
+    public File selectByKey(String key) {
+        FileExample example = new FileExample();
+        FileExample.Criteria criteria = example.createCriteria();
+        criteria.andKeyEqualTo(key);
+        List<File> fileList = fileMapper.selectByExample(example);
+        if (CollectionUtils.isEmpty(fileList)) {
+            return null;
+        } else {
+            return fileList.get(0);
+        }
     }
 }
