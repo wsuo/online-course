@@ -41,7 +41,7 @@
         let file = _this.$refs.file.files[0];
 
         // 生成文件标识: 标识上传的是同一个文件
-        let key = hex_md5(file);
+        let key = hex_md5(file.name + file.size + file.type);
         let key10 = parseInt(key, 16);
         let key62 = Tool._10to62(key10);
 
@@ -134,18 +134,19 @@
         let fileShard = _this.getFileShard(shardIndex, shardSize);
         // 将图片转为 base64 进行传输
         let fileReader = new FileReader();
+        Progress.show(parseInt(((shardIndex - 1) * 100) / shardTotal));
         fileReader.onload = function (e) {
           param.shard = e.target.result;
-          Loading.show();
           _this.$ajax.post(process.env.VUE_APP_SERVER + '/file/admin/upload', param).then(response => {
-            Loading.hide();
             let resp = response.data;
+            Progress.show(parseInt((shardIndex * 100) / shardTotal));
             if (shardIndex < shardTotal) {
               // 上传下一个分片
               param.shardIndex += 1;
               // 递归调用
               _this.upload(param);
             } else {
+              Progress.hide();
               _this.afterUpload(resp);
               // 清空原来控件中的值
               $("#" + _this.inputId + "-input").val("");
