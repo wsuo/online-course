@@ -62,7 +62,8 @@ public class UploadController {
         if (!fullDir.exists()) {
             boolean b = fullDir.mkdir();
         }
-        String newPath = dir + File.separator + key + "." + suffix;
+        StringBuffer sb = new StringBuffer(dir).append(File.separator).append(key).append(".").append(suffix).append(".").append(fileDto.getShardIndex());
+        String newPath = sb.toString();
         String fullPath = path + newPath;
         File dest = new File(fullPath);
         try {
