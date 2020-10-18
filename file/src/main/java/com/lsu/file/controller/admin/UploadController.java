@@ -116,8 +116,14 @@ public class UploadController {
         }
         LOG.info("合并分片结束");
 
-        // 文件被程序占用: 删除失败: 现在通知虚拟机回收垃圾即可
-        System.gc();
+        try {
+            // 文件被程序占用: 删除失败: 现在通知虚拟机回收垃圾即可
+            System.gc();
+            // 虚拟机不会马上进行操作: 需要一段时间处理其他事务
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         // 删除残留的分片
         LOG.info("删除分片开始");
@@ -141,6 +147,10 @@ public class UploadController {
         LOG.info("检查上传文件的分片: {}", key);
         ResponseDto<FileDto> responseDto = new ResponseDto<>();
         FileDto fileDto = fileService.findByKey(key);
+        // 如果数据库中能查到记录: 重新设置 path;
+        if (fileDto != null) {
+            fileDto.setPath(domain + fileDto.getPath());
+        }
         responseDto.setContent(fileDto);
         return responseDto;
     }
