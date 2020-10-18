@@ -62,7 +62,7 @@
           return;
         }
         // 文件分片: 以 20M 为一个分片
-        let shardSize = 20 * 1024 * 1024;
+        let shardSize = 10 * 1024 * 1024;
         // 分片索引: 1表示第一个分片
         let shardIndex = 1;
 
@@ -81,12 +81,42 @@
           'key': key62
         };
 
-        _this.upload(param);
+        _this.check(param);
       },
+
+      /*
+      检查文件状态: 是否已经上传过 传到第几个分片
+      */
+      check(param) {
+        let _this = this;
+        _this.$ajax.get(process.env.VUE_APP_SERVER + '/file/admin/check/' + param.key).then(response => {
+          let resp = response.data;
+          if (resp.success) {
+            let obj = resp.content;
+            if (!obj) {
+              // 没有找到文件记录: 所以从 1 开始上传
+              param.shardIndex = 1;
+              _this.upload(param);
+            } else {
+              param.shardIndex = obj.shardIndex + 1;
+              console.log("找到文件记录,从分片" + param.shardIndex + "开始上传");
+              _this.upload(param);
+            }
+          } else {
+            Toast.warning("文件上传失败!");
+            $("#" + _this.inputId + "-input").val("");
+          }
+        });
+      },
+
+      /*
+      * 选择文件之后自动出发请求事件
+      * */
       selectFile() {
         let _this = this;
         $("#" + _this.inputId + "-input").trigger("click");
       },
+
       /**
        * 分片上传文件
        * @param param 对象

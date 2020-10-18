@@ -50,7 +50,7 @@ public class FileService {
 
     /**
      * 根据 ID 是否为空判断是删除还是新增
-     *  在查询的时候先去看数据库有没有这个 key ,如果有说明之前传过
+     * 在查询的时候先去看数据库有没有这个 key ,如果有说明之前传过
      *
      * @param fileDto 数据传输对象
      */
@@ -85,7 +85,7 @@ public class FileService {
     /**
      * 根据 key 查询记录
      *
-     * @param key  KEY值
+     * @param key KEY值
      * @return 返回文件对象
      */
     public File selectByKey(String key) {
@@ -98,5 +98,15 @@ public class FileService {
         } else {
             return fileList.get(0);
         }
+    }
+
+    /**
+     * 根据 key 值查找分片文件
+     *
+     * @param key key
+     * @return 返回文件对象
+     */
+    public FileDto findByKey(String key) {
+        return CopyUtil.copy(selectByKey(key), FileDto.class);
     }
 }

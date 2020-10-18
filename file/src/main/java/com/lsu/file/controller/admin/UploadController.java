@@ -8,9 +8,7 @@ import com.lsu.server.util.Base64ToMultipartFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -130,5 +128,20 @@ public class UploadController {
             LOG.info("删除{}，{}", filePath, res ? "成功" : "失败");
         }
         LOG.info("删除分片结束");
+    }
+
+    /**
+     * 检查分片
+     *
+     * @param key KEY 值
+     * @return 返回对象
+     */
+    @GetMapping("/check/{key}")
+    public ResponseDto<FileDto> check(@PathVariable String key) {
+        LOG.info("检查上传文件的分片: {}", key);
+        ResponseDto<FileDto> responseDto = new ResponseDto<>();
+        FileDto fileDto = fileService.findByKey(key);
+        responseDto.setContent(fileDto);
+        return responseDto;
     }
 }
