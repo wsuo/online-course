@@ -62,7 +62,7 @@
           return;
         }
         // 文件分片: 以 20M 为一个分片
-        let shardSize = 10 * 1024 * 1024;
+        let shardSize = 50 * 1024;
         // 分片索引: 1表示第一个分片
         let shardIndex = 1;
 
@@ -137,7 +137,7 @@
         Progress.show(parseInt(((shardIndex - 1) * 100) / shardTotal));
         fileReader.onload = function (e) {
           param.shard = e.target.result;
-          _this.$ajax.post(process.env.VUE_APP_SERVER + '/file/admin/upload', param).then(response => {
+          _this.$ajax.post(process.env.VUE_APP_SERVER + '/file/admin/oss-append', param).then(response => {
             let resp = response.data;
             Progress.show(parseInt((shardIndex * 100) / shardTotal));
             if (shardIndex < shardTotal) {

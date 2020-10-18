@@ -62,7 +62,7 @@
         formData.append('file', file);
         formData.append('use', _this.use);
         Loading.show();
-        _this.$ajax.post(process.env.VUE_APP_SERVER + '/file/admin/upload', formData).then(response => {
+        _this.$ajax.post(process.env.VUE_APP_SERVER + '/file/admin/oss-simple', formData).then(response => {
           Loading.hide();
           let resp = response.data;
           _this.afterUpload(resp);

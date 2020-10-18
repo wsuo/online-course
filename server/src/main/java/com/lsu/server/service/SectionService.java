@@ -59,7 +59,7 @@ public class SectionService {
         }
 
         sectionExample.setOrderByClause("sort asc");
-        List<Section> sectionList = sectionMapper.selectByExample(null);
+        List<Section> sectionList = sectionMapper.selectByExample(sectionExample);
         PageInfo<Section> pageInfo = new PageInfo<>(sectionList);
         sectionPageDto.setTotal(pageInfo.getTotal());
         List<SectionDto> sectionDtoList = CopyUtil.copyList(sectionList, SectionDto.class);

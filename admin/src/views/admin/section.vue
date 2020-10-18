@@ -208,6 +208,7 @@
       },
       save() {
         let _this = this;
+        _this.section.video = "";
 
         // 保存校验
         if (1 !== 1
@@ -215,6 +216,9 @@
           || !Validator.length(_this.section.title, "标题", 1, 50)
           || !Validator.length(_this.section.video, "视频", 1, 200)
         ) {return;}
+
+        _this.section.courseId = _this.course.id;
+        _this.section.chapterId = _this.chapter.id;
 
         Loading.show();
         _this.$ajax.post(process.env.VUE_APP_SERVER + '/business/admin/section/save',

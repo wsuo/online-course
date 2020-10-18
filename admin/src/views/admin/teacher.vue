@@ -73,11 +73,11 @@
               <div class="form-group">
                 <label class="col-sm-2 control-label">头像</label>
                 <div class="col-sm-10">
-                  <big-file :text="'上传头像'"
+                  <file :text="'上传头像'"
                         :inputId="'image-upload'"
                         :suffixs='["jpg", "jpeg", "png"]'
                         :use="FILE_USE.TEACHER.key"
-                        :after-upload="afterUpload"></big-file>
+                        :after-upload="afterUpload"></file>
                   <!--想把那一行变成 12 格就在哪里增加一个 row -->
                   <div v-show="teacher.image" class="row">
                     <!--占这 12 格中的 4 格-->
@@ -128,12 +128,14 @@
 <script>
   import Pagination from '../../components/pagination'
   import BigFile from '../../components/big-file'
+  import File from '../../components/file'
 
   export default {
     name: "business-teacher",
     components: {
       Pagination,
       BigFile,
+      File,
     },
     data() {
       return {

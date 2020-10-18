@@ -18,3 +18,10 @@ spring:
 file:
   domain: http://127.0.0.1:9000/file/f/
   path: D:/fileUpload/imooc/
+
+oss:
+  accessKeyId: LTAI4G531JhMJPxEmukmA7Yc
+  accessKeySecret: GlRP7Z3kGTQ0YnubejJ7WiwEHtSVAu
+  endpoint: oss-cn-hangzhou.aliyuncs.com
+  bucket: online-course-top
+  domain: http://online-course-top.oss-cn-hangzhou.aliyuncs.com/
