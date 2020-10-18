@@ -38,7 +38,6 @@
     methods: {
       uploadFile() {
         let _this = this;
-        let formData = new window.FormData();
         let file = _this.$refs.file.files[0];
 
         // 生成文件标识: 标识上传的是同一个文件
@@ -66,33 +65,52 @@
         let shardSize = 20 * 1024 * 1024;
         // 分片索引: 1表示第一个分片
         let shardIndex = 1;
-        let start = (shardIndex - 1) * shardSize;
-        let end = Math.min(file.size, start + shardSize);
-        // 从文件中截取当前的分片数据
-        let fileShard = file.slice(start, end);
 
         let size = file.size;
         let shardTotal = Math.ceil(size / shardSize);
 
+        let param = {
+          'shard': '',
+          'shardIndex': shardIndex,
+          'shardSize': shardSize,
+          'shardTotal': shardTotal,
+          'use': _this.use,
+          'name': file.name,
+          'suffix': suffix,
+          'size': size,
+          'key': key62
+        };
+
+        _this.upload(param);
+      },
+      selectFile() {
+        let _this = this;
+        $("#" + _this.inputId + "-input").trigger("click");
+      },
+      /**
+       * 分片上传文件
+       * @param param 对象
+       */
+      upload(param) {
+        let _this = this;
+        let shardIndex = param.shardIndex;
+        let shardSize = param.shardSize;
+        let shardTotal = param.shardTotal;
+        let fileShard = _this.getFileShard(shardIndex, shardSize);
         // 将图片转为 base64 进行传输
         let fileReader = new FileReader();
         fileReader.onload = function (e) {
-          let base64 = e.target.result;
-          let param = {
-            'shard': base64,
-            'shardIndex': shardIndex,
-            'shardSize': shardSize,
-            'shardTotal': shardTotal,
-            'use': _this.use,
-            'name': file.name,
-            'suffix': suffix,
-            'size': size,
-            'key': key62
-          };
+          param.shard = e.target.result;
           Loading.show();
           _this.$ajax.post(process.env.VUE_APP_SERVER + '/file/admin/upload', param).then(response => {
             Loading.hide();
             let resp = response.data;
+            if (shardIndex < shardTotal) {
+              // 上传下一个分片
+              param.shardIndex += 1;
+              // 递归调用
+              _this.upload(param);
+            }
             _this.afterUpload(resp);
             // 清空原来控件中的值
             $("#" + _this.inputId + "-input").val("");
@@ -100,10 +118,14 @@
         };
         fileReader.readAsDataURL(fileShard);
       },
-      selectFile() {
+      getFileShard: function (shardIndex, shardSize) {
         let _this = this;
-        $("#" + _this.inputId + "-input").trigger("click");
-      }
+        let file = _this.$refs.file.files[0];
+        let start = (shardIndex - 1) * shardSize;
+        let end = Math.min(file.size, start + shardSize);
+        // 从文件中截取当前的分片数据
+        return file.slice(start, end);
+      },
     }
   }
 </script>

@@ -105,9 +105,11 @@
                 <div class="form-group">
                   <label class="col-sm-2 control-label">收费</label>
                   <div class="col-sm-10">
+                    <label>
                       <select v-model="section.charge" class="form-control">
                         <option v-for="o in CHARGE" :value="o.key">{{o.value}}</option>
                       </select>
+                    </label>
                   </div>
                 </div>
                 <div class="form-group">
