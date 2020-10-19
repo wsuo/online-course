@@ -79,4 +79,9 @@ public class FileDto {
      * 唯一标识: 组合分片用
      */
     private String key;
+
+    /**
+     * 阿里云vod
+     */
+    private String vod;
 }

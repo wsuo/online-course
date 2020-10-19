@@ -2,9 +2,10 @@
   <div>
     <h4 class="lighter">
       <i class="ace-icon fa fa-hand-o-right icon-animated-hand-pointer blue"></i>
-      <router-link to="/business/course" class="pink"> {{course.name}} </router-link>：
+      <router-link to="/business/course" class="pink"> {{course.name}}</router-link>
+      ：
       <i class="ace-icon fa fa-hand-o-right icon-animated-hand-pointer blue"></i>
-      <router-link to="/business/chapter" class="pink"> {{chapter.name}} </router-link>
+      <router-link to="/business/chapter" class="pink"> {{chapter.name}}</router-link>
     </h4>
     <hr>
     <p>
@@ -19,23 +20,23 @@
 
       <thead>
       <tr>
-                    <th>id</th>
-            <th>标题</th>
-            <th>视频</th>
-            <th>时长</th>
-            <th>收费</th>
-            <th>顺序</th>
+        <th>id</th>
+        <th>标题</th>
+        <th>视频</th>
+        <th>时长</th>
+        <th>收费</th>
+        <th>顺序</th>
         <th>操作</th>
       </tr>
       </thead>
       <tbody>
       <tr v-for="section in sections">
-            <td>{{section.id}}</td>
-            <td>{{section.title}}</td>
-            <td>{{section.video}}</td>
-            <td>{{section.time | formatSecond}}</td>
-            <td>{{CHARGE | optionKV(section.charge)}}</td>
-            <td>{{section.sort}}</td>
+        <td>{{section.id}}</td>
+        <td>{{section.title}}</td>
+        <td>{{section.video}}</td>
+        <td>{{section.time | formatSecond}}</td>
+        <td>{{CHARGE | optionKV(section.charge)}}</td>
+        <td>{{section.sort}}</td>
         <td>
           <div class="hidden-sm hidden-xs btn-group">
             <button @click="edit(section)" class="btn btn-xs btn-info">
@@ -60,64 +61,75 @@
           </div>
           <div class="modal-body">
             <form class="form-horizontal">
-                <div class="form-group">
-                  <label for="title" class="col-sm-2 control-label">标题</label>
-                  <div class="col-sm-10">
-                    <input v-model="section.title" id="title" class="form-control">
-                  </div>
+              <div class="form-group">
+                <label for="title" class="col-sm-2 control-label">标题</label>
+                <div class="col-sm-10">
+                  <input v-model="section.title" id="title" class="form-control">
                 </div>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">课程</label>
-                  <div class="col-sm-10">
-                    <p class="form-control-static">{{course.name}}</p>
-                  </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">课程</label>
+                <div class="col-sm-10">
+                  <p class="form-control-static">{{course.name}}</p>
                 </div>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">大章</label>
-                  <div class="col-sm-10">
-                    <p class="form-control-static">{{chapter.name}}</p>
-                  </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">大章</label>
+                <div class="col-sm-10">
+                  <p class="form-control-static">{{chapter.name}}</p>
                 </div>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">视频</label>
-                  <div class="col-sm-10">
-                    <big-file :text="'上传视频'"
-                          :inputId="'video-upload'"
-                          :suffixs='["mp4"]'
-                          :use="FILE_USE.COURSE.key"
-                          :after-upload="afterUpload"></big-file>
-                    <!--想把那一行变成 12 格就在哪里增加一个 row -->
-                    <div v-show="section.video" class="row">
-                      <!--占这 12 格中的 4 格-->
-                      <div class="col-md-9">
-                        <!--img-responsive 是 bootstrap 内置的属性: 图片自适应-->
-                        <video :src="section.video" id="video" controls="controls"></video>
-                      </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">视频</label>
+                <div class="col-sm-10">
+                  <vod :text="'上传VOD'"
+                            :suffixs='["mp4"]'
+                            :use="FILE_USE.COURSE.key"
+                            :after-upload="afterUpload"></vod>
+                  <!--想把那一行变成 12 格就在哪里增加一个 row -->
+                  <div v-show="section.video" class="row">
+                    <!--占这 12 格中的 4 格-->
+                    <div class="col-md-9">
+                      <!--img-responsive 是 bootstrap 内置的属性: 图片自适应-->
+                      <video :src="section.video" id="video" controls="controls"></video>
                     </div>
                   </div>
                 </div>
-                <div class="form-group">
-                  <label for="time" class="col-sm-2 control-label">时长</label>
-                  <div class="col-sm-10">
-                    <input v-model="section.time" id="time" class="form-control">
-                  </div>
+              </div>
+              <div class="form-group">
+                <label for="time" class="col-sm-2 control-label">时长</label>
+                <div class="col-sm-10">
+                  <input v-model="section.time" id="time" class="form-control">
                 </div>
-                <div class="form-group">
-                  <label class="col-sm-2 control-label">收费</label>
-                  <div class="col-sm-10">
-                    <label>
-                      <select v-model="section.charge" class="form-control">
-                        <option v-for="o in CHARGE" :value="o.key">{{o.value}}</option>
-                      </select>
-                    </label>
-                  </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">视频</label>
+                <div class="col-sm-10">
+                  <input v-model="section.video" class="form-control" disabled>
                 </div>
-                <div class="form-group">
-                  <label for="sort" class="col-sm-2 control-label">顺序</label>
-                  <div class="col-sm-10">
-                    <input v-model="section.sort" id="sort" class="form-control">
-                  </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">VOD</label>
+                <div class="col-sm-10">
+                  <input v-model="section.vod" class="form-control" disabled>
                 </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">收费</label>
+                <div class="col-sm-10">
+                  <label>
+                    <select v-model="section.charge" class="form-control">
+                      <option v-for="o in CHARGE" :value="o.key">{{o.value}}</option>
+                    </select>
+                  </label>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="sort" class="col-sm-2 control-label">顺序</label>
+                <div class="col-sm-10">
+                  <input v-model="section.sort" id="sort" class="form-control">
+                </div>
+              </div>
             </form>
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
@@ -140,27 +152,30 @@
 <script>
   import Pagination from '../../components/pagination'
   import BigFile from '../../components/big-file'
+  import VOD from '../../components/vod'
 
   export default {
     name: "business-section",
     components: {
       Pagination,
       BigFile,
+      VOD,
     },
     data() {
       return {
         sections: [],
         section: {
-            id: '',
-            title: '',
-            courseId: '',
-            chapterId: '',
-            video: '',
-            time: '',
-            charge: '',
-            sort: '',
-            createdAt: '',
-            updatedAt: '',
+          id: '',
+          title: '',
+          courseId: '',
+          chapterId: '',
+          video: '',
+          time: '',
+          charge: '',
+          sort: '',
+          createdAt: '',
+          updatedAt: '',
+          vod: '',
         },
         CHARGE: SECTION_CHARGE,
         FILE_USE: FILE_USE,
@@ -215,7 +230,9 @@
           || !Validator.require(_this.section.title, "标题")
           || !Validator.length(_this.section.title, "标题", 1, 50)
           || !Validator.length(_this.section.video, "视频", 1, 200)
-        ) {return;}
+        ) {
+          return;
+        }
 
         _this.section.courseId = _this.course.id;
         _this.section.chapterId = _this.chapter.id;
@@ -267,7 +284,7 @@
           let ele = document.getElementById("video");
           // duration 是自带的属性: 换成10进制的整数: 放到 time 中去
           _this.section.time = parseInt(ele.duration, 10);
-        }, 1000);
+        }, 100);
       }
     }
   }

@@ -1,10 +1,14 @@
 package com.lsu.server.dto;
 
-import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.ToString;
 
+import java.util.Date;
+
+/**
+ * @author wsuo
+ */
 @Data
 @ToString
 public class SectionDto {
@@ -60,5 +64,10 @@ public class SectionDto {
      */
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date updatedAt;
+
+    /**
+     * 阿里云vod
+     */
+    private String vod;
 
 }
