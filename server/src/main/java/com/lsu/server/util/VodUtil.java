@@ -42,6 +42,10 @@ public class VodUtil {
         CreateUploadVideoRequest request = new CreateUploadVideoRequest();
         request.setFileName("vod_test.mp4");
         request.setTitle("岁月神偷");
+        // 设置分类 ID
+        request.setCateId(1000204510L);
+        // 设置转码模板 ID
+        request.setTemplateGroupId("c9e358506fd4238e040a713dbab14b4c");
         // 设置请求超时时间
         request.setSysReadTimeout(1000);
         request.setSysConnectTimeout(1000);
