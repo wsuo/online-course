@@ -95,7 +95,6 @@ public class VodUtil {
      *
      * @param ossClient
      * @param uploadAddress
-     * @param localFile
      */
     public static void uploadLocalFile(OSSClient ossClient, JSONObject uploadAddress, InputStream inputStream) {
         String bucketName = uploadAddress.getString("Bucket");
@@ -138,6 +137,25 @@ public class VodUtil {
             e.printStackTrace();
         }
         return mezzanineInfoResponse;
+    }
+
+    /**
+     * 获取视频播放凭证
+     *
+     * @param client  客户端
+     * @param videoId 视频ID
+     * @return 返回验证响应
+     */
+    public static GetVideoPlayAuthResponse getVideoPlayAuthResponse(DefaultAcsClient client, String videoId) {
+        GetVideoPlayAuthRequest videoPlayAuthRequest = new GetVideoPlayAuthRequest();
+        videoPlayAuthRequest.setVideoId(videoId);
+        GetVideoPlayAuthResponse videoPlayAuthResponse = null;
+        try {
+            videoPlayAuthResponse = client.getAcsResponse(videoPlayAuthRequest);
+        } catch (ClientException e) {
+            e.printStackTrace();
+        }
+        return videoPlayAuthResponse;
     }
 
     public static void main(String[] argv) {

@@ -22,7 +22,7 @@
       <tr>
         <th>id</th>
         <th>标题</th>
-        <th>视频</th>
+        <th>VOD</th>
         <th>时长</th>
         <th>收费</th>
         <th>顺序</th>
@@ -39,6 +39,9 @@
         <td>{{section.sort}}</td>
         <td>
           <div class="hidden-sm hidden-xs btn-group">
+            <button @click="play(section)" class="btn btn-xs btn-info">
+              <i class="ace-icon fa fa-video-camera bigger-120"></i>
+            </button>
             <button @click="edit(section)" class="btn btn-xs btn-info">
               <i class="ace-icon fa fa-pencil bigger-120"></i>
             </button>
@@ -90,7 +93,7 @@
                   <div v-show="section.video" class="row">
                     <!--占这 12 格中的 4 格-->
                     <div class="col-md-9">
-                      <player ref="player"></player>
+                      <player :playerId="'form-player-div'" ref="player"></player>
                       <video :src="section.video" id="video" controls="controls" class="hidden"></video>
                     </div>
                   </div>
@@ -146,6 +149,7 @@
         getAll: 是父组件的 getAll 方法;
       -->
     <pagination ref="pagination" :list="getAll" :itemCount="8"/>
+    <modal-player ref="modalPlayer"></modal-player>
   </div>
 </template>
 
@@ -154,6 +158,7 @@
   import BigFile from '../../components/big-file'
   import Vod from '../../components/vod'
   import Player from '../../components/player'
+  import ModalPlayer from '../../components/modal-player'
 
   export default {
     name: "business-section",
@@ -162,6 +167,7 @@
       BigFile,
       Vod,
       Player,
+      ModalPlayer,
     },
     data() {
       return {
@@ -292,6 +298,14 @@
           // duration 是自带的属性: 换成10进制的整数: 放到 time 中去
           _this.section.time = parseInt(ele.duration, 10);
         }, 500);
+      },
+      /**
+       * 播放视频
+       * @param section 对象
+       */
+      play(section) {
+        let _this = this;
+        _this.$refs.modalPlayer.playVod(section.vod);
       }
     }
   }
