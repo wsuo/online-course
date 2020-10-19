@@ -90,8 +90,8 @@
                   <div v-show="section.video" class="row">
                     <!--占这 12 格中的 4 格-->
                     <div class="col-md-9">
-                      <!--img-responsive 是 bootstrap 内置的属性: 图片自适应-->
-                      <video :src="section.video" id="video" controls="controls"></video>
+                      <player ref="player"></player>
+                      <video :src="section.video" id="video" controls="controls" class="hidden"></video>
                     </div>
                   </div>
                 </div>
@@ -153,6 +153,7 @@
   import Pagination from '../../components/pagination'
   import BigFile from '../../components/big-file'
   import Vod from '../../components/vod'
+  import Player from '../../components/player'
 
   export default {
     name: "business-section",
@@ -160,6 +161,7 @@
       Pagination,
       BigFile,
       Vod,
+      Player,
     },
     data() {
       return {
@@ -275,6 +277,8 @@
         _this.section.video = cont.path;
         _this.section.vod = cont.vod;
         _this.getTime();
+        // 调用组件的方法播放视频
+        _this.$refs.player.playUrl(cont.path);
       },
       /**
        * 获取时长
@@ -287,7 +291,7 @@
           console.log(ele);
           // duration 是自带的属性: 换成10进制的整数: 放到 time 中去
           _this.section.time = parseInt(ele.duration, 10);
-        }, 1500);
+        }, 500);
       }
     }
   }
