@@ -271,7 +271,9 @@
       },
       afterUpload(resp) {
         let _this = this;
-        _this.section.video = resp.content.path;
+        let cont = resp.content;
+        _this.section.video = cont.path;
+        _this.section.vod = cont.vod;
         _this.getTime();
       },
       /**
@@ -282,9 +284,10 @@
         let _this = this;
         setTimeout(function () {
           let ele = document.getElementById("video");
+          console.log(ele);
           // duration 是自带的属性: 换成10进制的整数: 放到 time 中去
           _this.section.time = parseInt(ele.duration, 10);
-        }, 1000);
+        }, 1500);
       }
     }
   }

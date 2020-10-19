@@ -1,13 +1,17 @@
 package com.lsu.file.controller.admin;
 
+import com.alibaba.fastjson.JSON;
+import com.aliyuncs.vod.model.v20170321.GetMezzanineInfoResponse;
 import com.lsu.server.dto.FileDto;
 import com.lsu.server.dto.ResponseDto;
 import com.lsu.server.enums.FileUseEnum;
 import com.lsu.server.service.FileService;
 import com.lsu.server.util.Base64ToMultipartFile;
+import com.lsu.server.util.VodUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,6 +37,12 @@ public class UploadController {
 
     @Value("${file.path}")
     private String path;
+
+    @Value("${vod.accessKeyId}")
+    private String accessKeyId;
+
+    @Value("${vod.accessKeySecret}")
+    private String accessKeySecret;
 
     @Resource
     private FileService fileService;
@@ -149,7 +159,13 @@ public class UploadController {
         FileDto fileDto = fileService.findByKey(key);
         // 如果数据库中能查到记录: 重新设置 path;
         if (fileDto != null) {
-            fileDto.setPath(domain + fileDto.getPath());
+            if (StringUtils.isEmpty(fileDto.getVod())) {
+                fileDto.setPath(domain + fileDto.getPath());
+            } else {
+                GetMezzanineInfoResponse response = VodUtil.getMezzanineInfoResponse(VodUtil.initVodClient(accessKeyId, accessKeySecret), fileDto.getVod());
+                System.out.println("获取视频信息 response = " + JSON.toJSONString(response));
+                fileDto.setPath(response.getMezzanine().getFileURL());
+            }
         }
         responseDto.setContent(fileDto);
         return responseDto;
