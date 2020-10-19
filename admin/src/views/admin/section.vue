@@ -83,9 +83,9 @@
                 <label class="col-sm-2 control-label">视频</label>
                 <div class="col-sm-10">
                   <vod :text="'上传VOD'"
-                            :suffixs='["mp4"]'
-                            :use="FILE_USE.COURSE.key"
-                            :after-upload="afterUpload"></vod>
+                       :suffixs='["mp4"]'
+                       :use="FILE_USE.COURSE.key"
+                       :after-upload="afterUpload"></vod>
                   <!--想把那一行变成 12 格就在哪里增加一个 row -->
                   <div v-show="section.video" class="row">
                     <!--占这 12 格中的 4 格-->
@@ -152,14 +152,14 @@
 <script>
   import Pagination from '../../components/pagination'
   import BigFile from '../../components/big-file'
-  import VOD from '../../components/vod'
+  import Vod from '../../components/vod'
 
   export default {
     name: "business-section",
     components: {
       Pagination,
       BigFile,
-      VOD,
+      Vod,
     },
     data() {
       return {
@@ -284,7 +284,7 @@
           let ele = document.getElementById("video");
           // duration 是自带的属性: 换成10进制的整数: 放到 time 中去
           _this.section.time = parseInt(ele.duration, 10);
-        }, 100);
+        }, 1000);
       }
     }
   }

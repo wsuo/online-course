@@ -81,20 +81,6 @@ public class OssController {
         // 通过AppendObjectRequest设置多个参数。
         AppendObjectRequest appendObjectRequest = new AppendObjectRequest(bucket, path, new ByteArrayInputStream(shard.getBytes()), meta);
 
-        // 通过AppendObjectRequest设置单个参数。
-        // 设置存储空间名称。
-        //appendObjectRequest.setBucketName("<yourBucketName>");
-        // 设置文件名称。
-        //appendObjectRequest.setKey("<yourObjectName>");
-        // 设置待追加的内容。有两种可选类型：InputStream类型和File类型。这里为InputStream类型。
-        //appendObjectRequest.setInputStream(new ByteArrayInputStream(content1.getBytes()));
-        // 设置待追加的内容。有两种可选类型：InputStream类型和File类型。这里为File类型。
-        //appendObjectRequest.setFile(new File("<yourLocalFile>"));
-        // 指定文件的元信息，第一次追加时有效。
-        //appendObjectRequest.setMetadata(meta);
-
-        // 第一次追加。
-        // 设置文件的追加位置。
         appendObjectRequest.setPosition((long) ((shardIndex - 1) * shardSize));
         AppendObjectResult appendObjectResult = ossClient.appendObject(appendObjectRequest);
         // 文件的64位CRC值。此值根据ECMA-182标准计算得出。
