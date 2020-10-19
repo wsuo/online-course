@@ -52,10 +52,10 @@ public class UploadController {
 
         // 保存文件到本地
         FileUseEnum useEnum = FileUseEnum.getByCode(use);
-
-        // 如果文件夹不存在就创建
         String dir = useEnum != null ? useEnum.name().toLowerCase() : null;
         File fullDir = new File(path + dir);
+
+        // 如果文件夹不存在就创建
         if (!fullDir.exists()) {
             boolean b = fullDir.mkdir();
         }
