@@ -101,7 +101,7 @@ public class OssController {
 
 
     @PostMapping("/oss-simple")
-    public ResponseDto fileUpload(@RequestParam MultipartFile file, String use) throws Exception {
+    public ResponseDto<FileDto> fileUpload(@RequestParam MultipartFile file, String use) throws Exception {
         LOG.info("上传文件开始");
         FileUseEnum useEnum = FileUseEnum.getByCode(use);
         String key = UuidUtil.getShortUuid();
@@ -112,26 +112,10 @@ public class OssController {
 
         // 创建OSSClient实例。
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
-
-        // 创建PutObjectRequest对象。
-//        String content = "Hello OSS";
-        // <yourObjectName>表示上传文件到OSS时需要指定包含文件后缀在内的完整路径，例如abc/efg/123.jpg。
         PutObjectRequest putObjectRequest = new PutObjectRequest(bucket, path, new ByteArrayInputStream(file.getBytes()));
-
-        // 如果需要上传时设置存储类型与访问权限，请参考以下示例代码。
-        // ObjectMetadata metadata = new ObjectMetadata();
-        // metadata.setHeader(OSSHeaders.OSS_STORAGE_CLASS, StorageClass.Standard.toString());
-        // metadata.setObjectAcl(CannedAccessControlList.Private);
-        // putObjectRequest.setMetadata(metadata);
-
-        // 上传字符串。
         ossClient.putObject(putObjectRequest);
 
-//        LOG.info("保存文件记录开始");
-//        fileDto.setPath(path);
-//        fileService.save(fileDto);
-
-        ResponseDto responseDto = new ResponseDto();
+        ResponseDto<FileDto> responseDto = new ResponseDto<>();
         FileDto fileDto = new FileDto();
         fileDto.setPath(ossDomain + path);
         responseDto.setContent(fileDto);

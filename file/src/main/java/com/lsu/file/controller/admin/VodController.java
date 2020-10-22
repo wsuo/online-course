@@ -103,7 +103,7 @@ public class VodController {
         LOG.info("获取播放授权开始");
         ResponseDto<String> responseDto = new ResponseDto<>();
         DefaultAcsClient client = VodUtil.initVodClient(accessKeyId, accessKeySecret);
-        GetVideoPlayAuthResponse response = new GetVideoPlayAuthResponse();
+        GetVideoPlayAuthResponse response;
         try {
             response = VodUtil.getVideoPlayAuthResponse(client, vod);
             String playAuth = response.getPlayAuth();

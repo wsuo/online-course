@@ -1,0 +1,184 @@
+<template>
+  <div>
+    <p>
+      <button @click="add" class="btn btn-white btn-default btn-round">
+        <i class="ace-icon fa fa-edit red2"></i>新增
+      </button> &nbsp;
+      <button @click="getAll(1)" class="btn btn-white btn-default btn-round">
+        <i class="ace-icon fa fa-refresh red2"></i>刷新
+      </button>
+    </p>
+    <table id="simple-table" class="table  table-bordered table-hover">
+
+      <thead>
+      <tr>
+                    <th>id</th>
+            <th>登陆名</th>
+            <th>昵称</th>
+            <th>密码</th>
+        <th>操作</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr v-for="user in users">
+        <td>{{user.id}}</td>
+        <td>{{user.loginName}}</td>
+        <td>{{user.name}}</td>
+        <td>{{user.password}}</td>
+        <td>
+          <div class="hidden-sm hidden-xs btn-group">
+            <button @click="edit(user)" class="btn btn-xs btn-info">
+              <i class="ace-icon fa fa-pencil bigger-120"></i>
+            </button>
+            <button @click="del(user.id)" class="btn btn-xs btn-danger">
+              <i class="ace-icon fa fa-trash-o bigger-120"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">表单</h4>
+          </div>
+          <div class="modal-body">
+            <form class="form-horizontal">
+                <div class="form-group">
+                  <label for="loginName" class="col-sm-2 control-label">登陆名</label>
+                  <div class="col-sm-10">
+                    <input v-model="user.loginName" id="loginName" class="form-control">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="name" class="col-sm-2 control-label">昵称</label>
+                  <div class="col-sm-10">
+                    <input v-model="user.name" id="name" class="form-control">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="password" class="col-sm-2 control-label">密码</label>
+                  <div class="col-sm-10">
+                    <input v-model="user.password" id="password" class="form-control">
+                  </div>
+                </div>
+            </form>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+              <button @click="save" type="button" class="btn btn-primary">保存</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--
+        :list="getAll"
+
+        list: 是子组件暴露出来的一个回调方法;
+        getAll: 是父组件的 getAll 方法;
+      -->
+    <pagination ref="pagination" :list="getAll" :itemCount="8"/>
+  </div>
+</template>
+
+<script>
+  import Pagination from '../../components/pagination'
+
+  export default {
+    name: "system-user",
+    components: {
+      Pagination,
+    },
+    data() {
+      return {
+        users: [],
+        user: {
+          id: '',
+          loginName: '',
+          name: '',
+          password: '',
+        },
+    }
+    },
+    created() {
+    },
+    mounted() {
+      let _this = this;
+      _this.$refs.pagination.size = 10;
+      _this.getAll(1);
+    },
+    methods: {
+      getAll(page) {
+        let _this = this;
+        Loading.show();
+        _this.$ajax.post(process.env.VUE_APP_SERVER + '/system/admin/user/list', {
+          page: page,
+          size: _this.$refs.pagination.size,
+        }).then(response => {
+          Loading.hide();
+          let resp = response.data;
+          _this.users = resp.content.list;
+          // 渲染子组件
+          _this.$refs.pagination.render(page, resp.content.total);
+        })
+      },
+      add() {
+        let _this = this;
+        _this.user = {};
+        $("#myModal").modal("show");
+      },
+      save() {
+        let _this = this;
+
+        // 保存校验
+        if (1 !== 1
+          || !Validator.require(_this.user.loginName, "登陆名")
+          || !Validator.length(_this.user.loginName, "登陆名", 1, 50)
+          || !Validator.length(_this.user.name, "昵称", 1, 50)
+          || !Validator.require(_this.user.password, "密码")
+        ) {return;}
+
+        Loading.show();
+        _this.$ajax.post(process.env.VUE_APP_SERVER + '/system/admin/user/save',
+          _this.user).then(response => {
+          Loading.hide();
+          let resp = response.data;
+          if (resp.success) {
+            $("#myModal").modal("hide");
+            _this.getAll(1);
+            Toast.success("保存成功");
+          }
+        })
+      },
+      edit(user) {
+        let _this = this;
+        // 双向绑定问题: 输入的时候表格也会更新数据: 使用 JQuery 的函数解决问题
+        _this.user = $.extend({}, user);
+        $("#myModal").modal("show");
+      },
+      del(id) {
+        let _this = this;
+        Confirm.show("该操作不可逆转", function () {
+          Loading.show();
+          _this.$ajax.delete(process.env.VUE_APP_SERVER + '/system/admin/user/delete/' + id).then(response => {
+            Loading.hide();
+            let resp = response.data;
+            if (resp.success) {
+              _this.getAll(1);
+              Toast.success("删除成功");
+            }
+          });
+        });
+      }
+    }
+  }
+</script>
+
+<style scoped>
+
+</style>
