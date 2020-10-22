@@ -142,7 +142,8 @@
           || !Validator.length(_this.user.name, "昵称", 1, 50)
           || !Validator.require(_this.user.password, "密码")
         ) {return;}
-
+        // 密码 MD5 加密
+        _this.user.password = hex_md5(_this.user.password + KEY);
         Loading.show();
         _this.$ajax.post(process.env.VUE_APP_SERVER + '/system/admin/user/save',
           _this.user).then(response => {
