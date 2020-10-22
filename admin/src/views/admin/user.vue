@@ -52,7 +52,7 @@
                 <div class="form-group">
                   <label for="loginName" class="col-sm-2 control-label">登陆名</label>
                   <div class="col-sm-10">
-                    <input v-model="user.loginName" id="loginName" class="form-control">
+                    <input v-model="user.loginName" :disabled="user.id" id="loginName" class="form-control">
                   </div>
                 </div>
                 <div class="form-group">
@@ -152,6 +152,8 @@
             $("#myModal").modal("hide");
             _this.getAll(1);
             Toast.success("保存成功");
+          } else {
+            Toast.warning(resp.message);
           }
         })
       },

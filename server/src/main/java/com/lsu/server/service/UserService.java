@@ -6,10 +6,13 @@ import com.lsu.server.domain.User;
 import com.lsu.server.domain.UserExample;
 import com.lsu.server.dto.UserDto;
 import com.lsu.server.dto.PageDto;
+import com.lsu.server.exception.BusinessException;
+import com.lsu.server.exception.BusinessExceptionCode;
 import com.lsu.server.mapper.UserMapper;
 import com.lsu.server.util.CopyUtil;
 import com.lsu.server.util.UuidUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
@@ -63,6 +66,10 @@ public class UserService {
 
     private void insert(User user) {
         user.setId(UuidUtil.getShortUuid());
+        User userDb = this.selectByLoginName(user.getLoginName());
+        if (userDb != null) {
+            throw new BusinessException(BusinessExceptionCode.USER_LOGIN_NAME_EXIST);
+        }
         userMapper.insert(user);
     }
 
@@ -72,5 +79,23 @@ public class UserService {
 
     public void delete(String id) {
         userMapper.deleteByPrimaryKey(id);
+    }
+
+    /**
+     * 根据用户名查询用户信息
+     *
+     * @param loginName 登陆名
+     * @return 返回信息
+     */
+    public User selectByLoginName(String loginName) {
+        UserExample example = new UserExample();
+        UserExample.Criteria criteria = example.createCriteria();
+        criteria.andLoginNameEqualTo(loginName);
+        List<User> users = userMapper.selectByExample(example);
+        if (CollectionUtils.isEmpty(users)) {
+            return null;
+        } else {
+            return users.get(0);
+        }
     }
 }
