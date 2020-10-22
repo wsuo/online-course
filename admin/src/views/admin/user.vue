@@ -12,10 +12,10 @@
 
       <thead>
       <tr>
-                    <th>id</th>
-            <th>登陆名</th>
-            <th>昵称</th>
-            <th>密码</th>
+        <th>id</th>
+        <th>登陆名</th>
+        <th>昵称</th>
+        <th>密码</th>
         <th>操作</th>
       </tr>
       </thead>
@@ -27,6 +27,9 @@
         <td>{{user.password}}</td>
         <td>
           <div class="hidden-sm hidden-xs btn-group">
+            <button @click="editPwd(user)" class="btn btn-xs btn-danger">
+              <i class="ace-icon fa fa-key bigger-120"></i>
+            </button>
             <button @click="edit(user)" class="btn btn-xs btn-info">
               <i class="ace-icon fa fa-pencil bigger-120"></i>
             </button>
@@ -38,7 +41,7 @@
       </tr>
       </tbody>
     </table>
-    <!-- Modal -->
+    <!-- 表单模态框 -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -49,28 +52,54 @@
           </div>
           <div class="modal-body">
             <form class="form-horizontal">
-                <div class="form-group">
-                  <label for="loginName" class="col-sm-2 control-label">登陆名</label>
-                  <div class="col-sm-10">
-                    <input v-model="user.loginName" :disabled="user.id" id="loginName" class="form-control">
-                  </div>
+              <div class="form-group">
+                <label for="loginName" class="col-sm-2 control-label">登陆名</label>
+                <div class="col-sm-10">
+                  <input v-model="user.loginName" :disabled="user.id" id="loginName" class="form-control">
                 </div>
-                <div class="form-group">
-                  <label for="name" class="col-sm-2 control-label">昵称</label>
-                  <div class="col-sm-10">
-                    <input v-model="user.name" id="name" class="form-control">
-                  </div>
+              </div>
+              <div class="form-group">
+                <label for="name" class="col-sm-2 control-label">昵称</label>
+                <div class="col-sm-10">
+                  <input v-model="user.name" id="name" class="form-control">
                 </div>
-                <div class="form-group">
-                  <label for="password" class="col-sm-2 control-label">密码</label>
-                  <div class="col-sm-10">
-                    <input v-model="user.password" id="password" class="form-control">
-                  </div>
+              </div>
+              <div class="form-group" v-show="!user.id">
+                <label for="password" class="col-sm-2 control-label" type="password">密码</label>
+                <div class="col-sm-10">
+                  <input v-model="user.password" id="password" class="form-control">
                 </div>
+              </div>
             </form>
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
               <button @click="save" type="button" class="btn btn-primary">保存</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--密码模态框-->
+    <div class="modal fade" id="pwdModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="pwdModalLabel">修改密码</h4>
+          </div>
+          <div class="modal-body">
+            <form class="form-horizontal">
+              <div class="form-group">
+                <label for="pwd" class="col-sm-2 control-label">密码</label>
+                <div class="col-sm-9">
+                  <input v-model="user.password" id="pwd" class="form-control" type="password">
+                </div>
+              </div>
+            </form>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+              <button @click="savePwd" type="button" class="btn btn-primary">保存</button>
             </div>
           </div>
         </div>
@@ -103,7 +132,7 @@
           name: '',
           password: '',
         },
-    }
+      }
     },
     created() {
     },
@@ -141,7 +170,9 @@
           || !Validator.length(_this.user.loginName, "登陆名", 1, 50)
           || !Validator.length(_this.user.name, "昵称", 1, 50)
           || !Validator.require(_this.user.password, "密码")
-        ) {return;}
+        ) {
+          return;
+        }
         // 密码 MD5 加密
         _this.user.password = hex_md5(_this.user.password + KEY);
         Loading.show();
@@ -177,7 +208,36 @@
             }
           });
         });
-      }
+      },
+      /**
+       * 点击重置密码
+       * @param user 用户
+       */
+      editPwd(user) {
+        let _this = this;
+        // 双向绑定问题: 输入的时候表格也会更新数据: 使用 JQuery 的函数解决问题
+        _this.user = $.extend({}, user);
+        _this.user.password = null;
+        $("#pwdModal").modal("show");
+      },
+      savePwd() {
+        let _this = this;
+        // 密码 MD5 加密
+        _this.user.password = hex_md5(_this.user.password + KEY);
+        Loading.show();
+        _this.$ajax.post(process.env.VUE_APP_SERVER + '/system/admin/user/save-password',
+          _this.user).then(response => {
+          Loading.hide();
+          let resp = response.data;
+          if (resp.success) {
+            $("#pwdModal").modal("hide");
+            _this.getAll(1);
+            Toast.success("保存成功");
+          } else {
+            Toast.warning(resp.message);
+          }
+        })
+      },
     }
   }
 </script>

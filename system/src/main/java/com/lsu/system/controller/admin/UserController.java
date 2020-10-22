@@ -53,6 +53,22 @@ public class UserController {
         return responseDto;
     }
 
+    /**
+     * 保存密码
+     *
+     * @param userDto userDto
+     * @return 返回响应
+     */
+    @PostMapping("/save-password")
+    public ResponseDto<UserDto> savePassword(@RequestBody UserDto userDto) {
+        // MD5 加密
+        userDto.setPassword(DigestUtils.md5DigestAsHex(userDto.getPassword().getBytes()));
+        ResponseDto<UserDto> responseDto = new ResponseDto<>();
+        userService.savePassword(userDto);
+        responseDto.setContent(userDto);
+        return responseDto;
+    }
+
     @DeleteMapping("/delete/{id}")
     public ResponseDto delete(@PathVariable String id) {
         ResponseDto responseDto = new ResponseDto();

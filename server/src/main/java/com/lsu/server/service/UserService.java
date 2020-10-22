@@ -73,8 +73,15 @@ public class UserService {
         userMapper.insert(user);
     }
 
+    /**
+     * 更新操作
+     * Selective 表示如果字段有值就更新,没值就跳过
+     *
+     * @param user 用户
+     */
     private void update(User user) {
-        userMapper.updateByPrimaryKey(user);
+        user.setPassword(null);
+        userMapper.updateByPrimaryKeySelective(user);
     }
 
     public void delete(String id) {
@@ -97,5 +104,17 @@ public class UserService {
         } else {
             return users.get(0);
         }
+    }
+
+    /**
+     * 重置密码
+     *
+     * @param userDto user传输对象
+     */
+    public void savePassword(UserDto userDto) {
+        User user = new User();
+        user.setId(userDto.getId());
+        user.setPassword(userDto.getPassword());
+        userMapper.updateByPrimaryKeySelective(user);
     }
 }
