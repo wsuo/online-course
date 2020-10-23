@@ -1,7 +1,9 @@
 package com.lsu.system.controller.admin;
 
+import com.alibaba.fastjson.JSON;
 import com.lsu.server.dto.*;
 import com.lsu.server.service.UserService;
+import com.lsu.server.util.UuidUtil;
 import com.lsu.server.util.ValidatorUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 测试
@@ -111,10 +114,12 @@ public class UserController {
             return responseDto;
         } else {
             // 验证码通过后 移除验证码
-            request.getSession().removeAttribute(userDto.getImageCodeToken());
+            redisTemplate.delete(userDto.getImageCodeToken());
         }
         LoginUserDto loginUserDto = userService.login(userDto);
-        request.getSession().setAttribute("loginUser", loginUserDto);
+        String token = UuidUtil.getShortUuid();
+        loginUserDto.setToken(token);
+        redisTemplate.opsForValue().set(token, JSON.toJSONString(loginUserDto), 3600, TimeUnit.SECONDS);
         responseDto.setContent(loginUserDto);
         return responseDto;
     }
@@ -122,11 +127,12 @@ public class UserController {
     /**
      * 退出登陆
      */
-    @GetMapping("/logout")
-    public ResponseDto logout(HttpServletRequest request) {
+    @GetMapping("/logout/{token}")
+    public ResponseDto logout(@PathVariable String token) {
         ResponseDto responseDto = new ResponseDto();
-        // 从 session 域中移除 loginUser
-        request.getSession().removeAttribute(Constants.LOGIN_USER);
+        // 从 redis 域中移除 loginUser
+        redisTemplate.delete(token);
+        LOG.info("从redis中删除token: {}", token);
         return responseDto;
     }
 }
