@@ -1,5 +1,6 @@
 package com.lsu.system.controller.admin;
 
+import com.lsu.server.dto.LoginUserDto;
 import com.lsu.server.dto.UserDto;
 import com.lsu.server.dto.PageDto;
 import com.lsu.server.dto.ResponseDto;
@@ -76,5 +77,19 @@ public class UserController {
         return responseDto;
     }
 
-
+    /**
+     * 保存密码
+     *
+     * @param userDto userDto
+     * @return 返回响应
+     */
+    @PostMapping("/login")
+    public ResponseDto<LoginUserDto> login(@RequestBody UserDto userDto) {
+        // MD5 加密
+        userDto.setPassword(DigestUtils.md5DigestAsHex(userDto.getPassword().getBytes()));
+        ResponseDto<LoginUserDto> responseDto = new ResponseDto<>();
+        LoginUserDto loginUserDto = userService.login(userDto);
+        responseDto.setContent(loginUserDto);
+        return responseDto;
+    }
 }

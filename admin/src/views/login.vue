@@ -24,15 +24,13 @@
                       <fieldset>
                         <label class="block clearfix">
 														<span class="block input-icon input-icon-right">
-															<input type="text" class="form-control"
-                                     placeholder="Username"/>
+															<input type="text" class="form-control" placeholder="用户名" v-model="user.loginName"/>
 															<i class="ace-icon fa fa-user"></i>
 														</span>
                         </label>
                         <label class="block clearfix">
 														<span class="block input-icon input-icon-right">
-															<input type="password" class="form-control"
-                                     placeholder="Password"/>
+															<input type="password" class="form-control" placeholder="密码" v-model="user.password"/>
 															<i class="ace-icon fa fa-lock"></i>
 														</span>
                         </label>
@@ -42,9 +40,7 @@
                             <input type="checkbox" class="ace"/>
                             <span class="lbl"> 记住我</span>
                           </label>
-                          <button type="button"
-                                  class="width-35 pull-right btn btn-sm btn-primary"
-                                  @click="login()">
+                          <button type="button" class="width-35 pull-right btn btn-sm btn-primary" @click="login()">
                             <i class="ace-icon fa fa-key"></i>
                             <span class="bigger-110">登陆</span>
                           </button>
@@ -63,12 +59,10 @@
                       <i class="ace-icon fa fa-key"></i>
                       Retrieve Password
                     </h4>
-
                     <div class="space-6"></div>
                     <p>
                       Enter your email and to receive instructions
                     </p>
-
                     <form>
                       <fieldset>
                         <label class="block clearfix">
@@ -78,7 +72,6 @@
 															<i class="ace-icon fa fa-envelope"></i>
 														</span>
                         </label>
-
                         <div class="clearfix">
                           <button type="button"
                                   class="width-35 pull-right btn btn-sm btn-danger">
@@ -89,7 +82,6 @@
                       </fieldset>
                     </form>
                   </div><!-- /.widget-main -->
-
                   <div class="toolbar center">
                     <a href="#" data-target="#login-box" class="back-to-login-link">
                       Back to login
@@ -98,7 +90,6 @@
                   </div>
                 </div><!-- /.widget-body -->
               </div><!-- /.forgot-box -->
-
               <div id="signup-box" class="signup-box widget-box no-border">
                 <div class="widget-body">
                   <div class="widget-main">
@@ -106,10 +97,8 @@
                       <i class="ace-icon fa fa-users blue"></i>
                       New User Registration
                     </h4>
-
                     <div class="space-6"></div>
                     <p> Enter your details to begin: </p>
-
                     <form>
                       <fieldset>
                         <label class="block clearfix">
@@ -119,7 +108,6 @@
 															<i class="ace-icon fa fa-envelope"></i>
 														</span>
                         </label>
-
                         <label class="block clearfix">
 														<span class="block input-icon input-icon-right">
 															<input type="text" class="form-control"
@@ -127,7 +115,6 @@
 															<i class="ace-icon fa fa-user"></i>
 														</span>
                         </label>
-
                         <label class="block clearfix">
 														<span class="block input-icon input-icon-right">
 															<input type="password" class="form-control"
@@ -135,7 +122,6 @@
 															<i class="ace-icon fa fa-lock"></i>
 														</span>
                         </label>
-
                         <label class="block clearfix">
 														<span class="block input-icon input-icon-right">
 															<input type="password" class="form-control"
@@ -143,7 +129,6 @@
 															<i class="ace-icon fa fa-retweet"></i>
 														</span>
                         </label>
-
                         <label class="block">
                           <input type="checkbox" class="ace"/>
                           <span class="lbl">
@@ -151,26 +136,20 @@
 															<a href="#">User Agreement</a>
 														</span>
                         </label>
-
                         <div class="space-24"></div>
-
                         <div class="clearfix">
                           <button type="reset" class="width-30 pull-left btn btn-sm">
                             <i class="ace-icon fa fa-refresh"></i>
                             <span class="bigger-110">Reset</span>
                           </button>
-
-                          <button type="button"
-                                  class="width-65 pull-right btn btn-sm btn-success">
+                          <button type="button" class="width-65 pull-right btn btn-sm btn-success">
                             <span class="bigger-110">Register</span>
-
                             <i class="ace-icon fa fa-arrow-right icon-on-right"></i>
                           </button>
                         </div>
                       </fieldset>
                     </form>
                   </div>
-
                   <div class="toolbar center">
                     <a href="#" data-target="#login-box" class="back-to-login-link">
                       <i class="ace-icon fa fa-arrow-left"></i>
@@ -190,6 +169,16 @@
 <script>
   export default {
     name: "login",
+    data() {
+      return {
+        user: {
+          id: '',
+          loginName: '',
+          name: '',
+          password: '',
+        },
+      }
+    },
     mounted: function() {
       let body = $('body');
       body.attr('class', 'login-layout light-login');
@@ -197,7 +186,20 @@
     },
     methods: {
       login() {
-        this.$router.push("/welcome")
+        let _this = this;
+        // 密码 MD5 加密
+        _this.user.password = hex_md5(_this.user.password + KEY);
+        Loading.show();
+        _this.$ajax.post(process.env.VUE_APP_SERVER + '/system/admin/user/login', _this.user).then(response => {
+          Loading.hide();
+          let resp = response.data;
+          if (resp.success) {
+            console.log(resp.content);
+            this.$router.push("/welcome");
+          } else {
+            Toast.warning(resp.message);
+          }
+        });
       }
     }
   }
