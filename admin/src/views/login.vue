@@ -186,6 +186,7 @@
     },
     methods: {
       login() {
+        Tool.setLoginUser(null);
         let _this = this;
         // 密码 MD5 加密
         _this.user.password = hex_md5(_this.user.password + KEY);
@@ -202,7 +203,7 @@
             Toast.warning(resp.message);
           }
         });
-      }
+      },
     }
   }
 </script>

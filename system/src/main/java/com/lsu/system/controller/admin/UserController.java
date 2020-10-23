@@ -1,9 +1,6 @@
 package com.lsu.system.controller.admin;
 
-import com.lsu.server.dto.LoginUserDto;
-import com.lsu.server.dto.UserDto;
-import com.lsu.server.dto.PageDto;
-import com.lsu.server.dto.ResponseDto;
+import com.lsu.server.dto.*;
 import com.lsu.server.service.UserService;
 import com.lsu.server.util.ValidatorUtil;
 import org.slf4j.Logger;
@@ -12,6 +9,7 @@ import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 测试
@@ -78,18 +76,30 @@ public class UserController {
     }
 
     /**
-     * 保存密码
+     * 登陆
      *
      * @param userDto userDto
      * @return 返回响应
      */
     @PostMapping("/login")
-    public ResponseDto<LoginUserDto> login(@RequestBody UserDto userDto) {
+    public ResponseDto<LoginUserDto> login(@RequestBody UserDto userDto, HttpServletRequest request) {
         // MD5 加密
         userDto.setPassword(DigestUtils.md5DigestAsHex(userDto.getPassword().getBytes()));
         ResponseDto<LoginUserDto> responseDto = new ResponseDto<>();
         LoginUserDto loginUserDto = userService.login(userDto);
+        request.getSession().setAttribute("loginUser", loginUserDto);
         responseDto.setContent(loginUserDto);
+        return responseDto;
+    }
+
+    /**
+     * 退出登陆
+     */
+    @GetMapping("/logout")
+    public ResponseDto logout(HttpServletRequest request) {
+        ResponseDto responseDto = new ResponseDto();
+        // 从 session 域中移除 loginUser
+        request.getSession().removeAttribute(Constants.LOGIN_USER);
         return responseDto;
     }
 }
