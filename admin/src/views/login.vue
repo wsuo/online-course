@@ -37,7 +37,7 @@
                         <div class="space"></div>
                         <div class="clearfix">
                           <label class="inline">
-                            <input type="checkbox" class="ace"/>
+                            <input type="checkbox" class="ace" v-model="remember"/>
                             <span class="lbl"> 记住我</span>
                           </label>
                           <button type="button" class="width-35 pull-right btn btn-sm btn-primary" @click="login()">
@@ -177,17 +177,24 @@
           name: '',
           password: '',
         },
+        remember: true,
       }
     },
     mounted: function() {
+      let _this = this;
       let body = $('body');
       body.attr('class', 'login-layout light-login');
       body.removeClass('no-skin');
+      let rememberUser = LocalStorage.get(LOCAL_KEY_REMEMBER_USER);
+      if (rememberUser) {
+        _this.user = rememberUser;
+      }
     },
     methods: {
       login() {
         Tool.setLoginUser(null);
         let _this = this;
+        let passwordShow = _this.user.password;
         // 密码 MD5 加密
         _this.user.password = hex_md5(_this.user.password + KEY);
         Loading.show();
@@ -196,8 +203,20 @@
           let resp = response.data;
           if (resp.success) {
             // resp.content: {id: "wAtUSitS", loginName: "test", name: "test"}
+            let cont = resp.content;
             Toast.success('登陆成功');
-            Tool.setLoginUser(resp.content);
+
+            // 如果用户点击了记住我: 保存到本地
+            if (_this.remember) {
+              LocalStorage.set(LOCAL_KEY_REMEMBER_USER, {
+                loginName: cont.loginName,
+                password: passwordShow
+              });
+            } else {
+              // 如果用户没有点击记住我: 清空值
+              LocalStorage.set(LOCAL_KEY_REMEMBER_USER, null);
+            }
+            Tool.setLoginUser(cont);
             this.$router.push("/welcome");
           } else {
             Toast.warning(resp.message);

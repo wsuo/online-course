@@ -1,3 +1,4 @@
+LOCAL_KEY_REMEMBER_USER = "LOCAL_KEY_REMEMBER_USER";
 /*
 将数据的传输转为 JSON 格式
  */
