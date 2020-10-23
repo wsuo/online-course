@@ -27,4 +27,13 @@ public class UserDto {
      */
     private String password;
 
+    /**
+     * 验证码
+     */
+    private String imageCode;
+
+    /**
+     * 图片验证码 token
+     */
+    private String imageCodeToken;
 }

@@ -37,7 +37,7 @@
                         <label class="block clearfix">
                           <span class="block input-icon input-icon-right">
                             <div class="input-group">
-                              <input type="text" class="form-control" placeholder="验证码"/>
+                              <input type="text" class="form-control" placeholder="验证码" v-model="user.imageCode"/>
                               <span class="input-group-addon" id="basic-addon2">
                                 <img @click="loadImageCode()" id="image-code" alt="验证码">
                               </span>
@@ -186,6 +186,8 @@
           loginName: '',
           name: '',
           password: '',
+          imageCode: '',
+          imageCodeToken: ''
         },
         remember: true,
       }
@@ -210,9 +212,11 @@
         // 如果密码是从缓存带出来的: 则不需要重新加密
         let md5 = hex_md5(_this.user.password);
         let rememberUser = LocalStorage.get(LOCAL_KEY_REMEMBER_USER) || {};
+
         if (md5 !== rememberUser.md5) {
           _this.user.password = hex_md5(_this.user.password + KEY);
         }
+        _this.user.imageCodeToken = _this.imageCodeToken;
         Loading.show();
         _this.$ajax.post(process.env.VUE_APP_SERVER + '/system/admin/user/login', _this.user).then(response => {
           Loading.hide();
@@ -238,6 +242,8 @@
             this.$router.push("/welcome");
           } else {
             Toast.warning(resp.message);
+            _this.user.password = "";
+            _this.loadImageCode();
           }
         });
       },

@@ -8,6 +8,9 @@ Vue.config.productionTip = false;
 // 以 Vue 属性的方式使用 axios
 Vue.prototype.$ajax = axios;
 
+// 解决每次 ajax 请求, 对应的 sessionId 不一致的问题
+axios.defaults.withCredentials = true;
+
 /*
 * axios 拦截器
 * */
