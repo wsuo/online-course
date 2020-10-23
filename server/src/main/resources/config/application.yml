@@ -5,6 +5,9 @@ spring:
     url: jdbc:mysql://localhost:3306/online_course?characterEncoding=UTF8&useUnicode=false&serverTimezone=UTC
     username: root
     password: root
+  redis:
+    host: localhost
+    port: 6379
 
 management:
   endpoints:
