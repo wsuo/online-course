@@ -194,7 +194,9 @@
           Loading.hide();
           let resp = response.data;
           if (resp.success) {
-            console.log(resp.content);
+            // resp.content: {id: "wAtUSitS", loginName: "test", name: "test"}
+            Toast.success('登陆成功');
+            Tool.setLoginUser(resp.content);
             this.$router.push("/welcome");
           } else {
             Toast.warning(resp.message);

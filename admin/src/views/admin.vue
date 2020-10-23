@@ -288,7 +288,7 @@
                      alt="Jason's Photo"/>
                 <span class="user-info">
 									<small>Welcome,</small>
-									Jason
+									{{loginUser.name}}
 								</span>
 
                 <i class="ace-icon fa fa-caret-down"></i>
@@ -500,6 +500,15 @@
 <script>
   export default {
     name: "admin",
+    data() {
+      return {
+        loginUser: {
+          id: '',
+          loginName: '',
+          name: '',
+        }
+      }
+    },
     mounted: function () {
       let _this = this;
       let body = $('body');
@@ -509,6 +518,7 @@
 
       // 重新加载 JS
       $.getScript('/ace/assets/js/ace.min.js');
+      _this.loginUser = Tool.getLoginUser();
     },
     methods: {
       /**
