@@ -12,31 +12,23 @@
 
       <thead>
       <tr>
-        <#list fieldList as field>
-        <#if field.nameHump!="createdAt" && field.nameHump!="updatedAt">
-        <th>${field.nameCn}</th>
-        </#if>
-        </#list>
+        <th>id</th>
+        <th>角色</th>
+        <th>描述</th>
         <th>操作</th>
       </tr>
       </thead>
       <tbody>
-      <tr v-for="${domain} in ${domain}s">
-        <#list fieldList as field>
-          <#if field.nameHump!="createdAt" && field.nameHump!="updatedAt">
-            <#if field.enums>
-        <td>{{${field.enumsConst} | optionKV(${domain}.${field.nameHump})}}</td>
-            <#else>
-        <td>{{${domain}.${field.nameHump}}}</td>
-            </#if>
-          </#if>
-        </#list>
+      <tr v-for="role in roles">
+        <td>{{role.id}}</td>
+        <td>{{role.name}}</td>
+        <td>{{role.desc}}</td>
         <td>
           <div class="hidden-sm hidden-xs btn-group">
-            <button @click="edit(${domain})" class="btn btn-xs btn-info">
+            <button @click="edit(role)" class="btn btn-xs btn-info">
               <i class="ace-icon fa fa-pencil bigger-120"></i>
             </button>
-            <button @click="del(${domain}.id)" class="btn btn-xs btn-danger">
+            <button @click="del(role.id)" class="btn btn-xs btn-danger">
               <i class="ace-icon fa fa-trash-o bigger-120"></i>
             </button>
           </div>
@@ -55,22 +47,18 @@
           </div>
           <div class="modal-body">
             <form class="form-horizontal">
-              <#list fieldList as field>
-                <#if field.name!="id" && field.nameHump!="createdAt" && field.nameHump!="updatedAt">
                 <div class="form-group">
-                  <label for="${field.nameHump}" class="col-sm-2 control-label">${field.nameCn}</label>
+                  <label for="name" class="col-sm-2 control-label">角色</label>
                   <div class="col-sm-10">
-                    <#if field.enums>
-                    <select v-model="${domain}.${field.nameHump}" class="form-control" id="${field.nameHump}">
-                      <option v-for="o in ${field.enumsConst}" :value="o.key">{{o.value}}</option>
-                    </select>
-                    <#else>
-                    <input v-model="${domain}.${field.nameHump}" id="${field.nameHump}" class="form-control">
-                    </#if>
+                    <input v-model="role.name" id="name" class="form-control">
                   </div>
                 </div>
-                </#if>
-              </#list>
+                <div class="form-group">
+                  <label for="desc" class="col-sm-2 control-label">描述</label>
+                  <div class="col-sm-10">
+                    <input v-model="role.desc" id="desc" class="form-control">
+                  </div>
+                </div>
             </form>
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
@@ -94,23 +82,18 @@
   import Pagination from '../../components/pagination'
 
   export default {
-    name: "${module}-${domain}",
+    name: "system-role",
     components: {
       Pagination,
     },
     data() {
       return {
-        ${domain}s: [],
-        ${domain}: {
-          <#list fieldList as field>
-          ${field.nameHump}: '',
-          </#list>
+        roles: [],
+        role: {
+          id: '',
+          name: '',
+          desc: '',
         },
-      <#list fieldList as field>
-      <#if field.enums>
-        ${field.enumsConst}: ${field.enumsConst},
-      </#if>
-      </#list>
     }
     },
     created() {
@@ -124,20 +107,20 @@
       getAll(page) {
         let _this = this;
         Loading.show();
-        _this.$ajax.post(process.env.VUE_APP_SERVER + '/${module}/admin/${domain}/list', {
+        _this.$ajax.post(process.env.VUE_APP_SERVER + '/system/admin/role/list', {
           page: page,
           size: _this.$refs.pagination.size,
         }).then(response => {
           Loading.hide();
           let resp = response.data;
-          _this.${domain}s = resp.content.list;
+          _this.roles = resp.content.list;
           // 渲染子组件
           _this.$refs.pagination.render(page, resp.content.total);
         })
       },
       add() {
         let _this = this;
-        _this.${domain} = {};
+        _this.role = {};
         $("#myModal").modal("show");
       },
       save() {
@@ -145,21 +128,15 @@
 
         // 保存校验
         if (1 !== 1
-        <#list fieldList as field>
-          <#if field.name!="id" && field.nameHump!="createdAt" && field.nameHump!="updatedAt" && field.nameHump!="sort">
-          <#if !field.nullAble>
-          || !Validator.require(_this.${domain}.${field.nameHump}, "${field.nameCn}")
-          </#if>
-          <#if (field.length > 0)>
-          || !Validator.length(_this.${domain}.${field.nameHump}, "${field.nameCn}", 1, ${field.length?c})
-          </#if>
-          </#if>
-        </#list>
+          || !Validator.require(_this.role.name, "角色")
+          || !Validator.length(_this.role.name, "角色", 1, 50)
+          || !Validator.require(_this.role.desc, "描述")
+          || !Validator.length(_this.role.desc, "描述", 1, 100)
         ) {return;}
 
         Loading.show();
-        _this.$ajax.post(process.env.VUE_APP_SERVER + '/${module}/admin/${domain}/save',
-          _this.${domain}).then(response => {
+        _this.$ajax.post(process.env.VUE_APP_SERVER + '/system/admin/role/save',
+          _this.role).then(response => {
           Loading.hide();
           let resp = response.data;
           if (resp.success) {
@@ -169,17 +146,17 @@
           }
         })
       },
-      edit(${domain}) {
+      edit(role) {
         let _this = this;
         // 双向绑定问题: 输入的时候表格也会更新数据: 使用 JQuery 的函数解决问题
-        _this.${domain} = $.extend({}, ${domain});
+        _this.role = $.extend({}, role);
         $("#myModal").modal("show");
       },
       del(id) {
         let _this = this;
         Confirm.show("该操作不可逆转", function () {
           Loading.show();
-          _this.$ajax.delete(process.env.VUE_APP_SERVER + '/${module}/admin/${domain}/delete/' + id).then(response => {
+          _this.$ajax.delete(process.env.VUE_APP_SERVER + '/system/admin/role/delete/' + id).then(response => {
             Loading.hide();
             let resp = response.data;
             if (resp.success) {
