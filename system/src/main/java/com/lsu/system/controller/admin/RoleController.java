@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 测试
@@ -55,6 +56,30 @@ public class RoleController {
     public ResponseDto delete(@PathVariable String id) {
         ResponseDto responseDto = new ResponseDto();
         roleService.delete(id);
+        return responseDto;
+    }
+
+    /**
+     * 保存资源
+     *
+     * @param roleDto 角色
+     * @return 响应
+     */
+    @PostMapping("/save-resource")
+    public ResponseDto<RoleDto> saveResource(@RequestBody RoleDto roleDto) {
+        LOG.info("保存角色资源关联开始");
+        ResponseDto<RoleDto> responseDto = new ResponseDto<>();
+        roleService.saveResource(roleDto);
+        responseDto.setContent(roleDto);
+        return responseDto;
+    }
+
+    @GetMapping("/list-resource/{roleId}")
+    public ResponseDto listResource(@PathVariable String roleId) {
+        LOG.info("加载资源开始");
+        ResponseDto<List> responseDto = new ResponseDto<>();
+        List<String> resourceIdList = roleService.listResource(roleId);
+        responseDto.setContent(resourceIdList);
         return responseDto;
     }
 }

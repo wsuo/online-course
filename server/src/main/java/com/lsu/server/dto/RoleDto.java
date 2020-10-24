@@ -3,6 +3,11 @@ package com.lsu.server.dto;
 import lombok.Data;
 import lombok.ToString;
 
+import java.util.List;
+
+/**
+ * @author wsuo
+ */
 @Data
 @ToString
 public class RoleDto {
@@ -22,4 +27,8 @@ public class RoleDto {
      */
     private String desc;
 
+    /**
+     * 这个权限对应的资源们
+     */
+    private List<String> resourceIds;
 }

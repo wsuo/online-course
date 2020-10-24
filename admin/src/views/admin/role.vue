@@ -89,7 +89,7 @@
               <button type="button" class="btn btn-default" data-dismiss="modal">
                 <i class="ace-icon fa fa-times"></i>关闭
               </button>
-              <button @click="save" type="button" class="btn btn-primary">
+              <button @click="saveResource" type="button" class="btn btn-primary">
                 <i class="ace-icon fa fa-times"></i>保存
               </button>
             </div>
@@ -154,35 +154,6 @@
         _this.role = {};
         $("#myModal").modal("show");
       },
-      save() {
-        let _this = this;
-
-        // 保存校验
-        if (1 !== 1
-          || !Validator.require(_this.role.name, "角色")
-          || !Validator.length(_this.role.name, "角色", 1, 50)
-          || !Validator.require(_this.role.desc, "描述")
-          || !Validator.length(_this.role.desc, "描述", 1, 100)
-        ) {return;}
-
-        Loading.show();
-        _this.$ajax.post(process.env.VUE_APP_SERVER + '/system/admin/role/save',
-          _this.role).then(response => {
-          Loading.hide();
-          let resp = response.data;
-          if (resp.success) {
-            $("#myModal").modal("hide");
-            _this.getAll(1);
-            Toast.success("保存成功");
-          }
-        })
-      },
-      edit(role) {
-        let _this = this;
-        // 双向绑定问题: 输入的时候表格也会更新数据: 使用 JQuery 的函数解决问题
-        _this.role = $.extend({}, role);
-        $("#myModal").modal("show");
-      },
       del(id) {
         let _this = this;
         Confirm.show("该操作不可逆转", function () {
@@ -214,6 +185,7 @@
           let resp = response.data;
           _this.resources = resp.content;
           _this.initTree();
+          _this.listRoleResource();
         });
       },
       /**
@@ -236,6 +208,47 @@
         };
         _this.zTree = $.fn.zTree.init($("#tree"), setting, _this.resources);
         _this.zTree.expandAll(true);
+      },
+      /**
+       * 资源模态框点击保存
+       */
+      saveResource() {
+        let _this = this;
+        let resources = _this.zTree.getCheckedNodes();
+        // 保存时只需要保存资源 id
+        let resourceIds = [];
+        for (let i = 0; i < resources.length; i++) {
+          resourceIds.push(resources[i].id);
+        }
+
+        _this.$ajax.post(process.env.VUE_APP_SERVER + '/system/admin/resource/save-resource', {
+          id: _this.role.id,
+          resourceIds: resourceIds
+        }).then(response => {
+          let resp = response.data;
+          if (resp.success) {
+            Toast.success("保存成功");
+          } else {
+            Toast.warning(resp.message);
+          }
+        });
+      },
+      /**
+       * 加载角色资源关联记录
+       */
+      listRoleResource() {
+        let _this = this;
+        _this.$ajax.get(process.env.VUE_APP_SERVER + '/system/admin/resource/load-resource/' + _this.role.id).then(response => {
+          let resp = response.data;
+          let resources = resp.content;
+
+          // 勾选查询到的资源: 先把树的所有点清空勾选: 再勾选查询到的节点
+          _this.zTree.checkAllNodes(false);
+          for (let i = 0; i < resources.length; i++) {
+            let node = _this.zTree.getNodeByParam("id", resources[i]);
+            _this.zTree.checkNode(node, true);
+          }
+        });
       }
     }
   }
