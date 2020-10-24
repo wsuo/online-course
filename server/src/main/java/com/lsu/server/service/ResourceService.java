@@ -9,7 +9,6 @@ import com.lsu.server.dto.PageDto;
 import com.lsu.server.dto.ResourceDto;
 import com.lsu.server.mapper.ResourceMapper;
 import com.lsu.server.util.CopyUtil;
-import com.lsu.server.util.UuidUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -69,7 +68,6 @@ public class ResourceService {
     }
 
     private void insert(Resource resource) {
-        resource.setId(UuidUtil.getShortUuid());
         resourceMapper.insert(resource);
     }
 
@@ -122,5 +120,38 @@ public class ResourceService {
                 add(list, dto);
             }
         }
+    }
+
+    /**
+     * 按约定将列表转成树
+     * ID 要正序排列
+     *
+     * @return 集合
+     */
+    public List<ResourceDto> loadTree() {
+        ResourceExample example = new ResourceExample();
+        example.setOrderByClause("id asc");
+        List<Resource> resources = resourceMapper.selectByExample(example);
+        List<ResourceDto> resourceDtoList = CopyUtil.copyList(resources, ResourceDto.class);
+        for (int i = resourceDtoList.size() - 1; i >= 0; i--) {
+            // 当前要移动的记录
+            ResourceDto child = resourceDtoList.get(i);
+            // 如果没有父节点就不往下了
+            if (StringUtils.isEmpty(child.getParent())) {
+                continue;
+            }
+            // 查找父节点
+            for (int j = i - 1; j >=0; j--) {
+                ResourceDto parent = resourceDtoList.get(j);
+                if (child.getParent().equals(parent.getId())) {
+                    if (CollectionUtils.isEmpty(parent.getChildren())) {
+                        parent.setChildren(new ArrayList<>());
+                    }
+                    parent.getChildren().add(0, child);
+                    resourceDtoList.remove(child);
+                }
+            }
+        }
+        return resourceDtoList;
     }
 }
