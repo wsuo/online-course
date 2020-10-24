@@ -15,6 +15,10 @@ spring:
           uri: lb://online-course-system
           predicates:
             - Path=/system/**
+          filters:
+            - name: LoginAdmin
+            - args:
+                - true
         - id: business
           uri: lb://online-course-business
           predicates:

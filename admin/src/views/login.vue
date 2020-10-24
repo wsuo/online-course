@@ -198,10 +198,10 @@
       body.attr('class', 'login-layout light-login');
       body.removeClass('no-skin');
       let rememberUser = LocalStorage.get(LOCAL_KEY_REMEMBER_USER);
+
       if (rememberUser) {
         _this.user = rememberUser;
       }
-
       // 初始时加载一次验证码图片
       _this.loadImageCode();
     },
