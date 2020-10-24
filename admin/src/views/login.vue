@@ -224,7 +224,7 @@
           if (resp.success) {
             // resp.content: {id: "wAtUSitS", loginName: "test", name: "test"}
             let cont = resp.content;
-            Toast.success('登陆成功');
+            Toast.success('登录成功');
 
             // 如果用户点击了记住我: 保存到本地
             if (_this.remember) {

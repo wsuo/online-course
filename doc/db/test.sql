@@ -2,7 +2,7 @@
     测试 SQL
 */
 select *
-from user;
+from resource;
 
 # 根据表名获取表的注释信息
 select table_comment
