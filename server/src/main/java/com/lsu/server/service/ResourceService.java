@@ -1,17 +1,23 @@
 package com.lsu.server.service;
 
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.lsu.server.domain.Resource;
 import com.lsu.server.domain.ResourceExample;
-import com.lsu.server.dto.ResourceDto;
 import com.lsu.server.dto.PageDto;
+import com.lsu.server.dto.ResourceDto;
 import com.lsu.server.mapper.ResourceMapper;
 import com.lsu.server.util.CopyUtil;
 import com.lsu.server.util.UuidUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,6 +29,8 @@ import java.util.List;
  */
 @Service
 public class ResourceService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ResourceService.class);
 
     @javax.annotation.Resource
     private ResourceMapper resourceMapper;
@@ -71,5 +79,48 @@ public class ResourceService {
 
     public void delete(String id) {
         resourceMapper.deleteByPrimaryKey(id);
+    }
+
+    /**
+     * 保存 json 数据结构
+     *
+     * @param jsonStr json 字符串
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void saveJson(String jsonStr) {
+        // 有嵌套的 ResourceDto
+        List<ResourceDto> jsonList = JSON.parseArray(jsonStr, ResourceDto.class);
+        // 没有嵌套的 ResourceDto
+        List<ResourceDto> list = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(jsonList)) {
+            for (ResourceDto resourceDto : jsonList) {
+                resourceDto.setParent("");
+                add(list, resourceDto);
+            }
+        }
+        LOG.info("共{}条", list.size());
+        resourceMapper.deleteByExample(null);
+        for (ResourceDto resourceDto : list) {
+            this.insert(CopyUtil.copy(resourceDto, Resource.class));
+        }
+    }
+
+    /**
+     * 递归: 将树形结构的节点全部取出来: 放到 list 中
+     * 将 ResourceDto 中的 List 拆成 ResourceDto
+     *
+     * @param list        没有嵌套的集合
+     * @param resourceDto 有嵌套的对象
+     */
+    private void add(List<ResourceDto> list, ResourceDto resourceDto) {
+        list.add(resourceDto);
+
+        List<ResourceDto> childrenList = resourceDto.getChildren();
+        if (!CollectionUtils.isEmpty(childrenList)) {
+            for (ResourceDto dto : childrenList) {
+                dto.setParent(resourceDto.getId());
+                add(list, dto);
+            }
+        }
     }
 }

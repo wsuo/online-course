@@ -1,22 +1,31 @@
 <template>
   <div>
     <p>
-      <button @click="add" class="btn btn-white btn-default btn-round">
-        <i class="ace-icon fa fa-edit red2"></i>新增
-      </button> &nbsp;
       <button @click="getAll(1)" class="btn btn-white btn-default btn-round">
         <i class="ace-icon fa fa-refresh red2"></i>刷新
       </button>
     </p>
+    <div class="row">
+      <div class="col-md-6">
+        <label for="resource-textarea"></label>
+        <textarea id="resource-textarea" class="form-control" v-model="resourceStr" name="resource" rows="10"></textarea>
+        <br>
+        <button id="save-btn" type="button" class="btn btn-primary" v-on:click="save()">
+          保存
+        </button>
+      </div>
+      <!--<div class="col-md-6">
+        <ul id="tree" class="ztree"></ul>
+      </div>-->
+    </div>
     <table id="simple-table" class="table  table-bordered table-hover">
-
       <thead>
       <tr>
-                    <th>id</th>
-            <th>名称</th>
-            <th>页面</th>
-            <th>请求</th>
-            <th>父id</th>
+        <th>id</th>
+        <th>名称</th>
+        <th>页面</th>
+        <th>请求</th>
+        <th>父id</th>
         <th>操作</th>
       </tr>
       </thead>
@@ -40,56 +49,6 @@
       </tr>
       </tbody>
     </table>
-    <!-- Modal -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-              aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="myModalLabel">表单</h4>
-          </div>
-          <div class="modal-body">
-            <form class="form-horizontal">
-                <div class="form-group">
-                  <label for="name" class="col-sm-2 control-label">名称</label>
-                  <div class="col-sm-10">
-                    <input v-model="resource.name" id="name" class="form-control">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="page" class="col-sm-2 control-label">页面</label>
-                  <div class="col-sm-10">
-                    <input v-model="resource.page" id="page" class="form-control">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="request" class="col-sm-2 control-label">请求</label>
-                  <div class="col-sm-10">
-                    <input v-model="resource.request" id="request" class="form-control">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="parent" class="col-sm-2 control-label">父id</label>
-                  <div class="col-sm-10">
-                    <input v-model="resource.parent" id="parent" class="form-control">
-                  </div>
-                </div>
-            </form>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-              <button @click="save" type="button" class="btn btn-primary">保存</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!--
-        :list="getAll"
-
-        list: 是子组件暴露出来的一个回调方法;
-        getAll: 是父组件的 getAll 方法;
-      -->
     <pagination ref="pagination" :list="getAll" :itemCount="8"/>
   </div>
 </template>
@@ -112,6 +71,7 @@
           request: '',
           parent: '',
         },
+        resourceStr: '',
     }
     },
     created() {
@@ -136,25 +96,17 @@
           _this.$refs.pagination.render(page, resp.content.total);
         })
       },
-      add() {
-        let _this = this;
-        _this.resource = {};
-        $("#myModal").modal("show");
-      },
       save() {
         let _this = this;
 
-        // 保存校验
-        if (1 !== 1
-          || !Validator.require(_this.resource.name, "名称")
-          || !Validator.length(_this.resource.name, "名称", 1, 100)
-          || !Validator.length(_this.resource.page, "页面", 1, 50)
-          || !Validator.length(_this.resource.request, "请求", 1, 200)
-        ) {return;}
-
+        if (Tool.isEmpty(_this.resourceStr)) {
+          Toast.warning("资源不能为空");
+          return;
+        }
+        let json = JSON.parse(_this.resourceStr);
         Loading.show();
         _this.$ajax.post(process.env.VUE_APP_SERVER + '/system/admin/resource/save',
-          _this.resource).then(response => {
+          json).then(response => {
           Loading.hide();
           let resp = response.data;
           if (resp.success) {
@@ -163,12 +115,6 @@
             Toast.success("保存成功");
           }
         })
-      },
-      edit(resource) {
-        let _this = this;
-        // 双向绑定问题: 输入的时候表格也会更新数据: 使用 JQuery 的函数解决问题
-        _this.resource = $.extend({}, resource);
-        $("#myModal").modal("show");
       },
       del(id) {
         let _this = this;

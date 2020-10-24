@@ -14,7 +14,7 @@
       <tr>
         <#list fieldList as field>
           <#if field.nameHump!="createdAt" && field.nameHump!="updatedAt">
-            <th>${field.nameCn}</th>
+        <th>${field.nameCn}</th>
           </#if>
         </#list>
         <th>操作</th>

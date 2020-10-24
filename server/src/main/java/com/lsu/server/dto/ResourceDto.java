@@ -3,6 +3,11 @@ package com.lsu.server.dto;
 import lombok.Data;
 import lombok.ToString;
 
+import java.util.List;
+
+/**
+ * @author wsuo
+ */
 @Data
 @ToString
 public class ResourceDto {
@@ -32,4 +37,9 @@ public class ResourceDto {
      */
     private String parent;
 
+
+    /**
+     * 子节点
+     */
+    private List<ResourceDto> children;
 }
