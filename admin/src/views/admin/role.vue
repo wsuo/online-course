@@ -50,18 +50,18 @@
           </div>
           <div class="modal-body">
             <form class="form-horizontal">
-                <div class="form-group">
-                  <label for="name" class="col-sm-2 control-label">角色</label>
-                  <div class="col-sm-10">
-                    <input v-model="role.name" id="name" class="form-control">
-                  </div>
+              <div class="form-group">
+                <label for="name" class="col-sm-2 control-label">角色</label>
+                <div class="col-sm-10">
+                  <input v-model="role.name" id="name" class="form-control">
                 </div>
-                <div class="form-group">
-                  <label for="desc" class="col-sm-2 control-label">描述</label>
-                  <div class="col-sm-10">
-                    <input v-model="role.desc" id="desc" class="form-control">
-                  </div>
+              </div>
+              <div class="form-group">
+                <label for="desc" class="col-sm-2 control-label">描述</label>
+                <div class="col-sm-10">
+                  <input v-model="role.desc" id="desc" class="form-control">
                 </div>
+              </div>
             </form>
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
@@ -125,7 +125,7 @@
         },
         resources: [],
         zTree: {},
-    }
+      }
     },
     created() {
     },
@@ -149,9 +149,51 @@
           _this.$refs.pagination.render(page, resp.content.total);
         })
       },
+      /**
+       * 点击【保存】
+       */
+      save() {
+        let _this = this;
+
+        // 保存校验
+        if (1 !== 1
+          || !Validator.require(_this.role.name, "角色")
+          || !Validator.length(_this.role.name, "角色", 1, 50)
+          || !Validator.require(_this.role.desc, "描述")
+          || !Validator.length(_this.role.desc, "描述", 1, 100)
+        ) {
+          return;
+        }
+
+        Loading.show();
+        _this.$ajax.post(process.env.VUE_APP_SERVER + '/system/admin/role/save', _this.role).then((response) => {
+          Loading.hide();
+          let resp = response.data;
+          if (resp.success) {
+            $("#form-modal").modal("hide");
+            _this.list(1);
+            Toast.success("保存成功！");
+          } else {
+            Toast.warning(resp.message)
+          }
+        })
+      },
+
+      /**
+       * 点击【新增】
+       */
       add() {
         let _this = this;
         _this.role = {};
+        $("#myModal").modal("show");
+      },
+
+      /**
+       * 点击【编辑】
+       */
+      edit(role) {
+        let _this = this;
+        _this.role = $.extend({}, role);
         $("#myModal").modal("show");
       },
       del(id) {
@@ -221,7 +263,7 @@
           resourceIds.push(resources[i].id);
         }
 
-        _this.$ajax.post(process.env.VUE_APP_SERVER + '/system/admin/resource/save-resource', {
+        _this.$ajax.post(process.env.VUE_APP_SERVER + '/system/admin/role/save-resource', {
           id: _this.role.id,
           resourceIds: resourceIds
         }).then(response => {
@@ -238,7 +280,7 @@
        */
       listRoleResource() {
         let _this = this;
-        _this.$ajax.get(process.env.VUE_APP_SERVER + '/system/admin/resource/load-resource/' + _this.role.id).then(response => {
+        _this.$ajax.get(process.env.VUE_APP_SERVER + '/system/admin/role/list-resource/' + _this.role.id).then(response => {
           let resp = response.data;
           let resources = resp.content;
 

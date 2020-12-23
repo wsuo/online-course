@@ -17,15 +17,15 @@ spring:
 
 file:
   domain: http://127.0.0.1:9000/file/f/
-  path: D:/fileUpload/imooc/
+  path: ~
 
 oss:
-  accessKeyId: LTAI4G531JhMJPxEmukmA7Yc
-  accessKeySecret: GlRP7Z3kGTQ0YnubejJ7WiwEHtSVAu
-  endpoint: oss-cn-hangzhou.aliyuncs.com
-  bucket: online-course-top
-  domain: http://online-course-top.oss-cn-hangzhou.aliyuncs.com/
+  accessKeyId: ~
+  accessKeySecret: ~
+  endpoint: ~
+  bucket: ~
+  domain: ~
 
 vod:
-  accessKeyId: LTAI4G9mJMU4jkeMGVPTbCsA
-  accessKeySecret: 2xK9ogegMnQGqvcCObsJwpmT67JzOQ
+  accessKeyId: ~
+  accessKeySecret: ~
