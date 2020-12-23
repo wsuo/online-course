@@ -25,6 +25,9 @@
         <td>{{role.desc}}</td>
         <td>
           <div class="hidden-sm hidden-xs btn-group">
+            <button @click="editUser(role)" class="btn btn-xs btn-info">
+              <i class="ace-icon fa fa-user bigger-120"></i>
+            </button>
             <button @click="editResource(role)" class="btn btn-xs btn-info">
               <i class="ace-icon fa fa-list bigger-120"></i>
             </button>
@@ -97,6 +100,60 @@
         </div>
       </div>
     </div>
+
+    <!--角色用户关联配置-->
+    <div id="user-modal" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">角色用户关联配置</h4>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-6">
+                <table id="user-table" class="table table-hover">
+                  <tbody>
+                  <tr v-for="user in users">
+                    <td>{{user.loginName}}</td>
+                    <td class="text-right">
+                      <a v-on:click="addUser(user)" href="javascript:" class="">
+                        <i class="ace-icon fa fa-arrow-circle-right blue"></i>
+                      </a>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="col-md-6">
+                <table id="role-user-table" class="table table-hover">
+                  <tbody>
+                  <tr v-for="user in roleUsers">
+                    <td>{{user.loginName}}</td>
+                    <td class="text-right">
+                      <a v-on:click="deleteUser(user)" href="javascript:;" class="">
+                        <i class="ace-icon fa fa-trash blue"></i>
+                      </a>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-white btn-default btn-round" data-dismiss="modal">
+              <i class="ace-icon fa fa-times"></i>
+              关闭
+            </button>
+            <button type="button" class="btn btn-white btn-info btn-round" v-on:click="saveUser()">
+              <i class="ace-icon fa fa-plus blue"></i>
+              保存
+            </button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
     <!--
         :list="getAll"
 
@@ -118,6 +175,8 @@
     data() {
       return {
         roles: [],
+        users: [],
+        roleUsers: [],
         role: {
           id: '',
           name: '',
@@ -289,6 +348,33 @@
           for (let i = 0; i < resources.length; i++) {
             let node = _this.zTree.getNodeByParam("id", resources[i]);
             _this.zTree.checkNode(node, true);
+          }
+        });
+      },
+      /*
+      修改用户权限
+       */
+      editUser(role) {
+        let _this = this;
+        _this.role = $.extend({}, role);
+        _this.listUser();
+        $("#user-modal").modal("show");
+      },
+      /*
+      查找所有的用户
+       */
+      listUser() {
+        let _this = this;
+        _this.$ajax.post(process.env.VUE_APP_SERVER + '/system/admin/user/list', {
+          page: 1,
+          size: 9999
+        }).then(resp => {
+          let res = resp.data;
+          if (res.success) {
+            _this.users = res.content.list;
+            console.log(_this.users);
+          } else {
+            Toast.warning(res.message);
           }
         });
       }
