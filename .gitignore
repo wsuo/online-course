@@ -22,3 +22,4 @@ generator/target/
 /admin/public/zTree_v3/
 file/file.iml
 file/target/
+/file/src/main/resources/application.yml
