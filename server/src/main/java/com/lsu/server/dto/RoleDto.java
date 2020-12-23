@@ -31,4 +31,9 @@ public class RoleDto {
      * 这个权限对应的资源们
      */
     private List<String> resourceIds;
+
+    /**
+     * 这个权限对应的用户们
+     */
+    private List<String> userIds;
 }

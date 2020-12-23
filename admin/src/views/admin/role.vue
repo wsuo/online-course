@@ -377,6 +377,56 @@
             Toast.warning(res.message);
           }
         });
+      },
+
+      /*
+      角色中增加用户
+       */
+      addUser(user) {
+        let _this = this;
+
+        // 如果当前要添加的用户在右边的表中已经有了,则不再添加
+        let users = _this.roleUsers;
+        for (let i = 0; i < users.length; i++) {
+          if (user === users[i]) {
+            return;
+          }
+        }
+
+        // 将用户选择的角色添加到 roleUsers 中
+        _this.roleUsers.push(user);
+      },
+
+      /*
+      角色中删除用户: 依赖 Vue 的双向绑定功能-可以将复杂的页面操作变成简单的数据操作
+       */
+      deleteUser(user) {
+        let _this = this;
+        Tool.removeObj(_this.roleUsers, user);
+      },
+
+      saveUser() {
+        let _this = this;
+        let users = _this.roleUsers;
+        let userIds = [];
+
+        for (let i = 0; i < users.length; i++) {
+          userIds.push(users[i].id);
+        }
+
+        // 调用后端接口
+        _this.$ajax.post(process.env.VUE_APP_SERVER + '/system/admin/role/save-user', {
+          id: _this.role.id,
+          userIds: userIds
+        }).then(resp => {
+          console.log("保存用户角色结果: ", resp);
+          let res = resp.data;
+          if (res.success) {
+            Toast.success("保存成功!");
+          } else {
+            Toast.warning(res.message);
+          }
+        });
       }
     }
   }
