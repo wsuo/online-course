@@ -97,4 +97,19 @@ public class RoleController {
         responseDto.setContent(roleDto);
         return responseDto;
     }
+
+    /**
+     * 加载用户
+     *
+     * @param roleId 角色 ID
+     * @return 响应
+     */
+    @GetMapping("/list-user/{roleId}")
+    public ResponseDto listUser(@PathVariable String roleId) {
+        LOG.info("加载用户开始");
+        ResponseDto<List> responseDto = new ResponseDto<>();
+        List<String> userIdList = roleService.listUser(roleId);
+        responseDto.setContent(userIdList);
+        return responseDto;
+    }
 }

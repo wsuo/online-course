@@ -360,6 +360,7 @@
         _this.listUser();
         $("#user-modal").modal("show");
       },
+
       /*
       查找所有的用户
        */
@@ -372,7 +373,7 @@
           let res = resp.data;
           if (res.success) {
             _this.users = res.content.list;
-            console.log(_this.users);
+            _this.listRoleUser();
           } else {
             Toast.warning(res.message);
           }
@@ -405,6 +406,9 @@
         Tool.removeObj(_this.roleUsers, user);
       },
 
+      /**
+       * 保存角色用户
+       */
       saveUser() {
         let _this = this;
         let users = _this.roleUsers;
@@ -425,6 +429,26 @@
             Toast.success("保存成功!");
           } else {
             Toast.warning(res.message);
+          }
+        });
+      },
+
+      /**
+       * 加载用户角色
+       */
+      listRoleUser() {
+        let _this = this;
+        _this.roleUsers = [];
+        _this.$ajax.get(process.env.VUE_APP_SERVER + '/system/admin/role/list-user/' + _this.role.id).then(resp => {
+          let res = resp.data;
+          let userIds = res.content;
+
+          for (let i = 0; i < userIds.length; i++) {
+            for (let j = 0; j < _this.users.length; j++) {
+              if (userIds[i] === _this.users[j].id) {
+                _this.roleUsers.push(_this.users[j]);
+              }
+            }
           }
         });
       }

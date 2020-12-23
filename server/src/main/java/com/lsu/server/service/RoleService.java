@@ -144,4 +144,21 @@ public class RoleService {
             roleUserMapper.insert(roleUser);
         }
     }
+
+    /**
+     * 根据角色查询用户
+     *
+     * @param roleId 角色 ID
+     * @return 返回用户IDs
+     */
+    public List<String> listUser(String roleId) {
+        RoleUserExample example = new RoleUserExample();
+        example.createCriteria().andRoleIdEqualTo(roleId);
+        List<RoleUser> roleUsers = roleUserMapper.selectByExample(example);
+        List<String> userIdList = new ArrayList<>();
+        for (RoleUser roleUser : roleUsers) {
+            userIdList.add(roleUser.getUserId());
+        }
+        return userIdList;
+    }
 }
