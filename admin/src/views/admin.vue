@@ -398,7 +398,7 @@
           </li>
 
           <!--业务管理-->
-          <li class="">
+          <li class="" v-show="hasResource('02')">
             <a href="#" class="dropdown-toggle">
               <i class="menu-icon fa fa-list"></i>
               <span class="menu-text"> 业务管理 </span>
@@ -406,21 +406,21 @@
             </a>
             <b class="arrow"></b>
             <ul class="submenu">
-              <li class="" id="business-category-sidebar">
+              <li class="" id="business-category-sidebar" v-show="hasResource('0201')">
                 <router-link to="/business/category">
                   <i class="menu-icon fa fa-caret-right"></i>
                   分类管理
                 </router-link>
                 <b class="arrow"></b>
               </li>
-              <li class="" id="business-course-sidebar">
+              <li class="" id="business-course-sidebar" v-show="hasResource('0202')">
                 <router-link to="/business/course">
                   <i class="menu-icon fa fa-caret-right"></i>
                   课程管理
                 </router-link>
                 <b class="arrow"></b>
               </li>
-              <li class="" id="business-teacher-sidebar">
+              <li class="" id="business-teacher-sidebar" v-show="hasResource('0203')">
                 <router-link to="/business/teacher">
                   <i class="menu-icon fa fa-caret-right"></i>
                   讲师管理
@@ -431,7 +431,7 @@
           </li>
 
           <!--文件管理-->
-          <li class="">
+          <li class="" v-show="hasResource('03')">
             <a href="#" class="dropdown-toggle">
               <i class="menu-icon fa fa-list"></i>
               <span class="menu-text"> 文件管理 </span>
@@ -439,7 +439,7 @@
             </a>
             <b class="arrow"></b>
             <ul class="submenu">
-              <li class="" id="file-file-sidebar">
+              <li class="" id="file-file-sidebar" v-show="hasResource('0301')">
                 <router-link to="/file/file">
                   <i class="menu-icon fa fa-caret-right"></i>
                   文件管理
@@ -527,6 +527,11 @@
       // 重新加载 JS
       $.getScript('/ace/assets/js/ace.min.js');
       _this.loginUser = Tool.getLoginUser();
+
+      // 初始化时: 如果当前用户没有权限就跳转到登录页面
+      if (!_this.hasResourceRouter(_this.$route.name)) {
+        _this.$router.push("/login");
+      }
     },
     methods: {
       /**
@@ -565,6 +570,24 @@
       },
       hasResource(id) {
         return Tool.hasResource(id);
+      },
+      /**
+       * 查找是否有权限
+       * @param router 路由
+       * @returns {boolean} 返回值
+       */
+      hasResourceRouter(router) {
+        let _this = this;
+        let resources = Tool.getLoginUser().resources;
+        if (Tool.isEmpty(resources)) {
+          return false;
+        }
+        for (let i = 0; i < resources.length; i++) {
+          if (router === resources[i].page) {
+            return true;
+          }
+        }
+        return false;
       }
     },
     watch: {
@@ -572,6 +595,12 @@
         handler: function (val, oldVal) {
           console.log("---->页面跳转: ", val, oldVal);
           let _this = this;
+
+          // 侧边栏跳转时: 如果当前用户没有权限就跳转到登录页面
+          if (!_this.hasResourceRouter(val.name)) {
+            _this.$router.push("/login");
+            return;
+          }
           _this.$nextTick(function () {
             _this.activeSidebar(_this.$route.name.replace("/", "-") + "-sidebar");
           })
