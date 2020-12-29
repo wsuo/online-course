@@ -1,15 +1,18 @@
 package com.lsu.server.service;
 
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.lsu.server.domain.User;
 import com.lsu.server.domain.UserExample;
 import com.lsu.server.dto.LoginUserDto;
 import com.lsu.server.dto.PageDto;
+import com.lsu.server.dto.ResourceDto;
 import com.lsu.server.dto.UserDto;
 import com.lsu.server.exception.BusinessException;
 import com.lsu.server.exception.BusinessExceptionCode;
 import com.lsu.server.mapper.UserMapper;
+import com.lsu.server.mapper.my.MyUserResourceMapper;
 import com.lsu.server.util.CopyUtil;
 import com.lsu.server.util.UuidUtil;
 import org.slf4j.Logger;
@@ -19,6 +22,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -35,6 +39,9 @@ public class UserService {
 
     @Resource
     private UserMapper userMapper;
+
+    @Resource
+    private MyUserResourceMapper userResourceMapper;
 
     /**
      * 分页查询
@@ -99,7 +106,7 @@ public class UserService {
      * @param loginName 登陆名
      * @return 返回信息
      */
-    public User selectByLoginName(String loginName) {
+    private User selectByLoginName(String loginName) {
         UserExample example = new UserExample();
         UserExample.Criteria criteria = example.createCriteria();
         criteria.andLoginNameEqualTo(loginName);
@@ -137,12 +144,39 @@ public class UserService {
         } else {
             if (user.getPassword().equals(userDto.getPassword())) {
                 // 登陆成功
-                return CopyUtil.copy(user, LoginUserDto.class);
+                LoginUserDto loginUserDto = CopyUtil.copy(user, LoginUserDto.class);
+                // 为当前用户读取权限
+                setAuth(loginUserDto);
+                return loginUserDto;
             } else {
                 // 密码不对
                 LOG.info("密码不对,输入密码: {} 数据库密码: {}", userDto.getPassword(), user.getPassword());
                 throw new BusinessException(BusinessExceptionCode.LOGIN_USER_ERROR);
             }
         }
+    }
+
+    /**
+     * 为登录用户读取权限
+     *
+     * @param loginUserDto 登陆对象
+     */
+    private void setAuth(LoginUserDto loginUserDto) {
+        List<ResourceDto> resources = userResourceMapper.findResources(loginUserDto.getId());
+        loginUserDto.setResources(resources);
+
+        // 整理所有权限的请求: 用于接口拦截
+        HashSet<String> requestSet = new HashSet<>();
+        if (!CollectionUtils.isEmpty(resources)) {
+            for (ResourceDto resource : resources) {
+                String arrayString = resource.getRequest();
+                List<String> requestList = JSON.parseArray(arrayString, String.class);
+                if (!CollectionUtils.isEmpty(requestList)) {
+                    requestSet.addAll(requestList);
+                }
+            }
+        }
+        LOG.info("该用户有权限的请求：{}", requestSet);
+        loginUserDto.setRequests(requestSet);
     }
 }

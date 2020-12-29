@@ -2,7 +2,7 @@
     测试 SQL
 */
 select *
-from resource;
+from course;
 
 # 根据表名获取表的注释信息
 select table_comment
@@ -18,7 +18,7 @@ set time = (select sum(time) from section where course_id = '00000001')
 where c.id = '00000001';
 
 select *
-from role_user;
+from role_resource;
 
 select *
-from role;
+from resource;

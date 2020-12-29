@@ -133,6 +133,7 @@ public class ResourceService {
         example.setOrderByClause("id asc");
         List<Resource> resources = resourceMapper.selectByExample(example);
         List<ResourceDto> resourceDtoList = CopyUtil.copyList(resources, ResourceDto.class);
+        // 倒序循环: 一边遍历List,一边删除List中的节点,因为用过之后删除可以增加查询速度;
         for (int i = resourceDtoList.size() - 1; i >= 0; i--) {
             // 当前要移动的记录
             ResourceDto child = resourceDtoList.get(i);
@@ -147,6 +148,7 @@ public class ResourceService {
                     if (CollectionUtils.isEmpty(parent.getChildren())) {
                         parent.setChildren(new ArrayList<>());
                     }
+                    // 已经将子节点加入了,所以现在可以删掉了
                     parent.getChildren().add(0, child);
                     resourceDtoList.remove(child);
                 }
