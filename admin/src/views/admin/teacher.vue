@@ -28,6 +28,7 @@
           </div>
         </div>
         <div class="space-6"></div>
+        <!--让文本居中-->
         <div class="text-center">
           <a href="#" class="text-info bigger-110" v-bind:title="teacher.motto">
             <i class="ace-icon fa fa-user"></i>
