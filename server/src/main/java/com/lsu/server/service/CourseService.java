@@ -6,6 +6,7 @@ import com.lsu.server.domain.Course;
 import com.lsu.server.domain.CourseContent;
 import com.lsu.server.domain.CourseExample;
 import com.lsu.server.dto.*;
+import com.lsu.server.enums.CourseStatusEnum;
 import com.lsu.server.mapper.CourseContentMapper;
 import com.lsu.server.mapper.CourseMapper;
 import com.lsu.server.mapper.my.MyCourseMapper;
@@ -173,5 +174,22 @@ public class CourseService {
         if (sortDto.getNewSort() < sortDto.getOldSort()) {
             myCourseMapper.moveSortsBackward(sortDto);
         }
+    }
+
+    /**
+     * 新课列表查询: 只查询已发布的: 按创建日期倒序
+     *
+     * @param pageDto 分页对象
+     * @return 返回列表
+     */
+    public List<CourseDto> listNew(PageDto pageDto) {
+        PageHelper.startPage(pageDto.getPage(), pageDto.getSize());
+        CourseExample example = new CourseExample();
+        // 查询的只能是已发布的
+        example.createCriteria().andStatusEqualTo(CourseStatusEnum.PUBLISH.getCode());
+        // 按照发布的时间倒序
+        example.setOrderByClause("created_at desc");
+        List<Course> courses = courseMapper.selectByExample(example);
+        return CopyUtil.copyList(courses, CourseDto.class);
     }
 }
