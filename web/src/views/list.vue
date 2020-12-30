@@ -194,6 +194,9 @@
        */
       onClickLevel2(level2Id) {
         let _this = this;
+        let cate_l2 = $("#category-" + level2Id);
+        cate_l2.siblings("a").removeClass("on");
+        cate_l2.addClass("on");
       }
     }
   }
