@@ -98,6 +98,7 @@
         }],
         level1: [],
         level2: [],
+        categorys: []
       }
     },
     methods: {
@@ -118,6 +119,10 @@
           console.log("error: ", resp);
         })
       },
+
+      /**
+       * 所有的分类
+       */
       allCategory() {
         let _this = this;
         _this.$ajax.post(process.env.VUE_APP_SERVER + '/business/web/category/all').then(response => {
@@ -132,15 +137,6 @@
             // 如果分类的父 id 是 00000000;表示他是一级分类
             if (c.parent === '00000000') {
               _this.level1.push(c);
-              for (let j = 0; j < _this.categorys.length; j++) {
-                let child = _this.categorys[j];
-                if (child.parent === c.id) {
-                  if (Tool.isEmpty(c.children)) {
-                    c.children = [];
-                  }
-                  c.children.push(child)
-                }
-              }
 
               // 否则是二级分类
             } else {
@@ -156,6 +152,40 @@
        */
       onClickLevel1(level1Id) {
         let _this = this;
+
+        // 点击一级分类时,显示激活状态
+        let cate_l1 = $("#category-" + level1Id);
+        let cate_1 = $("#category-11111111");
+        // 移除所有的兄弟节点的样式
+        cate_l1.siblings("a").removeClass("cur");
+        cate_l1.addClass("cur");
+
+        // 点击一级分类时,二级分类[无限]按钮要设置成激活状态
+        cate_1.siblings("a").removeClass("on");
+        cate_1.addClass("on");
+
+        // 注意: 要先把 level2 中的所有的值清空,再往里放;
+        _this.level2 = [];
+        let categories = _this.categorys;
+
+        // 如果点击的是全部,则显示所有的二级分类
+        if (level1Id === '00000000') {
+          for (let i = 0; i < categories.length; i++) {
+            let c = categories[i];
+            if (c.parent !== '00000000') {
+              _this.level2.push(c);
+            }
+          }
+
+        // 如果点击的是某个二级分类-则显示该一级分类下的二级分类
+        } else {
+          for (let i = 0; i < categories.length; i++) {
+            let c = categories[i];
+            if (c.parent === level1Id) {
+              _this.level2.push(c);
+            }
+          }
+        }
       },
 
       /**
