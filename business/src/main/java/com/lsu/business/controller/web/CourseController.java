@@ -6,9 +6,7 @@ import com.lsu.server.dto.ResponseDto;
 import com.lsu.server.service.CourseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -32,6 +30,7 @@ public class CourseController {
 
     /**
      * 列表查询: 查询最新的 3 门已发布的课程
+     *
      * @return 返回列表
      */
     @GetMapping("/list-new")
@@ -48,6 +47,7 @@ public class CourseController {
 
     /**
      * 列表查询: 好课推荐接口-查询 3 门好课
+     *
      * @return 返回列表
      */
     @GetMapping("/list-hot")
@@ -59,6 +59,20 @@ public class CourseController {
         ResponseDto<List> responseDto = new ResponseDto<>();
         List<CourseDto> courseDtos = courseService.listHot(pageDto);
         responseDto.setContent(courseDtos);
+        return responseDto;
+    }
+
+    /**
+     * 列表查询
+     *
+     * @param pageDto 分页
+     * @return 返回列表
+     */
+    @PostMapping("/list")
+    public ResponseDto<PageDto> getAll(@RequestBody PageDto<CourseDto> pageDto) {
+        ResponseDto<PageDto> responseDto = new ResponseDto<>();
+        courseService.getAll(pageDto);
+        responseDto.setContent(pageDto);
         return responseDto;
     }
 }

@@ -1,33 +1,14 @@
 <template>
   <div>
     <main role="main">
-      <section class="jumbotron text-center">
-        <div class="container">
-          <h1>在线视频课程平台</h1>
-          <p class="lead text-muted">知识付费时代刚刚起步，在这个领域有很多的发展机会。硕子鸽手把手教你学IT，一步一步搭建一个完整的企业级项目。不讲废话，只讲干货。</p>
-          <p>
-            <!-- p-3 就是 padding: 1rem-->
-            <a href="#" class="btn btn-primary my-2 p-3 font-weight-bold">点击进入所有课程</a>
-          </p>
-        </div>
-      </section>
-
       <div class="album py-5 bg-light">
         <div class="container">
-          <div class="title1">最新上线</div>
-          <div class="row">
-            <div v-for="o in news" class="col-md-4">
-              <!--一个课程-->
-              <the-course :course="o"/>
-            </div>
-          </div>
-          <hr>
-          <div class="title1">好课推荐</div>
           <div class="row">
             <div v-for="o in courses" class="col-md-4">
               <!--一个课程-->
               <the-course :course="o"/>
             </div>
+            <h3 v-show="courses.length === 0">课程还未上架</h3>
           </div>
         </div>
       </div>
@@ -37,6 +18,7 @@
 
 <script>
   import TheCourse from "../components/the-course";
+
   export default {
     name: "list",
     components: {TheCourse},
@@ -66,9 +48,22 @@
       }
     },
     methods: {
-      listCourse() {
-
-      }
+      /**
+       * 展示所有的课程
+       * @param page 分页
+       */
+      listCourse(page) {
+        let _this = this;
+        _this.$ajax.post(process.env.VUE_APP_SERVER + '/business/web/course/list', {
+          page: page,
+          size: 3,
+        }).then(response => {
+          let resp = response.data;
+          _this.courses = resp.content.list;
+        }).catch(resp => {
+          console.log("error: ", resp);
+        })
+      },
     }
   }
 </script>

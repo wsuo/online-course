@@ -7,7 +7,7 @@
           <p class="lead text-muted">知识付费时代刚刚起步，在这个领域有很多的发展机会。硕子鸽手把手教你学IT，一步一步搭建一个完整的企业级项目。不讲废话，只讲干货。</p>
           <p>
             <!-- p-3 就是 padding: 1rem-->
-            <a href="#" class="btn btn-primary my-2 p-3 font-weight-bold">点击进入所有课程</a>
+            <router-link to="/list" class="btn btn-primary my-2 p-3 font-weight-bold">点击进入所有课程</router-link>
           </p>
         </div>
       </section>
