@@ -28,7 +28,7 @@ public class CourseController {
     private CourseService courseService;
 
     @PostMapping("/list")
-    public ResponseDto<PageDto> getAll(@RequestBody PageDto<CourseDto> pageDto) {
+    public ResponseDto<PageDto> getAll(@RequestBody CoursePageDto pageDto) {
         ResponseDto<PageDto> responseDto = new ResponseDto<>();
         courseService.getAll(pageDto);
         responseDto.setContent(pageDto);

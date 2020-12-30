@@ -1,8 +1,10 @@
 package com.lsu.business.controller.web;
 
 import com.lsu.server.dto.CourseDto;
+import com.lsu.server.dto.CoursePageDto;
 import com.lsu.server.dto.PageDto;
 import com.lsu.server.dto.ResponseDto;
+import com.lsu.server.enums.CourseStatusEnum;
 import com.lsu.server.service.CourseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,8 +71,9 @@ public class CourseController {
      * @return 返回列表
      */
     @PostMapping("/list")
-    public ResponseDto<PageDto> getAll(@RequestBody PageDto<CourseDto> pageDto) {
+    public ResponseDto<PageDto> getAll(@RequestBody CoursePageDto pageDto) {
         ResponseDto<PageDto> responseDto = new ResponseDto<>();
+        pageDto.setStatus(CourseStatusEnum.PUBLISH.getCode());
         courseService.getAll(pageDto);
         responseDto.setContent(pageDto);
         return responseDto;
