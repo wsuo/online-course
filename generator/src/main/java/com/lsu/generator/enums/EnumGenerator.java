@@ -14,8 +14,8 @@ import java.util.regex.Pattern;
 public class EnumGenerator {
 
     private static Pattern pattern = Pattern.compile("[A-Z]");
-    static String path = "admin\\public\\static\\js\\enums.js";
-//    static String path = "web\\public\\static\\js\\enums.js";
+    //static String path = "admin\\public\\static\\js\\enums.js";
+    static String path = "web\\public\\static\\js\\enums.js";
 
     public static void main(String[] args) {
         StringBuffer bufferObject = new StringBuffer();

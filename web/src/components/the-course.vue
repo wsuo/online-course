@@ -10,8 +10,15 @@
             <button type="button" class="btn btn-sm btn-outline-secondary">课程详情</button>
           </div>
           <div class="text-muted">
-            <span class="badge badge-info">&nbsp;<i class="fa fa-yen" aria-hidden="true">&nbsp;{{course.price}}&nbsp;</i>&nbsp;</span>&nbsp;
-            <span class="badge badge-info">&nbsp;<i class="fa fa-user" aria-hidden="true">&nbsp;{{course.enroll}}&nbsp;</i></span>
+            <span class="badge badge-info">&nbsp;
+              <i class="fa fa-yen" aria-hidden="true">&nbsp;{{course.price}}&nbsp;</i>&nbsp;
+            </span>&nbsp;
+            <span class="badge badge-info">&nbsp;
+              <i class="fa fa-user" aria-hidden="true">&nbsp;{{course.enroll}}&nbsp;</i>
+            </span>&nbsp;
+            <span class="badge badge-info">&nbsp;
+              {{COURSE_LEVEL | optionKV(course.level)}}&nbsp;
+            </span>&nbsp;
           </div>
         </div>
       </div>
@@ -24,6 +31,11 @@
     name: "the-course",
     props: {
       course: {}
+    },
+    data: function () {
+      return {
+        COURSE_LEVEL: COURSE_LEVEL,
+      }
     },
   }
 </script>
