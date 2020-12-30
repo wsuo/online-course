@@ -192,4 +192,21 @@ public class CourseService {
         List<Course> courses = courseMapper.selectByExample(example);
         return CopyUtil.copyList(courses, CourseDto.class);
     }
+
+    /**
+     * 新课列表查询: 只查询已发布的: 按报名人数倒序
+     *
+     * @param pageDto 分页对象
+     * @return 返回列表
+     */
+    public List<CourseDto> listHot(PageDto pageDto) {
+        PageHelper.startPage(pageDto.getPage(), pageDto.getSize());
+        CourseExample example = new CourseExample();
+        // 查询的只能是已发布的
+        example.createCriteria().andStatusEqualTo(CourseStatusEnum.PUBLISH.getCode());
+        // 按照报名人数倒序
+        example.setOrderByClause("enroll desc");
+        List<Course> courses = courseMapper.selectByExample(example);
+        return CopyUtil.copyList(courses, CourseDto.class);
+    }
 }

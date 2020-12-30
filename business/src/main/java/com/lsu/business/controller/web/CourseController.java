@@ -32,7 +32,7 @@ public class CourseController {
 
     /**
      * 列表查询: 查询最新的 3 门已发布的课程
-     * @return
+     * @return 返回列表
      */
     @GetMapping("/list-new")
     public ResponseDto<List> listNew() {
@@ -42,6 +42,22 @@ public class CourseController {
         pageDto.setSize(3);
         ResponseDto<List> responseDto = new ResponseDto<>();
         List<CourseDto> courseDtos = courseService.listNew(pageDto);
+        responseDto.setContent(courseDtos);
+        return responseDto;
+    }
+
+    /**
+     * 列表查询: 好课推荐接口-查询 3 门好课
+     * @return 返回列表
+     */
+    @GetMapping("/list-hot")
+    public ResponseDto<List> listHot() {
+        PageDto pageDto = new PageDto();
+        pageDto.setPage(1);
+        // 设置查询 3 门课程
+        pageDto.setSize(3);
+        ResponseDto<List> responseDto = new ResponseDto<>();
+        List<CourseDto> courseDtos = courseService.listHot(pageDto);
         responseDto.setContent(courseDtos);
         return responseDto;
     }

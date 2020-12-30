@@ -14,8 +14,34 @@
 
       <div class="album py-5 bg-light">
         <div class="container">
+          <div class="title1">最新上线</div>
           <div class="row">
             <div v-for="o in news" class="col-md-4">
+              <!--一个课程-->
+              <div class="card mb-4 shadow-sm">
+                <img v-bind:src="o.image" class="img-fluid" alt="">
+                <div class="card-body">
+                  <h4 class="">{{o.name}}</h4>
+                  <p class="card-text">{{o.summary}}</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="btn-group">
+                      <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                      <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                    </div>
+                    <div class="text-muted">
+                      <span class="badge badge-info"><i class="fa fa-yen" aria-hidden="true">{{o.price}}</i></span>
+                      <span class="badge badge-info"><i class="fa fa-user" aria-hidden="true">{{o.enroll}}</i></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <hr>
+          <div class="title1">好课推荐</div>
+          <div class="row">
+            <div v-for="o in hots" class="col-md-4">
+              <!--一个课程-->
               <div class="card mb-4 shadow-sm">
                 <img v-bind:src="o.image" class="img-fluid" alt="">
                 <div class="card-body">
@@ -47,6 +73,7 @@
     mounted() {
       let _this = this;
       _this.listNew();
+      _this.listHot();
     },
     data() {
       return {
@@ -66,7 +93,24 @@
           updatedAt: '',
           categories: [],
           teacherId: '',
-        }]
+        }],
+        hots: [{
+          id: '',
+          name: '',
+          summary: '',
+          time: '',
+          price: '',
+          image: '',
+          level: '',
+          charge: '',
+          status: '',
+          enroll: '',
+          sort: '',
+          createdAt: '',
+          updatedAt: '',
+          categories: [],
+          teacherId: '',
+        }],
       }
     },
     methods: {
@@ -83,7 +127,33 @@
         }).catch(resp => {
           console.log("error: ", resp);
         });
-      }
+      },
+
+      /**
+       * 查询热门课程
+       */
+      listHot() {
+        let _this = this;
+        _this.$ajax.get(process.env.VUE_APP_SERVER + '/business/web/course/list-hot').then(response => {
+          let resp = response.data;
+          if (resp.success) {
+            _this.hots = resp.content;
+          }
+        }).catch(resp => {
+          console.log("error: ", resp);
+        });
+      },
     }
   }
 </script>
+<style>
+  .title1 {
+    width: 100%;
+    display: block;
+    line-height: 1.5em;
+    overflow: visible;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    text-shadow: #f3f3f3 1px 1px 0, #b2b2b2 1px 2px 0
+  }
+</style>
