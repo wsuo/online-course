@@ -18,23 +18,7 @@
           <div class="row">
             <div v-for="o in news" class="col-md-4">
               <!--一个课程-->
-              <div class="card mb-4 shadow-sm">
-                <img v-bind:src="o.image" class="img-fluid" alt="">
-                <div class="card-body">
-                  <h4 class="">{{o.name}}</h4>
-                  <p class="card-text">{{o.summary}}</p>
-                  <div class="d-flex justify-content-between align-items-center">
-                    <div class="btn-group">
-                      <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                      <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                    </div>
-                    <div class="text-muted">
-                      <span class="badge badge-info"><i class="fa fa-yen" aria-hidden="true">{{o.price}}</i></span>
-                      <span class="badge badge-info"><i class="fa fa-user" aria-hidden="true">{{o.enroll}}</i></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <the-course :course="o"/>
             </div>
           </div>
           <hr>
@@ -42,23 +26,7 @@
           <div class="row">
             <div v-for="o in hots" class="col-md-4">
               <!--一个课程-->
-              <div class="card mb-4 shadow-sm">
-                <img v-bind:src="o.image" class="img-fluid" alt="">
-                <div class="card-body">
-                  <h4 class="">{{o.name}}</h4>
-                  <p class="card-text">{{o.summary}}</p>
-                  <div class="d-flex justify-content-between align-items-center">
-                    <div class="btn-group">
-                      <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                      <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                    </div>
-                    <div class="text-muted">
-                      <span class="badge badge-info"><i class="fa fa-yen" aria-hidden="true">{{o.price}}</i></span>
-                      <span class="badge badge-info"><i class="fa fa-user" aria-hidden="true">{{o.enroll}}</i></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <the-course :course="o"/>
             </div>
           </div>
         </div>
@@ -68,8 +36,10 @@
 </template>
 
 <script>
+  import TheCourse from "../components/the-course";
   export default {
     name: "index",
+    components: {TheCourse},
     mounted() {
       let _this = this;
       _this.listNew();
