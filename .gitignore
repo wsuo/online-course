@@ -19,7 +19,6 @@ generator/src/test/
 generator/target/
 /admin/public/ace/
 /admin/node_modules/
-/admin/public/zTree_v3/
 file/file.iml
 file/target/
 /file/src/main/resources/application.yml
