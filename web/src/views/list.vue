@@ -98,7 +98,9 @@
         }],
         level1: [],
         level2: [],
-        categorys: []
+        categorys: [],
+        level1Id: '',
+        level2Id: '',
       }
     },
     methods: {
@@ -111,6 +113,7 @@
         _this.$ajax.post(process.env.VUE_APP_SERVER + '/business/web/course/list', {
           page: page,
           size: _this.$refs.pagination.size,
+          categoryId: _this.level2Id || _this.level1Id || ""
         }).then(response => {
           let resp = response.data;
           _this.courses = resp.content.list;
@@ -153,6 +156,15 @@
       onClickLevel1(level1Id) {
         let _this = this;
 
+        // 点击一级分类: 设置变量: 用于课程筛选
+        _this.level2Id = null;
+        _this.level1Id = level1Id;
+
+        // 如果点击的是[全部],则一级分类为空
+        if (level1Id === '00000000') {
+          _this.level1Id = null;
+        }
+
         // 点击一级分类时,显示激活状态
         let cate_l1 = $("#category-" + level1Id);
         let cate_1 = $("#category-11111111");
@@ -186,6 +198,9 @@
             }
           }
         }
+
+        // 重新加载课程列表
+        _this.listCourse(1);
       },
 
       /**
@@ -197,6 +212,15 @@
         let cate_l2 = $("#category-" + level2Id);
         cate_l2.siblings("a").removeClass("on");
         cate_l2.addClass("on");
+
+        // 点击二级分类时: 设置变量: 用于课程查询
+        if (level2Id === '11111111') {
+          _this.level2Id = null;
+        } else {
+          _this.level2Id = level2Id;
+        }
+
+        _this.listCourse(1);
       }
     }
   }

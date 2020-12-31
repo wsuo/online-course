@@ -57,19 +57,10 @@ public class CourseService {
          *   规则是调用 startPage 之后遇到的第一个 select 语句会进行分页;
          * */
         PageHelper.startPage(pageDto.getPage(), pageDto.getSize());
-        CourseExample courseExample = new CourseExample();
-        CourseExample.Criteria criteria = courseExample.createCriteria();
-
-        // 这段写法比较常见: 参数有值就作为条件查询,没有值就不加条件,相当于动态 SQL;
-        if (!StringUtils.isEmpty(pageDto.getStatus())) {
-            criteria.andStatusEqualTo(pageDto.getStatus());
-        }
-        courseExample.setOrderByClause("sort asc");
-        List<Course> courseList = courseMapper.selectByExample(courseExample);
-        PageInfo<Course> pageInfo = new PageInfo<>(courseList);
+        List<CourseDto> courseList = myCourseMapper.list(pageDto);
+        PageInfo<CourseDto> pageInfo = new PageInfo<>(courseList);
         pageDto.setTotal(pageInfo.getTotal());
-        List<CourseDto> courseDtoList = CopyUtil.copyList(courseList, CourseDto.class);
-        pageDto.setList(courseDtoList);
+        pageDto.setList(courseList);
     }
 
     /**

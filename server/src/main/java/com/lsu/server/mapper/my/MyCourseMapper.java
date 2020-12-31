@@ -1,7 +1,11 @@
 package com.lsu.server.mapper.my;
 
+import com.lsu.server.dto.CourseDto;
+import com.lsu.server.dto.CoursePageDto;
 import com.lsu.server.dto.SortDto;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * 自定义Mapper文件
@@ -28,7 +32,7 @@ public interface MyCourseMapper {
     void updateSort(SortDto sortDto);
 
     /**
-a
+     * a
      *
      * @param sortDto 排序对象
      */
@@ -41,4 +45,12 @@ a
      * @param sortDto
      */
     void moveSortsBackward(SortDto sortDto);
+
+    /**
+     * 查询列表
+     *
+     * @param pageDto 分页条件
+     * @return 返回列表
+     */
+    List<CourseDto> list(@Param("pageDto") CoursePageDto pageDto);
 }

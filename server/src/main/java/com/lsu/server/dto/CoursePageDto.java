@@ -16,4 +16,5 @@ import lombok.ToString;
 @ToString
 public class CoursePageDto extends PageDto {
     private String status;
+    private String categoryId;
 }
