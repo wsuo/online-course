@@ -23,6 +23,37 @@
               </p>
             </div>
           </div>
+          <div class="row">
+            <div class="col-md-9">
+              <!-- Tab -->
+              <ul class="nav nav-tabs">
+                <li class="nav-item">
+                  <!-- 跳转到对应的ID: #info -->
+                  <a href="#info" data-toggle="tab" class="nav-link active">课程介绍</a>
+                </li>
+                <li class="nav-item">
+                  <a href="#chapter" data-toggle="tab" class="nav-link">章节目录</a>
+                </li>
+              </ul>
+
+              <br>
+
+              <!-- 两个 Tab 对应的内容 -->
+              <div class="tab-content">
+                <!-- 因为文本存的是 HTML 格式的 所以需要解析 -->
+                <div class="tab-pane active" id="info" v-html="course.content">
+
+                </div>
+                <div class="tab-pane" id="chapter">
+
+                </div>
+              </div>
+            </div>
+            <!-- 讲师信息 -->
+            <div class="col-md-3">
+
+            </div>
+          </div>
         </div>
       </div>
     </main>
