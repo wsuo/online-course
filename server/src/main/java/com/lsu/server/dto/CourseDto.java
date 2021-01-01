@@ -88,4 +88,24 @@ public class CourseDto {
      * 讲师的 ID
      */
     private String teacherId;
+
+    /**
+     * 课程详情需要所有的大章
+     */
+    private List<ChapterDto> chapters;
+
+    /**
+     * 课程详情需要所有的小节
+     */
+    private List<SectionDto> sections;
+
+    /**
+     * 课程详情需要课程内容
+     */
+    private String content;
+
+    /**
+     * 课程详情需要所有的讲师
+     */
+    private TeacherDto teacher;
 }

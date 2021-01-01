@@ -46,6 +46,15 @@ public class CourseService {
     @Resource
     private CourseContentMapper courseContentMapper;
 
+    @Resource
+    private TeacherService teacherService;
+
+    @Resource
+    private ChapterService chapterService;
+
+    @Resource
+    private SectionService sectionService;
+
     /**
      * 分页查询
      *
@@ -205,5 +214,38 @@ public class CourseService {
         example.setOrderByClause("enroll desc");
         List<Course> courses = courseMapper.selectByExample(example);
         return CopyUtil.copyList(courses, CourseDto.class);
+    }
+
+    /**
+     * 根据 ID 查询课程: 供 web 模块使用: 只能查询已发布的
+     * @param id ID 值
+     * @return 返回课程 Dto
+     */
+    public CourseDto findCourseById(String id) {
+        Course course = courseMapper.selectByPrimaryKey(id);
+        if (course == null || !CourseStatusEnum.PUBLISH.getCode().equals(course.getStatus())) {
+            return null;
+        }
+        CourseDto courseDto = CopyUtil.copy(course, CourseDto.class);
+
+        // 查询内容信息
+        CourseContent courseContent = courseContentMapper.selectByPrimaryKey(id);
+        if (courseContent != null) {
+            courseDto.setContent(courseContent.getContent());
+        }
+
+        // 查询讲师
+        TeacherDto teacherDto = teacherService.findById(courseDto.getTeacherId());
+        courseDto.setTeacher(teacherDto);
+
+        // 查找大章
+        List<ChapterDto> chapterDtos = chapterService.listByCourse(id);
+        courseDto.setChapters(chapterDtos);
+
+        // 查找小节
+        List<SectionDto> sectionDtos = sectionService.listByCourse(id);
+        courseDto.setSections(sectionDtos);
+
+        return courseDto;
     }
 }

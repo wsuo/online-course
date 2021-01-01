@@ -68,7 +68,8 @@ public class SectionService {
 
     /**
      * 根据 ID 是否为空判断是删除还是新增
-     *  如果抛出的异常是 Exception 就会回滚
+     * 如果抛出的异常是 Exception 就会回滚
+     *
      * @param sectionDto 数据传输对象
      */
     @Transactional(rollbackFor = Exception.class)
@@ -98,5 +99,18 @@ public class SectionService {
 
     public void delete(String id) {
         sectionMapper.deleteByPrimaryKey(id);
+    }
+
+    /**
+     * 根据课程 ID 查询所有的小节
+     *
+     * @param id 课程 ID
+     * @return 小节列表
+     */
+    public List<SectionDto> listByCourse(String id) {
+        SectionExample example = new SectionExample();
+        example.createCriteria().andCourseIdEqualTo(id);
+        List<Section> sections = sectionMapper.selectByExample(example);
+        return CopyUtil.copyList(sections, SectionDto.class);
     }
 }

@@ -83,4 +83,17 @@ public class ChapterService {
     public void delete(String id) {
         chapterMapper.deleteByPrimaryKey(id);
     }
+
+    /**
+     * 根据课程 ID 查询大章列表
+     *
+     * @param id 课程ID
+     * @return 大章列表
+     */
+    public List<ChapterDto> listByCourse(String id) {
+        ChapterExample example = new ChapterExample();
+        example.createCriteria().andCourseIdEqualTo(id);
+        List<Chapter> chapters = chapterMapper.selectByExample(example);
+        return CopyUtil.copyList(chapters, ChapterDto.class);
+    }
 }
