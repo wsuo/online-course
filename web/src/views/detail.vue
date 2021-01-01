@@ -44,11 +44,15 @@
                 <div class="tab-pane active" id="info" v-html="course.content"></div>
                 <!-- 大章的展示 -->
                 <div class="tab-pane" id="chapter">
-                  <div v-for="chapter in chapters" class="chapter">
-                    <div class="chapter-chapter">
-                      <span class="folded-button">{{chapter.name}}</span>
+                  <div v-for="(chapter, i) in chapters" class="chapter">
+                    <div class="chapter-chapter" v-on:click="doFolded(chapter, i)">
+                      <span>{{chapter.name}}</span>
+                      <span class="pull-right">
+                        <i v-show="chapter.folded" class="fa fa-plus-square" aria-hidden="true"></i>
+                        <i v-show="!chapter.folded" class="fa fa-minus-square" aria-hidden="true"></i>
+                      </span>
                     </div>
-                    <div>
+                    <div v-show="!chapter.folded">
                       <!-- 大章中的所有小节: 用表格展示 -->
                       <table class="table table-striped">
                         <tr v-for="(s,j) in chapter.sections" class="chapter-section-tr">
@@ -135,6 +139,20 @@
             }
           }
         })
+      },
+
+      /**
+       * 展开或收缩一个章节
+       * @param chapter 大章
+       * @param i 序号
+       */
+      doFolded(chapter, i) {
+        let _this = this;
+        // 初始时默认是 false;就是展开的状态
+        chapter.folded = !chapter.folded;
+        // 在 v-for 里写 v-show,只修改属性不起作用,需要 $set;
+        // 将 chapter 放到 chapters 数组中的 i 位置;
+        _this.$set(_this.chapters, i, chapter);
       }
     }
   }
