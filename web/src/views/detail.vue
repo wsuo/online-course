@@ -41,11 +41,34 @@
               <!-- 两个 Tab 对应的内容 -->
               <div class="tab-content">
                 <!-- 因为文本存的是 HTML 格式的 所以需要解析 -->
-                <div class="tab-pane active" id="info" v-html="course.content">
-
-                </div>
+                <div class="tab-pane active" id="info" v-html="course.content"></div>
+                <!-- 大章的展示 -->
                 <div class="tab-pane" id="chapter">
-
+                  <div v-for="chapter in chapters" class="chapter">
+                    <div class="chapter-chapter">
+                      <span class="folded-button">{{chapter.name}}</span>
+                    </div>
+                    <div>
+                      <!-- 大章中的所有小节: 用表格展示 -->
+                      <table class="table table-striped">
+                        <tr v-for="(s,j) in chapter.sections" class="chapter-section-tr">
+                          <td class="col-sm-8 col-xs-12">
+                            <div class="section-title">
+                              <!-- d-none 就是 display: none; 即不显示-->
+                              <i class="fa fa-video-camera d-none d-sm-inline"></i>&nbsp;&nbsp;
+                              <span class="d-none d-sm-inline">第{{j+1}}节&nbsp;&nbsp;</span>
+                              {{s.title}}
+                              <span v-show="s.charge !== SECTION_CHARGE.CHARGE.key"
+                                    class="badge badge-primary hidden-xs">免费</span>
+                            </div>
+                          </td>
+                          <td class="col-sm-1 text-right">
+                            <span class="badge badge-primary">{{s.time | formatSecond}}</span>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -78,6 +101,7 @@
         chapters: [],
         sections: [],
         COURSE_LEVEL: COURSE_LEVEL,
+        SECTION_CHARGE: SECTION_CHARGE,
       }
     },
     mounted() {
@@ -98,6 +122,18 @@
           _this.teacher = _this.course.teacher || {};
           _this.chapters = _this.course.chapters || {};
           _this.sections = _this.course.sections || {};
+
+          // 这里的小节是全部的小节: 需要将他放入对应的大章里面
+          for (let i = 0; i < _this.chapters.length; i++) {
+            let c = _this.chapters[i];
+            c.sections = [];
+            for (let j = 0; j < _this.sections.length; j++) {
+              let s = _this.sections[j];
+              if (c.id === s.chapterId) {
+                c.sections.push(s);
+              }
+            }
+          }
         })
       }
     }
