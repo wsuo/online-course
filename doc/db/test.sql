@@ -21,4 +21,4 @@ select *
 from role_resource;
 
 select *
-from section;
+from sms;

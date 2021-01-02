@@ -325,14 +325,14 @@
 
         // 提交之前，先校验所有输入框
         // 注意：当有一个文本框校验为false时，其它不校验
-        let validateResult = _this.onRegisterMobileBlur() &&
+        /*let validateResult = _this.onRegisterMobileBlur() &&
           _this.onRegisterMobileCodeBlur() &&
           _this.onRegisterNameBlur() &&
           _this.onRegisterPasswordBlur() &&
           _this.onRegisterConfirmPasswordBlur();
         if (!validateResult) {
           return;
-        }
+        }*/
 
         _this.memberRegister.password = hex_md5(_this.memberRegister.passwordOriginal + KEY);
 
@@ -408,24 +408,24 @@
       sendSmsForRegister() {
         let _this = this;
 
-        if (!_this.onRegisterMobileBlur()) {
+        /*if (!_this.onRegisterMobileBlur()) {
           return false;
-        }
+        }*/
 
         let sms = {
           mobile: _this.memberRegister.mobile,
           use: SMS_USE.REGISTER.key
         };
 
-        _this.$ajax.get(process.env.VUE_APP_SERVER + '/business/web/member/is-mobile-exist/' + _this.memberRegister.mobile).then((res) => {
+        /*_this.$ajax.get(process.env.VUE_APP_SERVER + '/business/web/member/is-mobile-exist/' + _this.memberRegister.mobile).then((res) => {
           let response = res.data;
           if (response.success) {
             Toast.warning("手机号已被注册");
-          } else {
+          } else {*/
             // 调服务端发送短信接口
             _this.sendSmsCode(sms, "register-send-code-btn");
-          }
-        })
+          // }
+        // })
       },
 
       /**
@@ -475,9 +475,9 @@
        */
       sendSmsForForget() {
         let _this = this;
-        if (!_this.onForgetMobileBlur()) {
+        /*if (!_this.onForgetMobileBlur()) {
           return false;
-        }
+        }*/
         let sms = {
           mobile: _this.memberForget.mobile,
           use: SMS_USE.FORGET.key

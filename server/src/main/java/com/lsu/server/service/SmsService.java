@@ -6,6 +6,9 @@ import com.lsu.server.domain.Sms;
 import com.lsu.server.domain.SmsExample;
 import com.lsu.server.dto.SmsDto;
 import com.lsu.server.dto.PageDto;
+import com.lsu.server.enums.SmsStatusEnum;
+import com.lsu.server.exception.BusinessException;
+import com.lsu.server.exception.BusinessExceptionCode;
 import com.lsu.server.mapper.SmsMapper;
 import com.lsu.server.util.CopyUtil;
 import com.lsu.server.util.UuidUtil;
@@ -74,5 +77,43 @@ public class SmsService {
 
     public void delete(String id) {
         smsMapper.deleteByPrimaryKey(id);
+    }
+
+    /**
+     * 发送手机验证码: 同手机号 1 分钟内不能重复发送短信
+     *
+     * @param smsDto Sms对象
+     */
+    public void sendCode(SmsDto smsDto) {
+        SmsExample example = new SmsExample();
+        SmsExample.Criteria criteria = example.createCriteria();
+        // 查找 1 分钟内有没有{同手机号}{同用途}发送记录且{没有被使用}过;
+        criteria.andMobileEqualTo(smsDto.getMobile())
+                .andUseEqualTo(smsDto.getUse())
+                .andStatusEqualTo(SmsStatusEnum.NOT_USED.getCode())
+                .andAtGreaterThan(new Date(System.currentTimeMillis() - 60 * 1000));
+        List<Sms> smsList = smsMapper.selectByExample(example);
+
+        if (smsList == null || smsList.size() == 0) {
+            saveAndSend(smsDto);
+        } else {
+            // 频繁发送短信的异常
+            throw new BusinessException(BusinessExceptionCode.MOBILE_CODE_TOO_FREQUENT);
+        }
+    }
+
+    /**
+     * 保存并发送短信验证码
+     * @param smsDto Sms对象
+     */
+    private void saveAndSend(SmsDto smsDto) {
+        // 生成六位数字
+        String code = String.valueOf((int) (((Math.random() * 9) + 1) * 100000));
+        smsDto.setAt(new Date());
+        smsDto.setStatus(SmsStatusEnum.NOT_USED.getCode());
+        smsDto.setCode(code);
+        this.save(smsDto);
+
+        // TODO 调用第三方接口发送短信
     }
 }
