@@ -125,6 +125,7 @@
             <h3>忘记密码</h3>
             <div class="form-group">
               <label for="forget-mobile"></label>
+              <!-- 动态的绑定 class -->
               <input v-on:blur="onForgetMobileBlur()"
                      v-bind:class="forgetMobileValidateClass"
                      id="forget-mobile"
@@ -222,6 +223,9 @@
         forgetConfirmPasswordValidate: null,
       }
     },
+    /**
+     * 计算: 动态的显示
+     */
     computed: {
       registerMobileValidateClass: function () {
         return {
@@ -325,14 +329,14 @@
 
         // 提交之前，先校验所有输入框
         // 注意：当有一个文本框校验为false时，其它不校验
-        /*let validateResult = _this.onRegisterMobileBlur() &&
+        let validateResult = _this.onRegisterMobileBlur() &&
           _this.onRegisterMobileCodeBlur() &&
           _this.onRegisterNameBlur() &&
           _this.onRegisterPasswordBlur() &&
           _this.onRegisterConfirmPasswordBlur();
         if (!validateResult) {
           return;
-        }*/
+        }
 
         _this.memberRegister.password = hex_md5(_this.memberRegister.passwordOriginal + KEY);
 
@@ -408,9 +412,9 @@
       sendSmsForRegister() {
         let _this = this;
 
-        /*if (!_this.onRegisterMobileBlur()) {
+        if (!_this.onRegisterMobileBlur()) {
           return false;
-        }*/
+        }
 
         let sms = {
           mobile: _this.memberRegister.mobile,
@@ -475,9 +479,9 @@
        */
       sendSmsForForget() {
         let _this = this;
-        /*if (!_this.onForgetMobileBlur()) {
+        if (!_this.onForgetMobileBlur()) {
           return false;
-        }*/
+        }
         let sms = {
           mobile: _this.memberForget.mobile,
           use: SMS_USE.FORGET.key
@@ -494,98 +498,96 @@
           }
         });
       },
-      /*
-            resetPassword() {
-              let _this = this;
 
-              // 提交之前，先校验所有输入框
-              // 注意：当有一个文本框校验为false时，其它不校验
-              let validateResult = _this.onForgetMobileBlur() &&
-                _this.onForgetMobileCodeBlur() &&
-                _this.onForgetPasswordBlur() &&
-                _this.onForgetConfirmPasswordBlur();
-              if (!validateResult) {
-                return;
-              }
+      resetPassword() {
+        let _this = this;
 
-              _this.memberForget.password = hex_md5(_this.memberForget.passwordOriginal + KEY);
+        // 提交之前，先校验所有输入框
+        // 注意：当有一个文本框校验为false时，其它不校验
+        let validateResult = _this.onForgetMobileBlur() &&
+          _this.onForgetMobileCodeBlur() &&
+          _this.onForgetPasswordBlur() &&
+          _this.onForgetConfirmPasswordBlur();
+        if (!validateResult) {
+          return;
+        }
 
-              // 调服务端密码重置接口
-              _this.$ajax.post(process.env.VUE_APP_SERVER + '/business/web/member/reset-password', _this.memberForget).then((res) => {
-                let response = res.data;
-                if (response.success) {
-                  Toast.success("密码重置成功");
-                  _this.toLoginDiv();
-                } else {
-                  Toast.warning(response.message);
-                }
-              }).catch((response) => {
-                console.log("error：", response);
-              })
-            },
+        _this.memberForget.password = hex_md5(_this.memberForget.passwordOriginal + KEY);
 
-            //-------------------------------- 注册框校验 ----------------------------
+        // 调服务端密码重置接口
+        _this.$ajax.post(process.env.VUE_APP_SERVER + '/business/web/member/reset-password', _this.memberForget).then((res) => {
+          let response = res.data;
+          if (response.success) {
+            Toast.success("密码重置成功");
+            _this.toLoginDiv();
+          } else {
+            Toast.warning(response.message);
+          }
+        }).catch((response) => {
+          console.log("error：", response);
+        })
+      },
 
-            onRegisterMobileBlur() {
-              let _this = this;
-              _this.registerMobileValidate = Pattern.validateMobile(_this.memberRegister.mobile);
-              return _this.registerMobileValidate;
-            },
+      //-------------------------------- 注册框校验 ----------------------------
 
-            onRegisterMobileCodeBlur() {
-              let _this = this;
-              _this.registerMobileCodeValidate = Pattern.validateMobileCode(_this.memberRegister.smsCode);
-              return _this.registerMobileValidate;
-            },
+      onRegisterMobileBlur() {
+        let _this = this;
+        _this.registerMobileValidate = Pattern.validateMobile(_this.memberRegister.mobile);
+        return _this.registerMobileValidate;
+      },
 
-            onRegisterNameBlur() {
-              let _this = this;
-              _this.registerNameValidate = Pattern.validateName(_this.memberRegister.name);
-              return _this.registerMobileValidate;
-            },
+      onRegisterMobileCodeBlur() {
+        let _this = this;
+        _this.registerMobileCodeValidate = Pattern.validateMobileCode(_this.memberRegister.smsCode);
+        return _this.registerMobileValidate;
+      },
 
-            onRegisterPasswordBlur() {
-              let _this = this;
-              _this.registerPasswordValidate = Pattern.validatePasswordWeak(_this.memberRegister.passwordOriginal);
-              return _this.registerMobileValidate;
-            },
+      onRegisterNameBlur() {
+        let _this = this;
+        _this.registerNameValidate = Pattern.validateName(_this.memberRegister.name);
+        return _this.registerMobileValidate;
+      },
 
-            onRegisterConfirmPasswordBlur() {
-              let _this = this;
-              let confirmPassword = $("#register-confirm-password").val();
-              if (Tool.isEmpty(confirmPassword)) {
-                return _this.registerConfirmPasswordValidate = false;
-              }
-              return _this.registerConfirmPasswordValidate = (confirmPassword === _this.memberRegister.passwordOriginal);
-            },
+      onRegisterPasswordBlur() {
+        let _this = this;
+        _this.registerPasswordValidate = Pattern.validatePasswordWeak(_this.memberRegister.passwordOriginal);
+        return _this.registerMobileValidate;
+      },
 
-            //-------------------------------- 忘记密码框校验 ----------------------------
+      onRegisterConfirmPasswordBlur() {
+        let _this = this;
+        let confirmPassword = $("#register-confirm-password").val();
+        if (Tool.isEmpty(confirmPassword)) {
+          return _this.registerConfirmPasswordValidate = false;
+        }
+        return _this.registerConfirmPasswordValidate = (confirmPassword === _this.memberRegister.passwordOriginal);
+      },
 
-            onForgetMobileBlur() {
-              let _this = this;
-              return _this.forgetMobileValidate = Pattern.validateMobile(_this.memberForget.mobile);
-            },
+      //-------------------------------- 忘记密码框校验 ----------------------------
 
-            onForgetMobileCodeBlur() {
-              let _this = this;
-              return _this.forgetMobileCodeValidate = Pattern.validateMobileCode(_this.memberForget.smsCode);
-            },
+      onForgetMobileBlur() {
+        let _this = this;
+        return _this.forgetMobileValidate = Pattern.validateMobile(_this.memberForget.mobile);
+      },
 
-            onForgetPasswordBlur() {
-              let _this = this;
-              return _this.forgetPasswordValidate = Pattern.validatePasswordWeak(_this.memberForget.passwordOriginal);
-            },
+      onForgetMobileCodeBlur() {
+        let _this = this;
+        return _this.forgetMobileCodeValidate = Pattern.validateMobileCode(_this.memberForget.smsCode);
+      },
 
-            onForgetConfirmPasswordBlur() {
-              let _this = this;
-              let forgetPassword = $("#forget-confirm-password").val();
-              if (Tool.isEmpty(forgetPassword)) {
-                return _this.forgetConfirmPasswordValidate = false;
-              }
-              return _this.forgetConfirmPasswordValidate = (forgetPassword === _this.memberForget.passwordOriginal);
-            }
+      onForgetPasswordBlur() {
+        let _this = this;
+        return _this.forgetPasswordValidate = Pattern.validatePasswordWeak(_this.memberForget.passwordOriginal);
+      },
 
-       */
+      onForgetConfirmPasswordBlur() {
+        let _this = this;
+        let forgetPassword = $("#forget-confirm-password").val();
+        if (Tool.isEmpty(forgetPassword)) {
+          return _this.forgetConfirmPasswordValidate = false;
+        }
+        return _this.forgetConfirmPasswordValidate = (forgetPassword === _this.memberForget.passwordOriginal);
+      }
     }
   }
 </script>
