@@ -417,15 +417,15 @@
           use: SMS_USE.REGISTER.key
         };
 
-        /*_this.$ajax.get(process.env.VUE_APP_SERVER + '/business/web/member/is-mobile-exist/' + _this.memberRegister.mobile).then((res) => {
+        _this.$ajax.get(process.env.VUE_APP_SERVER + '/business/web/member/is-mobile-exist/' + _this.memberRegister.mobile).then((res) => {
           let response = res.data;
           if (response.success) {
             Toast.warning("手机号已被注册");
-          } else {*/
+          } else {
             // 调服务端发送短信接口
             _this.sendSmsCode(sms, "register-send-code-btn");
-          // }
-        // })
+          }
+        })
       },
 
       /**
@@ -440,7 +440,7 @@
           if (response.success) {
             Toast.success("短信已发送");
 
-            // 开始倒计时
+            // 开始倒计时: 60
             _this.countdown = 60;
             _this.setTime(btnId);
           } else {
