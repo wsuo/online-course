@@ -38,4 +38,12 @@ public class MemberCourseController {
         responseDto.setContent(memberCourseDto);
         return responseDto;
     }
+
+    @PostMapping("/get-enroll")
+    public ResponseDto<MemberCourseDto> getEnroll(@RequestBody MemberCourseDto memberCourseDto) {
+        ResponseDto<MemberCourseDto> responseDto = new ResponseDto<>();
+        memberCourseDto = memberCourseService.getEnroll(memberCourseDto);
+        responseDto.setContent(memberCourseDto);
+        return responseDto;
+    }
 }

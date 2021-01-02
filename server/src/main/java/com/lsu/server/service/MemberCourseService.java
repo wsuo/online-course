@@ -117,4 +117,14 @@ public class MemberCourseService {
             return memberCourseList.get(0);
         }
     }
+
+    /**
+     * 获取报名信息
+     * @param memberCourseDto 会员课程对象
+     * @return 响应
+     */
+    public MemberCourseDto getEnroll(MemberCourseDto memberCourseDto) {
+        MemberCourse memberCourseDb = this.select(memberCourseDto.getMemberId(), memberCourseDto.getCourseId());
+        return CopyUtil.copy(memberCourseDb, MemberCourseDto.class);
+    }
 }

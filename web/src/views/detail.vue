@@ -134,6 +134,9 @@
           _this.chapters = _this.course.chapters || {};
           _this.sections = _this.course.sections || {};
 
+          // 获取报名信息
+          _this.getEnroll();
+
           // 这里的小节是全部的小节: 需要将他放入对应的大章里面
           for (let i = 0; i < _this.chapters.length; i++) {
             let c = _this.chapters[i];
@@ -147,6 +150,28 @@
             Tool.sortAsc(c.sections, "sort");
           }
         });
+      },
+
+      /**
+       * 获取报名信息
+       */
+      getEnroll() {
+        let _this = this;
+        let loginMember = Tool.getLoginMember();
+        if (Tool.isEmpty(loginMember)) {
+          console.log("未登录");
+          return;
+        }
+        _this.$ajax.post(process.env.VUE_APP_SERVER + '/business/web/member-course/get-enroll', {
+            courseId: _this.course.id,
+            memberId: loginMember.id,
+          }
+        ).then(response => {
+          let resp = response.data;
+          if (resp.success) {
+            _this.memberCourse = resp.content || {};
+          }
+        })
       },
 
       /**
@@ -207,7 +232,7 @@
           } else {
             Toast.warning(resp.message);
           }
-        })
+        });
       }
     }
   }
