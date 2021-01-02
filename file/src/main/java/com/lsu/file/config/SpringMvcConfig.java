@@ -1,4 +1,4 @@
-package com.lsu.file.controller.config;
+package com.lsu.file.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;

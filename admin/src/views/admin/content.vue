@@ -180,10 +180,10 @@
               _this.saveContent();
             }, 5000);
 
-            // 关闭内容框时 清空自动保存任务
-            course_cont.on('hidden.bs.modal', function () {
+            // 关闭内容框时 清空自动保存任务 -- 自动保存 bug
+            /*course_cont.on('hidden.bs.modal', function () {
               clearInterval(saveContentInterval);
-            })
+            })*/
           } else {
             Toast.warning(resp.message);
           }

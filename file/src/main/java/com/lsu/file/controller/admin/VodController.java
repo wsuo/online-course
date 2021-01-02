@@ -37,7 +37,7 @@ public class VodController {
     @Value("${vod.accessKeySecret}")
     private String accessKeySecret;
 
-    public static final String BUSINESS_NAME = "VOD视频上传";
+    public static final String BUSINESS_NAME = "VOD视频服务";
 
     @Resource
     private FileService fileService;
