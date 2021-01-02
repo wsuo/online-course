@@ -166,7 +166,12 @@
        */
       play(section) {
         let _this = this;
-        _this.$refs.modalPlayer.playVod(section.vod);
+        // 如果视频是免费的可以直接播放; 收费的需要登录
+        if (section.charge === _this.SECTION_CHARGE.CHARGE.key) {
+          Toast.warning("请先登录");
+        } else {
+          _this.$refs.modalPlayer.playVod(section.vod);
+        }
       },
     }
   }
