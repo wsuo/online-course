@@ -112,7 +112,6 @@ public class MemberService {
         } else {
             return memberList.get(0);
         }
-
     }
 
     /**
@@ -145,7 +144,7 @@ public class MemberService {
         } else {
             Member m = new Member();
             m.setId(member.getId());
-            m.setPassword(member.getPassword());
+            m.setPassword(memberDto.getPassword());
             memberMapper.updateByPrimaryKeySelective(m);
         }
     }

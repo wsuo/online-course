@@ -10,6 +10,7 @@ import com.lsu.server.mapper.MemberCourseMapper;
 import com.lsu.server.util.CopyUtil;
 import com.lsu.server.util.UuidUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
@@ -65,6 +66,7 @@ public class MemberCourseService {
     private void insert(MemberCourse memberCourse) {
         Date now = new Date();
         memberCourse.setId(UuidUtil.getShortUuid());
+        memberCourse.setAt(now);
         memberCourseMapper.insert(memberCourse);
     }
 
@@ -74,5 +76,45 @@ public class MemberCourseService {
 
     public void delete(String id) {
         memberCourseMapper.deleteByPrimaryKey(id);
+    }
+
+    /**
+     * 判断是否已经报名
+     *
+     * @param memberCourseDto 会员课程对象
+     * @return 响应
+     */
+    public MemberCourseDto enroll(MemberCourseDto memberCourseDto) {
+        MemberCourse memberCourseDb = this.select(memberCourseDto.getMemberId(), memberCourseDto.getCourseId());
+        if (memberCourseDb == null) {
+            MemberCourse memberCourse = CopyUtil.copy(memberCourseDto, MemberCourse.class);
+            // 支付成功之后才能进表: 这里没写
+            this.insert(memberCourse);
+            // 将数据库信息全部返回: 包括 id 和 at
+            return CopyUtil.copy(memberCourse, MemberCourseDto.class);
+        } else {
+            // 如果已经报名: 则直接返回已报名的信息
+            return CopyUtil.copy(memberCourseDb, MemberCourseDto.class);
+        }
+    }
+
+    /**
+     * 根据 memberId 和 courseId 查询
+     *
+     * @param memberId 会员ID
+     * @param courseId 课程ID
+     * @return 响应
+     */
+    private MemberCourse select(String memberId, String courseId) {
+        MemberCourseExample example = new MemberCourseExample();
+        example.createCriteria()
+                .andCourseIdEqualTo(courseId)
+                .andMemberIdEqualTo(memberId);
+        List<MemberCourse> memberCourseList = memberCourseMapper.selectByExample(example);
+        if (CollectionUtils.isEmpty(memberCourseList)) {
+            return null;
+        } else {
+            return memberCourseList.get(0);
+        }
     }
 }

@@ -21,7 +21,7 @@ select *
 from role_resource;
 
 select *
-from sms;
+from member_course;
 
 /*会员密码*/
 # 12345678902 ws2821
