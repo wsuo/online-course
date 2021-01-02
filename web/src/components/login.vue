@@ -6,29 +6,26 @@
           <div class="login-div" v-show="MODAL_STATUS === STATUS_LOGIN">
             <h3>登&nbsp;&nbsp;录</h3>
             <div class="form-group">
-              <label>
-                <input v-model="member.mobile" class="form-control" placeholder="手机号">
-              </label>
+                <input v-model="member.mobile"
+                       class="form-control"
+                       placeholder="手机号">
             </div>
             <div class="form-group">
-              <label>
                 <input class="form-control"
                        type="password"
                        placeholder="密码"
                        v-model="member.password">
-              </label>
             </div>
             <div class="form-group">
               <div class="input-group">
-                <label for="image-code-input"></label>
                 <input id="image-code-input"
                        class="form-control"
                        type="text"
                        placeholder="验证码"
                        v-model="member.imageCode">
-                <div class="input-group-addon" id="image-code-addon">
-                  <img id="image-code" alt="验证码" v-on:click="loadImageCode()" src=""/>
-                </div>
+                <!--<div class="input-group-addon" id="image-code-addon">-->
+                    <img id="image-code" alt="验证码" @click="loadImageCode()"/>
+                <!--</div>-->
               </div>
             </div>
             <div class="form-group">
@@ -504,6 +501,9 @@
         });
       },
 
+      /**
+       * 重置密码
+       */
       resetPassword() {
         let _this = this;
 

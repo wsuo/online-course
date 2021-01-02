@@ -7,6 +7,13 @@ import Detail from "./views/detail.vue"
 
 Vue.use(Router);
 
+/* 解决路由的重复导航问题 */
+const originalPush = Router.prototype.push;
+
+Router.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err)
+};
+
 export default new Router({
   mode: "history",
   base: process.env.BASE_URL,
@@ -23,4 +30,4 @@ export default new Router({
     path: "/detail",
     component: Detail
   }]
-})
+});

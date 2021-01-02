@@ -22,3 +22,10 @@ from role_resource;
 
 select *
 from sms;
+
+/*会员密码*/
+# 12345678902 ws2821
+# 12345678901 ws2821
+
+/*最高权限的系统管理员*/
+# test test

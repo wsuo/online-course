@@ -83,7 +83,7 @@
             Tool.setLoginMember(null);
             _this.loginMember = {};
             Toast.success("退出登录成功");
-            _this.$router.push("/");
+            _this.$router.push("/index");
           } else {
             Toast.warning(resp.message);
           }

@@ -135,4 +135,18 @@ public class MemberService {
         }
     }
 
+    /**
+     * 重置密码
+     */
+    public void resetPassword(MemberDto memberDto) {
+        Member member = this.selectByMobile(memberDto.getMobile());
+        if (member == null) {
+            throw new BusinessException(BusinessExceptionCode.MEMBER_NOT_EXIST);
+        } else {
+            Member m = new Member();
+            m.setId(member.getId());
+            m.setPassword(member.getPassword());
+            memberMapper.updateByPrimaryKeySelective(m);
+        }
+    }
 }

@@ -121,6 +121,8 @@ public class SmsService {
         this.save(smsDto);
 
         // TODO 调用第三方接口发送短信
+        // 为了能实现成功注册,先打印出来,测试阶段使用
+        LOG.info("生成的验证码: {}", code);
     }
 
     /**
