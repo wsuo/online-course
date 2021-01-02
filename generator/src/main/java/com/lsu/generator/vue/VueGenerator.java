@@ -19,7 +19,7 @@ import java.util.*;
  */
 public class VueGenerator {
 
-    private static String MODULE = "system";
+    private static String MODULE = "business";
     private static String toVuePath = "admin\\src\\views\\admin\\";
     private static String generatorPath = "server\\src\\main\\resources\\generator\\generatorConfig.xml";
 
