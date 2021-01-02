@@ -4,20 +4,22 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.lsu.server.domain.Sms;
 import com.lsu.server.domain.SmsExample;
-import com.lsu.server.dto.SmsDto;
 import com.lsu.server.dto.PageDto;
+import com.lsu.server.dto.SmsDto;
 import com.lsu.server.enums.SmsStatusEnum;
 import com.lsu.server.exception.BusinessException;
 import com.lsu.server.exception.BusinessExceptionCode;
 import com.lsu.server.mapper.SmsMapper;
 import com.lsu.server.util.CopyUtil;
 import com.lsu.server.util.UuidUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
-import java.util.List;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 业务层
@@ -28,6 +30,8 @@ import java.util.Date;
  */
 @Service
 public class SmsService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(SmsService.class);
 
     @Resource
     private SmsMapper smsMapper;
@@ -98,12 +102,14 @@ public class SmsService {
             saveAndSend(smsDto);
         } else {
             // 频繁发送短信的异常
+            LOG.warn("短信请求过于频繁, {}", smsDto.getMobile());
             throw new BusinessException(BusinessExceptionCode.MOBILE_CODE_TOO_FREQUENT);
         }
     }
 
     /**
      * 保存并发送短信验证码
+     *
      * @param smsDto Sms对象
      */
     private void saveAndSend(SmsDto smsDto) {
@@ -115,5 +121,35 @@ public class SmsService {
         this.save(smsDto);
 
         // TODO 调用第三方接口发送短信
+    }
+
+    /**
+     * 校验短信验证码: 只有 5 分钟的时间
+     *
+     * @param smsDto sms 对象
+     */
+    public void validCode(SmsDto smsDto) {
+        SmsExample example = new SmsExample();
+        SmsExample.Criteria criteria = example.createCriteria();
+        // 查找 5 分钟内有没有{同手机号}{同用途}发送记录且{没有被使用}过;
+        criteria.andMobileEqualTo(smsDto.getMobile())
+                .andUseEqualTo(smsDto.getUse())
+                .andStatusEqualTo(SmsStatusEnum.NOT_USED.getCode())
+                .andAtGreaterThan(new Date(System.currentTimeMillis() - 5 * 60 * 1000));
+        List<Sms> smsList = smsMapper.selectByExample(example);
+
+        if (smsList != null && smsList.size() > 0) {
+            Sms sms = smsList.get(0);
+            if (!sms.getCode().equals(smsDto.getCode())) {
+                LOG.warn("短信验证码不正确");
+                throw new BusinessException(BusinessExceptionCode.MOBILE_CODE_ERROR);
+            } else {
+                sms.setStatus(SmsStatusEnum.USED.getCode());
+                smsMapper.updateByPrimaryKey(sms);
+            }
+        } else {
+            LOG.warn("短信验证码不存在或已过期,请重新发送短信");
+            throw new BusinessException(BusinessExceptionCode.MOBILE_CODE_EXPIRED);
+        }
     }
 }

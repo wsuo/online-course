@@ -6,6 +6,9 @@ import lombok.ToString;
 
 import java.util.Date;
 
+/**
+ * @author wsuo
+ */
 @Data
 @ToString
 public class MemberDto {
@@ -50,4 +53,9 @@ public class MemberDto {
      * 图片验证码 Token
      */
     private String imageCodeToken;
+
+    /**
+     * 短信验证码
+     */
+    private String smsCode;
 }

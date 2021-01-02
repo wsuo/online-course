@@ -4,7 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.lsu.server.dto.LoginMemberDto;
 import com.lsu.server.dto.MemberDto;
 import com.lsu.server.dto.ResponseDto;
+import com.lsu.server.dto.SmsDto;
+import com.lsu.server.enums.SmsUseEnum;
 import com.lsu.server.service.MemberService;
+import com.lsu.server.service.SmsService;
 import com.lsu.server.util.UuidUtil;
 import com.lsu.server.util.ValidatorUtil;
 import org.slf4j.Logger;
@@ -38,6 +41,9 @@ public class MemberController {
     @Resource
     private RedisTemplate redisTemplate;
 
+    @Resource
+    private SmsService smsService;
+
     @PostMapping("/register")
     public ResponseDto<MemberDto> register(@RequestBody MemberDto memberDto) {
         // 保存校验
@@ -49,6 +55,14 @@ public class MemberController {
 
         // 密码加密
         memberDto.setPassword(DigestUtils.md5DigestAsHex(memberDto.getPassword().getBytes()));
+
+        // 校验短信验证码
+        SmsDto smsDto = new SmsDto();
+        smsDto.setMobile(memberDto.getMobile());
+        smsDto.setCode(memberDto.getSmsCode());
+        smsDto.setUse(SmsUseEnum.REGISTER.getCode());
+        smsService.validCode(smsDto);
+        LOG.info("短信验证码校验通过");
 
         ResponseDto<MemberDto> responseDto = new ResponseDto<>();
         memberService.save(memberDto);

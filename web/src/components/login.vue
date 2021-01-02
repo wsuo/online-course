@@ -202,8 +202,13 @@
         MODAL_STATUS: "",
 
         member: {},
-        memberForget: {},
-        memberRegister: {},
+        memberForget: {
+          passwordOriginal: '',
+          smsCode: ''
+        },
+        memberRegister: {
+          smsCode: ''
+        },
 
         // 记住密码
         remember: true,
