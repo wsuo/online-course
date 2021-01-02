@@ -434,6 +434,13 @@
                 </router-link>
                 <b class="arrow"></b>
               </li>
+              <li class="" id="business-sms-sidebar" v-show="hasResource('0205')">
+                <router-link to="/business/sms">
+                  <i class="menu-icon fa fa-caret-right"></i>
+                  短信管理
+                </router-link>
+                <b class="arrow"></b>
+              </li>
             </ul>
           </li>
 

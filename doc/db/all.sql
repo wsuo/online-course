@@ -411,7 +411,7 @@ create table `sms`
     `code`   char(6)     not null comment '验证码',
     `use`    char(1)     not null comment '用途|枚举[SmsUseEnum]：REGISTER("R", "注册"), FORGET("F", "忘记密码")',
     `at`     datetime(3) not null comment '生成时间',
-    `status` char(1)     not null comment '用途|枚举[SmsStatusEnum]：USED("U", "已使用"), NOT_USED("N", "未使用")',
+    `status` char(1)     not null comment '状态|枚举[SmsStatusEnum]：USED("U", "已使用"), NOT_USED("N", "未使用")',
     primary key (`id`)
 ) engine = innodb
   default charset = utf8mb4 comment ='短信验证码';
