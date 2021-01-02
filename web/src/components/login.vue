@@ -296,13 +296,13 @@
         let _this = this;
 
         // 从缓存中获取记住的用户名密码，如果获取不到，说明上一次没有勾选“记住我”
-        let rememberMember = LocalStorage.get(LOCAL_KEY_REMEMBER_MEMBER);
+        /*let rememberMember = LocalStorage.get(LOCAL_KEY_REMEMBER_MEMBER);
         if (rememberMember) {
           _this.member = rememberMember;
-        }
+        }*/
 
         // 显示登录框时就刷新一次验证码图片
-        _this.loadImageCode();
+        // _this.loadImageCode();
 
         _this.MODAL_STATUS = _this.STATUS_LOGIN
       },
@@ -317,6 +317,9 @@
         _this.MODAL_STATUS = _this.STATUS_FORGET
       },
 
+      /*
+        注册
+      */
       register() {
         let _this = this;
 

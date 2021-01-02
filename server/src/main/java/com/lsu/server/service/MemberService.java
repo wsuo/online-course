@@ -65,6 +65,8 @@ public class MemberService {
     private void insert(Member member) {
         Date now = new Date();
         member.setId(UuidUtil.getShortUuid());
+        // 设置注册时间
+        member.setRegisterTime(now);
         memberMapper.insert(member);
     }
 

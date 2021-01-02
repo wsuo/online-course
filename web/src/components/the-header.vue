@@ -33,17 +33,29 @@
               </li>
             </ul>
             <!--<span class="text-white">欢迎：</span>-->
-            <button class="btn btn-outline-light my-2 my-sm-0">登录/注册</button>
+            <button v-on:click="openLoginModal" class="btn btn-outline-light my-2 my-sm-0">登录/注册</button>
           </div>
         </div>
       </nav>
+      <the-login ref="loginComponent"/>
     </header>
   </div>
 </template>
 
 <script>
+  import TheLogin from "./login";
   export default {
-    name: "the-header"
+    name: "the-header",
+    components: {TheLogin},
+    methods: {
+      /**
+       * 打开登录注册窗口
+       */
+      openLoginModal() {
+        let _this = this;
+        _this.$refs.loginComponent.openLoginModal();
+      }
+    }
   }
 </script>
 
