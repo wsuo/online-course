@@ -141,8 +141,9 @@
                 c.sections.push(s);
               }
             }
+            Tool.sortAsc(c.sections, "sort");
           }
-        })
+        });
       },
 
       /**

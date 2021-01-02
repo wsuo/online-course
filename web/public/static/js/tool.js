@@ -119,9 +119,9 @@ Tool = {
 
   /**
    * 对象数组按key对应的值排序
-   * @param array
-   * @param key
-   * @returns {*}
+   * @param array sections=[{id:"aaa",sort=2},{id:"bbb",sort=1}]
+   * @param key sort 按 sort 排序
+   * @returns {*} 结果: sections=[{id:"bbb",sort=1},{id:"aaa",sort=2}]
    */
   sortAsc: function (array, key) {
     return array.sort(function (obj1, obj2) {
