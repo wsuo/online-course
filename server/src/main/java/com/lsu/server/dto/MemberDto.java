@@ -1,11 +1,10 @@
 package com.lsu.server.dto;
 
-import lombok.Data;
-import lombok.ToString;
-import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.ToString;
+
+import java.util.Date;
 
 @Data
 @ToString
@@ -42,4 +41,13 @@ public class MemberDto {
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date registerTime;
 
+    /**
+     * 图片验证码
+     */
+    private String imageCode;
+
+    /**
+     * 图片验证码 Token
+     */
+    private String imageCodeToken;
 }
