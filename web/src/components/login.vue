@@ -382,9 +382,9 @@
               LocalStorage.set(LOCAL_KEY_REMEMBER_MEMBER, null);
             }
 
-            // 登录成功 TODO
-            /*_this.$parent.setLoginMember(loginMember);
-            $("#login-modal").modal("hide");*/
+            // 登录成功: 调用子组件的方法
+            _this.$parent.setLoginMember(loginMember);
+            $("#login-modal").modal("hide");
 
           } else {
             Toast.warning(resp.message);
