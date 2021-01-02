@@ -288,8 +288,6 @@
        */
       openLoginModal() {
         let _this = this;
-        // 打开登录框时就刷新验证码
-        _this.loadImageCode();
         $("#login-modal").modal("show");
       },
 
@@ -298,13 +296,13 @@
         let _this = this;
 
         // 从缓存中获取记住的用户名密码，如果获取不到，说明上一次没有勾选“记住我”
-        /*let rememberMember = LocalStorage.get(LOCAL_KEY_REMEMBER_MEMBER);
+        let rememberMember = LocalStorage.get(LOCAL_KEY_REMEMBER_MEMBER);
         if (rememberMember) {
           _this.member = rememberMember;
-        }*/
+        }
 
-        // 显示登录框时就刷新一次验证码图片
-        // _this.loadImageCode();
+        // 显示登录框时就刷新一次验证码图片 切换到登录框时会刷新
+        _this.loadImageCode();
 
         _this.MODAL_STATUS = _this.STATUS_LOGIN
       },
@@ -355,10 +353,10 @@
 
         // 如果密码是从缓存带出来的，则不需要重新加密
         let md5 = hex_md5(_this.member.password);
-        /*let rememberMember = LocalStorage.get(LOCAL_KEY_REMEMBER_MEMBER) || {};
+        let rememberMember = LocalStorage.get(LOCAL_KEY_REMEMBER_MEMBER) || {};
         if (md5 !== rememberMember.md5) {
           _this.member.password = hex_md5(_this.member.password + KEY);
-        }*/
+        }
 
         _this.member.imageCodeToken = _this.imageCodeToken;
 
@@ -370,7 +368,7 @@
             Tool.setLoginMember(resp.content);
 
             // 判断“记住我”
-            /*if (_this.remember) {
+            if (_this.remember) {
               // 如果勾选记住我，则将用户名密码保存到本地缓存
               // 这里保存密码密文，并保存密文md5，用于检测密码是否被重新输入过
               let md5 = hex_md5(_this.member.password);
@@ -382,7 +380,7 @@
             } else {
               // 没有勾选“记住我”时，要把本地缓存清空，否则下次显示登录框时会自动显示用户名密码
               LocalStorage.set(LOCAL_KEY_REMEMBER_MEMBER, null);
-            }*/
+            }
 
             // 登录成功 TODO
             /*_this.$parent.setLoginMember(loginMember);
