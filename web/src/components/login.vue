@@ -288,6 +288,8 @@
        */
       openLoginModal() {
         let _this = this;
+        // 打开登录框时就刷新验证码
+        _this.loadImageCode();
         $("#login-modal").modal("show");
       },
 
@@ -495,96 +497,98 @@
           }
         });
       },
+      /*
+            resetPassword() {
+              let _this = this;
 
-      resetPassword() {
-        let _this = this;
+              // 提交之前，先校验所有输入框
+              // 注意：当有一个文本框校验为false时，其它不校验
+              let validateResult = _this.onForgetMobileBlur() &&
+                _this.onForgetMobileCodeBlur() &&
+                _this.onForgetPasswordBlur() &&
+                _this.onForgetConfirmPasswordBlur();
+              if (!validateResult) {
+                return;
+              }
 
-        // 提交之前，先校验所有输入框
-        // 注意：当有一个文本框校验为false时，其它不校验
-        let validateResult = _this.onForgetMobileBlur() &&
-          _this.onForgetMobileCodeBlur() &&
-          _this.onForgetPasswordBlur() &&
-          _this.onForgetConfirmPasswordBlur();
-        if (!validateResult) {
-          return;
-        }
+              _this.memberForget.password = hex_md5(_this.memberForget.passwordOriginal + KEY);
 
-        _this.memberForget.password = hex_md5(_this.memberForget.passwordOriginal + KEY);
+              // 调服务端密码重置接口
+              _this.$ajax.post(process.env.VUE_APP_SERVER + '/business/web/member/reset-password', _this.memberForget).then((res) => {
+                let response = res.data;
+                if (response.success) {
+                  Toast.success("密码重置成功");
+                  _this.toLoginDiv();
+                } else {
+                  Toast.warning(response.message);
+                }
+              }).catch((response) => {
+                console.log("error：", response);
+              })
+            },
 
-        // 调服务端密码重置接口
-        _this.$ajax.post(process.env.VUE_APP_SERVER + '/business/web/member/reset-password', _this.memberForget).then((res) => {
-          let response = res.data;
-          if (response.success) {
-            Toast.success("密码重置成功");
-            _this.toLoginDiv();
-          } else {
-            Toast.warning(response.message);
-          }
-        }).catch((response) => {
-          console.log("error：", response);
-        })
-      },
+            //-------------------------------- 注册框校验 ----------------------------
 
-      //-------------------------------- 注册框校验 ----------------------------
+            onRegisterMobileBlur() {
+              let _this = this;
+              _this.registerMobileValidate = Pattern.validateMobile(_this.memberRegister.mobile);
+              return _this.registerMobileValidate;
+            },
 
-      onRegisterMobileBlur() {
-        let _this = this;
-        _this.registerMobileValidate = Pattern.validateMobile(_this.memberRegister.mobile);
-        return _this.registerMobileValidate;
-      },
+            onRegisterMobileCodeBlur() {
+              let _this = this;
+              _this.registerMobileCodeValidate = Pattern.validateMobileCode(_this.memberRegister.smsCode);
+              return _this.registerMobileValidate;
+            },
 
-      onRegisterMobileCodeBlur() {
-        let _this = this;
-        _this.registerMobileCodeValidate = Pattern.validateMobileCode(_this.memberRegister.smsCode);
-        return _this.registerMobileValidate;
-      },
+            onRegisterNameBlur() {
+              let _this = this;
+              _this.registerNameValidate = Pattern.validateName(_this.memberRegister.name);
+              return _this.registerMobileValidate;
+            },
 
-      onRegisterNameBlur() {
-        let _this = this;
-        _this.registerNameValidate = Pattern.validateName(_this.memberRegister.name);
-        return _this.registerMobileValidate;
-      },
+            onRegisterPasswordBlur() {
+              let _this = this;
+              _this.registerPasswordValidate = Pattern.validatePasswordWeak(_this.memberRegister.passwordOriginal);
+              return _this.registerMobileValidate;
+            },
 
-      onRegisterPasswordBlur() {
-        let _this = this;
-        _this.registerPasswordValidate = Pattern.validatePasswordWeak(_this.memberRegister.passwordOriginal);
-        return _this.registerMobileValidate;
-      },
+            onRegisterConfirmPasswordBlur() {
+              let _this = this;
+              let confirmPassword = $("#register-confirm-password").val();
+              if (Tool.isEmpty(confirmPassword)) {
+                return _this.registerConfirmPasswordValidate = false;
+              }
+              return _this.registerConfirmPasswordValidate = (confirmPassword === _this.memberRegister.passwordOriginal);
+            },
 
-      onRegisterConfirmPasswordBlur() {
-        let _this = this;
-        let confirmPassword = $("#register-confirm-password").val();
-        if (Tool.isEmpty(confirmPassword)) {
-          return _this.registerConfirmPasswordValidate = false;
-        }
-        return _this.registerConfirmPasswordValidate = (confirmPassword === _this.memberRegister.passwordOriginal);
-      },
+            //-------------------------------- 忘记密码框校验 ----------------------------
 
-      //-------------------------------- 忘记密码框校验 ----------------------------
+            onForgetMobileBlur() {
+              let _this = this;
+              return _this.forgetMobileValidate = Pattern.validateMobile(_this.memberForget.mobile);
+            },
 
-      onForgetMobileBlur() {
-        let _this = this;
-        return _this.forgetMobileValidate = Pattern.validateMobile(_this.memberForget.mobile);
-      },
+            onForgetMobileCodeBlur() {
+              let _this = this;
+              return _this.forgetMobileCodeValidate = Pattern.validateMobileCode(_this.memberForget.smsCode);
+            },
 
-      onForgetMobileCodeBlur() {
-        let _this = this;
-        return _this.forgetMobileCodeValidate = Pattern.validateMobileCode(_this.memberForget.smsCode);
-      },
+            onForgetPasswordBlur() {
+              let _this = this;
+              return _this.forgetPasswordValidate = Pattern.validatePasswordWeak(_this.memberForget.passwordOriginal);
+            },
 
-      onForgetPasswordBlur() {
-        let _this = this;
-        return _this.forgetPasswordValidate = Pattern.validatePasswordWeak(_this.memberForget.passwordOriginal);
-      },
+            onForgetConfirmPasswordBlur() {
+              let _this = this;
+              let forgetPassword = $("#forget-confirm-password").val();
+              if (Tool.isEmpty(forgetPassword)) {
+                return _this.forgetConfirmPasswordValidate = false;
+              }
+              return _this.forgetConfirmPasswordValidate = (forgetPassword === _this.memberForget.passwordOriginal);
+            }
 
-      onForgetConfirmPasswordBlur() {
-        let _this = this;
-        let forgetPassword = $("#forget-confirm-password").val();
-        if (Tool.isEmpty(forgetPassword)) {
-          return _this.forgetConfirmPasswordValidate = false;
-        }
-        return _this.forgetConfirmPasswordValidate = (forgetPassword === _this.memberForget.passwordOriginal);
-      }
+       */
     }
   }
 </script>
@@ -605,7 +609,7 @@
     max-width: 400px;
   }
 
-  /*不响应-该样式*/
+  /*不响应-该样式: input:not(.remember)*/
   #login-modal input:not(.remember) {
     height: 45px;
     font-size: 16px;
