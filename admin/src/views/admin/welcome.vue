@@ -102,6 +102,100 @@
         <div class="hr hr2 hr-double"></div>
         <div class="space-12"></div>
       </div><!-- /.col -->
+      <div class="col-sm-6">
+        <div class="widget-box">
+          <div class="widget-header widget-header-flat">
+            <h4 class="widget-title lighter">
+              <i class="ace-icon fa fa-star orange"></i>
+              课程销售排名
+            </h4>
+          </div>
+          <div class="widget-body">
+            <div class="widget-main">
+              <table class="table table-bordered table-striped">
+                <thead class="thin-border-bottom">
+                <tr>
+                  <th><i class="ace-icon fa fa-caret-right blue"></i>课程名称</th>
+                  <th><i class="ace-icon fa fa-caret-right blue"></i>价格</th>
+                  <th><i class="ace-icon fa fa-caret-right blue"></i>购买数</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                  <td>SpringBoot源码解析</td>
+                  <td>
+                    <b class="green">$299.00</b>
+                  </td>
+                  <td>
+                    <span class="label label-warning arrowed arrowed-right">5,132</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>SpringBoot源码解析</td>
+                  <td>
+                    <b class="green">$299.00</b>
+                  </td>
+                  <td>
+                    <span class="label label-warning arrowed arrowed-right">5,132</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>SpringBoot源码解析</td>
+                  <td>
+                    <b class="green">$299.00</b>
+                  </td>
+                  <td>
+                    <span class="label label-warning arrowed arrowed-right">5,132</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>SpringBoot源码解析</td>
+                  <td>
+                    <b class="green">$299.00</b>
+                  </td>
+                  <td>
+                    <span class="label label-warning arrowed arrowed-right">5,132</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>SpringBoot源码解析</td>
+                  <td>
+                    <b class="green">$299.00</b>
+                  </td>
+                  <td>
+                    <span class="label label-warning arrowed arrowed-right">5,132</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>SpringBoot源码解析</td>
+                  <td>
+                    <b class="green">$299.00</b>
+                  </td>
+                  <td>
+                    <span class="label label-warning arrowed arrowed-right">5,132</span>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div><!-- /.widget-main -->
+          </div><!-- /.widget-body -->
+        </div><!-- /.widget-box -->
+      </div><!-- /.col -->
+      <div class="col-sm-6">
+        <div class="widget-box">
+          <div class="widget-header widget-header-flat">
+            <h4 class="widget-title lighter">
+              <i class="ace-icon fa fa-star orange"></i>
+              分类销售排名
+            </h4>
+          </div>
+          <div class="widget-body">
+            <div class="widget-main">
+              <div id="piechart-placeholder"></div>
+            </div><!-- /.widget-main -->
+          </div><!-- /.widget-body -->
+        </div><!-- /.widget-box -->
+      </div><!-- /.col -->
     </div><!-- /.row -->
   </div>
 </template>
@@ -112,8 +206,12 @@
     mounted: function () {
       let _this = this;
       _this.drawSalesCharts();
+      _this.drawPieChart();
     },
     methods: {
+      /**
+       * 画折线图
+       */
       drawSalesCharts() {
         // 假数据: 随机生成数组
         let d1 = [];
@@ -156,6 +254,44 @@
             backgroundColor: {colors: ["#fff", "#fff"]},
             borderWidth: 1,
             borderColor: '#555'
+          }
+        });
+      },
+      /**
+       * 画饼图
+       */
+      drawPieChart() {
+        let placeholder = $('#piechart-placeholder').css({'width': '90%', 'min-height': '220px'});
+        let data = [
+          {label: "Java", data: 38.7, color: "#68BC31"},
+          {label: "Python", data: 24.5, color: "#2091CF"},
+          {label: "Android", data: 26.8, color: "#AF4E96"},
+          {label: "other", data: 10, color: "#FEE074"}
+        ];
+        $.plot(placeholder, data, {
+          series: {
+            pie: {
+              show: true,
+              tilt: 0.9,
+              highlight: {
+                opacity: 0.25
+              },
+              stroke: {
+                color: '#fff',
+                width: 3
+              },
+              startAngle: 2
+            }
+          },
+          legend: {
+            show: true,
+            position: "ne",
+            labelBoxBorderColor: null,
+            margin: [-30, 15]
+          },
+          grid: {
+            hoverable: true,
+            clickable: true
           }
         });
       }
