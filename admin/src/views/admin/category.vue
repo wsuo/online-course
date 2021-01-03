@@ -20,7 +20,8 @@
           </tr>
           </thead>
           <tbody>
-          <tr v-for="category in level1" @click="onClickLevel1(category)" :class="{'active': category.id === active.id}">
+          <tr v-for="category in level1" @click="onClickLevel1(category)"
+              :class="{'active': category.id === active.id}">
             <td>{{category.id}}</td>
             <td>{{category.name}}</td>
             <td>{{category.sort}}</td>
@@ -147,38 +148,55 @@
     methods: {
       getAll() {
         let _this = this;
+
+        // 查看本地缓存
+        let localCategory = LocalStorage.get("ADMIN_CATEGORY_ALL");
+        if (!Tool.isEmpty(localCategory)) {
+          _this.categorys = localCategory;
+          _this.loadLevel();
+          return;
+        }
         Loading.show();
         _this.$ajax.post(process.env.VUE_APP_SERVER + '/business/admin/category/list').then(response => {
           Loading.hide();
           let resp = response.data;
           _this.categorys = resp.content;
+          LocalStorage.set("ADMIN_CATEGORY_ALL", _this.categorys);
+          _this.loadLevel();
+        });
+      },
 
-          // 将所有的记录格式化为树形结构
-          _this.level1 = [];
-          for (let i = 0; i < _this.categorys.length; i++) {
-            let c = _this.categorys[i];
-            if (c.parent === '00000000') {
-              _this.level1.push(c);
-              for (let j = 0; j < _this.categorys.length; j++) {
-                let child = _this.categorys[j];
-                if (child.parent === c.id) {
-                  if (Tool.isEmpty(c.children)) {
-                    c.children = [];
-                  }
-                  c.children.push(child)
+      /**
+       * 加载层级结构
+       */
+      loadLevel() {
+        let _this = this;
+        // 将所有的记录格式化为树形结构
+        _this.level1 = [];
+        for (let i = 0; i < _this.categorys.length; i++) {
+          let c = _this.categorys[i];
+          if (c.parent === '00000000') {
+            _this.level1.push(c);
+            for (let j = 0; j < _this.categorys.length; j++) {
+              let child = _this.categorys[j];
+              if (child.parent === c.id) {
+                if (Tool.isEmpty(c.children)) {
+                  c.children = [];
                 }
+                c.children.push(child)
               }
             }
           }
+        }
 
-          _this.level2 = [];
-          // 新增完一级分类之后对一级分类触发一次点击事件: 从而刷新二级菜单列表
-          // 界面的渲染需要等 VUE 绑定好变量后才做: 所以加延时 100 ms
-          setTimeout(function () {
-            $("tr.active").trigger("click");
-          }, 100);
-        });
+        _this.level2 = [];
+        // 新增完一级分类之后对一级分类触发一次点击事件: 从而刷新二级菜单列表
+        // 界面的渲染需要等 VUE 绑定好变量后才做: 所以加延时 100 ms
+        setTimeout(function () {
+          $("tr.active").trigger("click");
+        }, 100);
       },
+
       /**
        * 新增一级
        */

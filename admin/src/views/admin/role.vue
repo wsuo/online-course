@@ -131,7 +131,7 @@
                   <tr v-for="user in roleUsers">
                     <td>{{user.loginName}}</td>
                     <td class="text-right">
-                      <a v-on:click="deleteUser(user)" href="javascript:;" class="">
+                      <a v-on:click="deleteUser(user)" href="javascript:" class="">
                         <i class="ace-icon fa fa-trash blue"></i>
                       </a>
                     </td>

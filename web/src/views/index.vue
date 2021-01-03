@@ -85,14 +85,23 @@
     },
     methods: {
       /**
-       * 查询新上好课
+       * 查询新上好课: 高频查询,数据变化不大的;
        */
       listNew() {
         let _this = this;
+
+        // 判断是否有缓存
+        let news = SessionStorage.get("news");
+        if (!Tool.isEmpty(news)) {
+          _this.news = news;
+          return;
+        }
+
         _this.$ajax.get(process.env.VUE_APP_SERVER + '/business/web/course/list-new').then(response => {
           let resp = response.data;
           if (resp.success) {
             _this.news = resp.content;
+            SessionStorage.set("news", _this.news);
           }
         }).catch(resp => {
           console.log("error: ", resp);
